@@ -1,4 +1,4 @@
-<?
+﻿<?php 
 //function DecideJudge($number,$My,$MyTeam,$EnemyTeam,$classBattle) {
 function DecideJudge($number,$My,$classBattle) {
 
@@ -22,7 +22,7 @@ function DecideJudge($number,$My,$classBattle) {
 			return true;
 		case 1001:// pass
 			return false;
-//------------------------ HP相關
+//------------------------ HP相关
 		case 1100:// 自己的HP ←←(%)以上
 			$hpp	= $My->HpPercent();
 			if($Quantity <= $hpp) return true;
@@ -58,7 +58,7 @@ function DecideJudge($number,$My,$classBattle) {
 			foreach($MyTeam as $char) {
 				if($char->STATE === DEAD) continue;
 					$sum	+= $char->HpPercent();
-					$cnt++;// 生存人數
+					$cnt++;// 生存人数
 			}
 			$ave	= $sum/$cnt;
 			if($Quantity <= $ave) return true;
@@ -67,7 +67,7 @@ function DecideJudge($number,$My,$classBattle) {
 			foreach($MyTeam as $char) {
 				if($char->STATE === DEAD) continue;
 					$sum	+= $char->HpPercent();
-					$cnt++;// 生存人數
+					$cnt++;// 生存人数
 			}
 			$ave	= $sum/$cnt;
 			if($ave <= $Quantity) return true;
@@ -110,9 +110,9 @@ function DecideJudge($number,$My,$classBattle) {
 				if($char->STATE === DEAD) continue;
 				if($char->MAXSP === 0) continue;					
 					$sum	+= $char->SpPercent();
-					$cnt++;// 生存人數
+					$cnt++;// 生存人数
 			}
-			// 被零除的話
+			// 被零除的话
 			if(!$cnt)
 				break;
 			$ave	= $sum/$cnt;
@@ -123,9 +123,9 @@ function DecideJudge($number,$My,$classBattle) {
 				if($char->STATE === DEAD) continue;
 				if($char->MAXSP === 0) continue;
 					$sum	+= $char->SpPercent();
-					$cnt++;// 生存人數
+					$cnt++;// 生存人数
 			}
-			// 被零除的話
+			// 被零除的话
 			if(!$cnt)
 				break;
 			$ave	= $sum/$cnt;
@@ -176,36 +176,36 @@ function DecideJudge($number,$My,$classBattle) {
 			break;
 		case 1381:// 自己的MDEF ** 以下
 			break;
-//------------------------ 人數(己方)
-		case 1400:// 己方的生存人數 *個以上
+//------------------------ 人数(己方)
+		case 1400:// 己方的生存人数 *个以上
 			foreach($MyTeam as $char) {
 				if($char->STATE !== DEAD)
 					$alive++;
 			}
 			if($Quantity <= $alive) return true;
 			break;
-		case 1401:// 己方的生存人數 *個以下
+		case 1401:// 己方的生存人数 *个以下
 			foreach($MyTeam as $char) {
 				if($char->STATE !== DEAD)
 					$alive++;
 			}
 			if($alive <= $Quantity) return true;
 			break;
-		case 1405:// 己方的死者 *個以上
+		case 1405:// 己方的死者 *个以上
 			foreach($MyTeam as $char) {
 				if($char->STATE === DEAD)
 					$dead++;
 			}
 			if($Quantity <= $dead) return true;
 			break;
-		case 1406:// 己方的死者 *個以下
+		case 1406:// 己方的死者 *个以下
 			foreach($MyTeam as $char) {
 				if($char->STATE === DEAD)
 					$dead++;
 			}
 			if($dead <= $Quantity) return true;
 			break;
-		case 1410:// 我方前排的生存人數 *個以上
+		case 1410:// 我方前排的生存人数 *个以上
 			$front_alive	= 0;
 			foreach($MyTeam as $char) {
 				if($char->STATE !== DEAD && $char->position == FRONT)
@@ -213,37 +213,37 @@ function DecideJudge($number,$My,$classBattle) {
 			}
 			if($Quantity <= $front_alive) return true;
 			break;
-//------------------------ 人數(敵)
-		case 1450:// 敵方的生存人數 *個以上
+//------------------------ 人数(敌)
+		case 1450:// 敌方的生存人数 *个以上
 			foreach($EnemyTeam as $char) {
 				if($char->STATE !== DEAD)
 					$alive++;
 			}
 			if($Quantity <= $alive) return true;
 			break;
-		case 1451:// 敵方的生存人數 *個以下
+		case 1451:// 敌方的生存人数 *个以下
 			foreach($EnemyTeam as $char) {
 				if($char->STATE !== DEAD)
 					$alive++;
 			}
 			if($alive <= $Quantity) return true;
 			break;
-		case 1455:// 敵方的死者 *個以上
+		case 1455:// 敌方的死者 *个以上
 			foreach($EnemyTeam as $char) {
 				if($char->STATE === DEAD)
 					$dead++;
 			}
 			if($Quantity <= $dead) return true;
 			break;
-		case 1456:// 敵方的死者 *個以下
+		case 1456:// 敌方的死者 *个以下
 			foreach($EnemyTeam as $char) {
 				if($char->STATE === DEAD)
 					$dead++;
 			}
 			if($dead <= $Quantity) return true;
 			break;
-//------------------------ 蓄力+詠唱
-		case 1500:// 蓄力狀態的 *個以上
+//------------------------ 蓄力+咏唱
+		case 1500:// 蓄力状态的 *个以上
 			foreach($MyTeam as $char) {
 				if($char->STATE === DEAD) continue;
 				if($char->expect_type === CHARGE)
@@ -251,7 +251,7 @@ function DecideJudge($number,$My,$classBattle) {
 			}
 			if($Quantity <= $charge) return true;
 			break;
-		case 1501:// 蓄力狀態的 *個以下
+		case 1501:// 蓄力状态的 *个以下
 			foreach($MyTeam as $char) {
 				if($char->STATE === DEAD) continue;
 				if($char->expect_type === CHARGE)
@@ -259,7 +259,7 @@ function DecideJudge($number,$My,$classBattle) {
 			}
 			if($charge <= $Quantity) return true;
 			break;
-		case 1505:// 詠唱狀態的 *個以上
+		case 1505:// 咏唱状态的 *个以上
 			foreach($MyTeam as $char) {
 				if($char->STATE === DEAD) continue;
 				if($char->expect_type === CAST)
@@ -267,7 +267,7 @@ function DecideJudge($number,$My,$classBattle) {
 			}
 			if($Quantity <= $cast) return true;
 			break;
-		case 1506:// 詠唱狀態的 *個以下
+		case 1506:// 咏唱状态的 *个以下
 			foreach($MyTeam as $char) {
 				if($char->STATE === DEAD) continue;
 				if($char->expect_type === CHARGE)
@@ -275,7 +275,7 @@ function DecideJudge($number,$My,$classBattle) {
 			}
 			if($cast <= $Quantity) return true;
 			break;
-		case 1510:// 蓄力詠唱狀態的 *個以上
+		case 1510:// 蓄力咏唱状态的 *个以上
 			foreach($MyTeam as $char) {
 				if($char->STATE === DEAD) continue;
 				if($char->expect_type === CAST || $char->expect_type === CHARGE)
@@ -283,7 +283,7 @@ function DecideJudge($number,$My,$classBattle) {
 			}
 			if($Quantity <= $expect) return true;
 			break;
-		case 1511:// 蓄力詠唱狀態的 *個以下
+		case 1511:// 蓄力咏唱状态的 *个以下
 			foreach($MyTeam as $char) {
 				if($char->STATE === DEAD) continue;
 				if($char->expect_type === CAST || $char->expect_type === CHARGE)
@@ -291,8 +291,8 @@ function DecideJudge($number,$My,$classBattle) {
 			}
 			if($expect <= $Quantity) return true;
 			break;
-//------------------------ 蓄力+詠唱(敵)
-		case 1550:// 蓄力狀態（敵方）*個以上
+//------------------------ 蓄力+咏唱(敌)
+		case 1550:// 蓄力状态（敌方）*个以上
 			foreach($EnemyTeam as $char) {
 				if($char->STATE === DEAD) continue;
 				if($char->expect_type === CHARGE)
@@ -300,7 +300,7 @@ function DecideJudge($number,$My,$classBattle) {
 			}
 			if($Quantity <= $charge) return true;
 			break;
-		case 1551:// 蓄力狀態（敵方）*個以下
+		case 1551:// 蓄力状态（敌方）*个以下
 			foreach($EnemyTeam as $char) {
 				if($char->STATE === DEAD) continue;
 				if($char->expect_type === CHARGE)
@@ -308,7 +308,7 @@ function DecideJudge($number,$My,$classBattle) {
 			}
 			if($charge <= $Quantity) return true;
 			break;
-		case 1555:// 詠唱狀態（敵方）*個以上
+		case 1555:// 咏唱状态（敌方）*个以上
 			foreach($EnemyTeam as $char) {
 				if($char->STATE === DEAD) continue;
 				if($char->expect_type === CAST)
@@ -316,7 +316,7 @@ function DecideJudge($number,$My,$classBattle) {
 			}
 			if($Quantity <= $cast) return true;
 			break;
-		case 1556:// 詠唱狀態（敵方）*個以下
+		case 1556:// 咏唱状态（敌方）*个以下
 			foreach($EnemyTeam as $char) {
 				if($char->STATE === DEAD) continue;
 				if($char->expect_type === CAST)
@@ -324,7 +324,7 @@ function DecideJudge($number,$My,$classBattle) {
 			}
 			if($cast <= $Quantity) return true;
 			break;
-		case 1560:// 蓄力詠唱狀態（敵方）*個以上
+		case 1560:// 蓄力咏唱状态（敌方）*个以上
 			foreach($EnemyTeam as $char) {
 				if($char->STATE === DEAD) continue;
 				if($char->expect_type === CAST || $char->expect_type === CHARGE)
@@ -332,7 +332,7 @@ function DecideJudge($number,$My,$classBattle) {
 			}
 			if($Quantity <= $expect) return true;
 			break;
-		case 1561:// 蓄力詠唱狀態（敵方）*個以下
+		case 1561:// 蓄力咏唱状态（敌方）*个以下
 			foreach($EnemyTeam as $char) {
 				if($char->STATE === DEAD) continue;
 				if($char->expect_type === CAST || $char->expect_type === CHARGE)
@@ -341,10 +341,10 @@ function DecideJudge($number,$My,$classBattle) {
 			if($expect <= $Quantity) return true;
 			break;
 //------------------------ 毒
-		case 1600:// 自己處於毒狀態
+		case 1600:// 自己处于毒状态
 			if($My->STATE === POISON) return true;
 			break;
-		case 1610:// 我方毒狀態 **個以上
+		case 1610:// 我方毒状态 **个以上
 			foreach($MyTeam as $char) {
 				if($char->STATE === DEAD) continue;
 				if($char->STATE === POISON)
@@ -352,7 +352,7 @@ function DecideJudge($number,$My,$classBattle) {
 			}
 			if($Quantity <= $poison) return true;
 			break;
-		case 1611:// 我方毒狀態 **個以下
+		case 1611:// 我方毒状态 **个以下
 			foreach($MyTeam as $char) {
 				if($char->STATE === DEAD) continue;
 				if($char->STATE === POISON)
@@ -360,7 +360,7 @@ function DecideJudge($number,$My,$classBattle) {
 			}
 			if($poison <= $Quantity) return true;
 			break;
-		case 1612:// 我方毒狀態 **% 以上
+		case 1612:// 我方毒状态 **% 以上
 			foreach($MyTeam as $char) {
 				if($char->STATE === DEAD) continue;
 				$alive++;
@@ -371,7 +371,7 @@ function DecideJudge($number,$My,$classBattle) {
 			$Rate	= ($poison/$alive) * 100;
 			if($Quantity <= $Rate) return true;
 			break;
-		case 1613:// 我方毒狀態 **% 以下
+		case 1613:// 我方毒状态 **% 以下
 			foreach($MyTeam as $char) {
 				if($char->STATE === DEAD) continue;
 				$alive++;
@@ -382,8 +382,8 @@ function DecideJudge($number,$My,$classBattle) {
 			$Rate	= ($poison/$alive) * 100;
 			if($Rate <= $Quantity) return true;
 			break;
-//------------------------ 毒(敵)
-		case 1615:// 敵方毒狀態 **個以上
+//------------------------ 毒(敌)
+		case 1615:// 敌方毒状态 **个以上
 			foreach($EnemyTeam as $char) {
 				if($char->STATE === DEAD) continue;
 				if($char->STATE === POISON)
@@ -391,7 +391,7 @@ function DecideJudge($number,$My,$classBattle) {
 			}
 			if($Quantity <= $poison) return true;
 			break;
-		case 1616:// 敵方毒狀態 **個以下
+		case 1616:// 敌方毒状态 **个以下
 			foreach($EnemyTeam as $char) {
 				if($char->STATE === DEAD) continue;
 				if($char->STATE === POISON)
@@ -399,7 +399,7 @@ function DecideJudge($number,$My,$classBattle) {
 			}
 			if($poison <= $Quantity) return true;
 			break;
-		case 1612:// 敵方毒狀態 **% 以上
+		case 1612:// 敌方毒状态 **% 以上
 			foreach($EnemyTeam as $char) {
 				if($char->STATE === DEAD) continue;
 				$alive++;
@@ -410,7 +410,7 @@ function DecideJudge($number,$My,$classBattle) {
 			$Rate	= ($poison/$alive) * 100;
 			if($Quantity <= $Rate) return true;
 			break;
-		case 1613:// 敵方毒狀態 **% 以下
+		case 1613:// 敌方毒状态 **% 以下
 			foreach($EnemyTeam as $char) {
 				if($char->STATE === DEAD) continue;
 				$alive++;
@@ -421,14 +421,14 @@ function DecideJudge($number,$My,$classBattle) {
 			$Rate	= ($poison/$alive) * 100;
 			if($Rate <= $Quantity) return true;
 			break;
-//------------------------ 隊列
+//------------------------ 队列
 		case 1700:// 自己在前排
 			if($My->POSITION == FRONT) return true;
 			break;
-		case 1701:// 自己在後排
+		case 1701:// 自己在后排
 			if($My->POSITION == BACK) return true;
 			break;
-		case 1710:// 己方前排 **個以上
+		case 1710:// 己方前排 **个以上
 			$front	= 0;
 			foreach($MyTeam as $char) {
 				if($char->STATE === DEAD) continue;
@@ -437,7 +437,7 @@ function DecideJudge($number,$My,$classBattle) {
 			}
 			if($Quantity <= $front) return true;
 			break;
-		case 1711:// 己方前排 **個以下
+		case 1711:// 己方前排 **个以下
 			$front	= 0;
 			foreach($MyTeam as $char) {
 				if($char->STATE === DEAD) continue;
@@ -446,7 +446,7 @@ function DecideJudge($number,$My,$classBattle) {
 			}
 			if($front <= $Quantity) return true;
 			break;
-		case 1712:// 己方前排 **個
+		case 1712:// 己方前排 **个
 			$front	= 0;
 			foreach($MyTeam as $char) {
 				if($char->STATE === DEAD) continue;
@@ -455,7 +455,7 @@ function DecideJudge($number,$My,$classBattle) {
 			}
 			if($front == $Quantity) return true;
 			break;
-		case 1715:// 己方後排 **個以上
+		case 1715:// 己方后排 **个以上
 			$back	= 0;
 			foreach($MyTeam as $char) {
 				if($char->STATE === DEAD) continue;
@@ -464,7 +464,7 @@ function DecideJudge($number,$My,$classBattle) {
 			}
 			if($Quantity <= $back) return true;
 			break;
-		case 1716:// 己方後排 **個以下
+		case 1716:// 己方后排 **个以下
 			$back	= 0;
 			foreach($MyTeam as $char) {
 				if($char->STATE === DEAD) continue;
@@ -473,7 +473,7 @@ function DecideJudge($number,$My,$classBattle) {
 			}
 			if($back <= $Quantity) return true;
 			break;
-		case 1717:// 己方後排 **個
+		case 1717:// 己方后排 **个
 			$back	= 0;
 			foreach($MyTeam as $char) {
 				if($char->STATE === DEAD) continue;
@@ -482,8 +482,8 @@ function DecideJudge($number,$My,$classBattle) {
 			}
 			if($back == $Quantity) return true;
 			break;
-//------------------------ 隊列(敵)
-		case 1750:// 敵方前排 **個以上
+//------------------------ 队列(敌)
+		case 1750:// 敌方前排 **个以上
 			$front	= 0;
 			foreach($EnemyTeam as $char) {
 				if($char->STATE === DEAD) continue;
@@ -492,7 +492,7 @@ function DecideJudge($number,$My,$classBattle) {
 			}
 			if($Quantity <= $front) return true;
 			break;
-		case 1751:// 敵方前排 **個以下
+		case 1751:// 敌方前排 **个以下
 			$front	= 0;
 			foreach($EnemyTeam as $char) {
 				if($char->STATE === DEAD) continue;
@@ -501,7 +501,7 @@ function DecideJudge($number,$My,$classBattle) {
 			}
 			if($front <= $Quantity) return true;
 			break;
-		case 1752:// 敵方前排 **個
+		case 1752:// 敌方前排 **个
 			$front	= 0;
 			foreach($EnemyTeam as $char) {
 				if($char->STATE === DEAD) continue;
@@ -510,7 +510,7 @@ function DecideJudge($number,$My,$classBattle) {
 			}
 			if($Quantity == $front) return true;
 			break;
-		case 1755:// 敵方後排 **個以上
+		case 1755:// 敌方后排 **个以上
 			$back	= 0;
 			foreach($EnemyTeam as $char) {
 				if($char->STATE === DEAD) continue;
@@ -519,7 +519,7 @@ function DecideJudge($number,$My,$classBattle) {
 			}
 			if($Quantity <= $back) return true;
 			break;
-		case 1756:// 敵方後排 **個以下
+		case 1756:// 敌方后排 **个以下
 			$back	= 0;
 			foreach($EnemyTeam as $char) {
 				if($char->STATE === DEAD) continue;
@@ -528,7 +528,7 @@ function DecideJudge($number,$My,$classBattle) {
 			}
 			if($back <= $Quantity) return true;
 			break;
-		case 1757:// 敵方後排 **個
+		case 1757:// 敌方后排 **个
 			$back	= 0;
 			foreach($EnemyTeam as $char) {
 				if($char->STATE === DEAD) continue;
@@ -537,8 +537,8 @@ function DecideJudge($number,$My,$classBattle) {
 			}
 			if($Quantity == $back) return true;
 			break;
-//------------------------ 召喚
-		case 1800:// 己方的召喚物**匹以上
+//------------------------ 召唤
+		case 1800:// 己方的召唤物**匹以上
 			$summon	= 0;
 			foreach($MyTeam as $char) {
 				//if($char->STATE === DEAD) continue;
@@ -547,7 +547,7 @@ function DecideJudge($number,$My,$classBattle) {
 			}
 			if($Quantity <= $summon) return true;
 			break;
-		case 1801:// 己方的召喚物**匹以下
+		case 1801:// 己方的召唤物**匹以下
 			$summon	= 0;
 			foreach($MyTeam as $char) {
 				//if($char->STATE === DEAD) continue;
@@ -557,7 +557,7 @@ function DecideJudge($number,$My,$classBattle) {
 			if($summon <= $Quantity) return true;
 			break;
 
-		case 1805:// 己方的召喚物**匹
+		case 1805:// 己方的召唤物**匹
 			$summon	= 0;
 			foreach($MyTeam as $char) {
 				//if($char->STATE === DEAD) continue;
@@ -566,8 +566,8 @@ function DecideJudge($number,$My,$classBattle) {
 			}
 			if($summon == $Quantity) return true;
 			break;
-//------------------------ 召喚(敵)
-		case 1820:// 敵方的召喚物**匹以上
+//------------------------ 召唤(敌)
+		case 1820:// 敌方的召唤物**匹以上
 			$summon	= 0;
 			foreach($EnemyTeam as $char) {
 				//if($char->STATE === DEAD) continue;
@@ -576,7 +576,7 @@ function DecideJudge($number,$My,$classBattle) {
 			}
 			if($Quantity <= $summon) return true;
 			break;
-		case 1821:// 敵方的召喚物**匹以下
+		case 1821:// 敌方的召唤物**匹以下
 			$summon	= 0;
 			foreach($EnemyTeam as $char) {
 				//if($char->STATE === DEAD) continue;
@@ -585,7 +585,7 @@ function DecideJudge($number,$My,$classBattle) {
 			}
 			if($summon <= $Quantity) return true;
 			break;
-		case 1825:// 敵方的召喚物**匹
+		case 1825:// 敌方的召唤物**匹
 			$summon	= 0;
 			foreach($EnemyTeam as $char) {
 				//if($char->STATE === DEAD) continue;
@@ -594,40 +594,40 @@ function DecideJudge($number,$My,$classBattle) {
 			}
 			if($summon == $Quantity) return true;
 			break;
-//------------------------ 魔法陣
-		case 1840:// 己方的魔法陣數**個以上
+//------------------------ 魔法阵
+		case 1840:// 己方的魔法阵数**个以上
 			if($Quantity <= $MyTeamMC)
 				return true;
 			break;
-		case 1841:// 己方的魔法陣數**個以下
+		case 1841:// 己方的魔法阵数**个以下
 			if($MyTeamMC <= $Quantity)
 				return true;
 			break;
-		case 1845:// 己方的魔法陣數**個
+		case 1845:// 己方的魔法阵数**个
 			if($Quantity == $MyTeamMC)
 				return true;
 			break;
-//------------------------ 魔法陣(敵)
-		case 1850:// 敵方的魔法陣數**個以上
+//------------------------ 魔法阵(敌)
+		case 1850:// 敌方的魔法阵数**个以上
 			if($Quantity <= $EnemyTeamMC)
 				return true;
 			break;
-		case 1851:// 敵方的魔法陣數**個以下
+		case 1851:// 敌方的魔法阵数**个以下
 			if($EnemyTeamMC <= $Quantity)
 				return true;
 			break;
-		case 1855:// 敵方的魔法陣數**個
+		case 1855:// 敌方的魔法阵数**个
 			if($Quantity == $EnemyTeamMC)
 				return true;
 			break;
-//------------------------ 指定行動回數
-		case 1900:// 自己的行動回數**回以上
+//------------------------ 指定行动回数
+		case 1900:// 自己的行动回数**回以上
 			if(($Quantity-1) <= $My->ActCount) return true;
 			break;
-		case 1901:// 自己的行動回數**回以下
+		case 1901:// 自己的行动回数**回以下
 			if($My->ActCount <= ($Quantity-1)) return true;
 			break;
-		case 1902:// 自己的行動回數**回合
+		case 1902:// 自己的行动回数**回合
 			if($My->ActCount == ($Quantity-1)) return true;
 			break;
 //------------------------ 回合限制
@@ -640,7 +640,7 @@ function DecideJudge($number,$My,$classBattle) {
 			if($prob <= $Quantity) return true;
 			break;
 //------------------------ 特殊判定
-		case 9000:// 敵方Lv超過←←以上
+		case 9000:// 敌方Lv超过←←以上
 			foreach($EnemyTeam as $char) {
 				if($Quantity <= $char->level)
 					return true;

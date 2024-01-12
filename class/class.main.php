@@ -1,4 +1,4 @@
-<?
+﻿<?php
 include(CLASS_USER);
 include(GLOBAL_PHP);
 class main extends user {
@@ -7,7 +7,8 @@ class main extends user {
 
 //////////////////////////////////////////////////
 //	
-	function main() {
+    // 240112-错误修复: Deprecated: Methods with the same name as their class will not be constructors  https://www.php.cn/faq/592546.html
+	function __construct() {
 		$this->SessionSwitch();
 		$this->Set_ID_PASS();
 		ob_start();
@@ -25,25 +26,25 @@ class main extends user {
 //////////////////////////////////////////////////
 //	
 	function Order() {
-		// ログイン処理する前に処理するもの
-		// まだユーザデータ読んでません
+		// 登录之前的数据处理
+		// 这里还没有读取用户数据
 		switch(true) {
-			case($_GET["menu"] === "auction"):
+			case($_GET["menu"]??null === "auction"):
 				include(CLASS_AUCTION);
 				$ItemAuction	= new Auction(item);
 				$ItemAuction->AuctionHttpQuery("auction");
-				$ItemAuction->ItemCheckSuccess();// 競売が終了した品物を調べる
-				$ItemAuction->UserSaveData();// 競売品と金額を各IDに配って保存する
+				$ItemAuction->ItemCheckSuccess();// 检查拍卖结束的商品
+				$ItemAuction->UserSaveData();// 结算拍卖成功的商品，并将商品和资金划归相应用户
 				break;
 
-			case($_GET["menu"] === "rank"):
+			case($_GET["menu"]??null === "rank"):
 				include(CLASS_RANKING);
 				$Ranking	= new Ranking();
 				break;
 		}
 		if( true === $message = $this->CheckLogin() ):
 		//if( false ):
-		// ログイン
+		// 登录
 			include_once(DATA_ITEM);
 			include(CLASS_CHAR);
 			if($this->FirstLogin())
@@ -66,26 +67,26 @@ class main extends user {
 					$this->SettingShow();
 					return 0;
 
-				// オークション
+				// 拍卖行
 				case($_GET["menu"] === "auction"):
-					$this->LoadUserItem();//アイテムデータ読む
+					$this->LoadUserItem();//读取用户道具数据
 					$this->AuctionHeader();
 
 					/*
-					* 出品用のフォーム
-					* 表示を要求した場合か、
-					* 出品に失敗した場合表示する。
+					* 调用拍卖行数据
+					* 显示复合要求的商品、
+					* 显示拍卖失败的商品。
 					*/
 					$ResultExhibit	= $this->AuctionItemExhibitProcess($ItemAuction);
 					$ResultBidding	= $this->AuctionItemBiddingProcess($ItemAuction);
-					$ItemAuction->ItemSaveData();// 変更があった場合だけ保存する。
-
-					// 出品リストを表示する
+					$ItemAuction->ItemSaveData();// 尽在数据更新时进行保存
+    
+					// 显示商品列表
 					if($_POST["ExhibitItemForm"]) {
 						$this->fpCloseAll();
 						$this->AuctionItemExhibitForm($ItemAuction);
 
-					// 出品か入札に成功した場合はデータを保存する
+					// 显示或竞标成功时保存数据
 					} else if($ResultExhibit !== false) {
 
 						if($ResultExhibit === true || $ResultBidding === true)
@@ -94,7 +95,7 @@ class main extends user {
 						$this->fpCloseAll();
 						$this->AuctionItemBiddingForm($ItemAuction);
 
-					// それ以外
+					// 其他
 					} else {
 						$this->fpCloseAll();
 						$this->AuctionItemExhibitForm($ItemAuction);
@@ -103,23 +104,23 @@ class main extends user {
 					$this->AuctionFoot($ItemAuction);
 					return 0;
 
-				// 狩場
+				// 战场
 				case($_SERVER["QUERY_STRING"] === "hunt"):
-					$this->LoadUserItem();//アイテムデータ読む
+					$this->LoadUserItem();//读取用户道具数据
 					$this->fpCloseAll();
 					$this->HuntShow();
 					return 0;
 
-				// 街
+				// 城镇
 				case($_SERVER["QUERY_STRING"] === "town"):
-					$this->LoadUserItem();//アイテムデータ読む
+					$this->LoadUserItem();//读取用户道具数据
 					$this->fpCloseAll();
 					$this->TownShow();
 					return 0;
 
-				// シミュれ
+				// 模拟
 				case($_SERVER["QUERY_STRING"] === "simulate"):
-					$this->CharDataLoadAll();//キャラデータ読む
+					$this->CharDataLoadAll();//读取角色数据
 					if($this->SimuBattleProcess())
 						$this->SaveData();
 
@@ -127,26 +128,26 @@ class main extends user {
 					$this->SimuBattleShow($result);
 					return 0;
 
-				// ユニオン
+				// 队伍
 				case($_GET["union"]):
-					$this->CharDataLoadAll();//キャラデータ読む
+					$this->CharDataLoadAll();//读取角色数据
 					include(CLASS_UNION);
 					include(DATA_MONSTER);
 					if($this->UnionProcess()) {
-						// 戦闘する
+						// 战斗
 						$this->SaveData();
 						$this->fpCloseAll();
 					} else {
-						// 表示
+						// 显示
 						$this->fpCloseAll();
 						$this->UnionShow();
 					}
 					return 0;
 
-				// 一般モンスター
+				// 一般怪物
 				case($_GET["common"]):
-					$this->CharDataLoadAll();//キャラデータ読む
-					$this->LoadUserItem();//アイテムデータ読む
+					$this->CharDataLoadAll();//读取角色数据
+					$this->LoadUserItem();//读取用户道具数据
 					if($this->MonsterBattle()) {
 						$this->SaveData();
 						$this->fpCloseAll();
@@ -156,26 +157,26 @@ class main extends user {
 					}
 					return 0;
 
-				// キャラステ
+				// 纸片人系统展示
 				case($_GET["char"]):
-					$this->CharDataLoadAll();//キャラデータ読む
+					$this->CharDataLoadAll();//读取角色数据
 					include(DATA_SKILL);
 					include(DATA_JUDGE_SETUP);
-					$this->LoadUserItem();//アイテムデータ読む
+					$this->LoadUserItem();//读取用户道具数据
 					$this->CharStatProcess();
 					$this->fpCloseAll();
 					$this->CharStatShow();
 					return 0;
 
-				// アイテム一覧
+				// 道具一览
 				case($_SERVER["QUERY_STRING"] === "item"):
-					$this->LoadUserItem();//アイテムデータ読む
+					$this->LoadUserItem();//读取用户道具数据
 					//$this->ItemProcess();
 					$this->fpCloseAll();
 					$this->ItemShow();
 					return 0;
 
-				// 精錬
+				// 精炼
 				case($_GET["menu"] === "refine"):
 					$this->LoadUserItem();
 					$this->SmithyRefineHeader();
@@ -186,30 +187,28 @@ class main extends user {
 					$result	= $this->SmithyRefineShow();
 					return 0;
 
-				// 製作
+				// 制作
 				case($_GET["menu"] === "create"):
 					$this->LoadUserItem();
 					$this->SmithyCreateHeader();
-					include(DATA_CREATE);//製作できるものデータ等
+					include(DATA_CREATE);//读取制作图纸信息
 					if($this->SmithyCreateProcess())
 						$this->SaveData();
 
 					$this->fpCloseAll();
 					$this->SmithyCreateShow();
 					return 0;
-/*
-				// ショップ(旧式:買う,売る,アルバイト)
+				// 商店（买、卖、打工功能）
 				case($_SERVER["QUERY_STRING"] === "shop"):
-					$this->LoadUserItem();//アイテムデータ読む
+					$this->LoadUserItem();//读取用户道具数据
 					if($this->ShopProcess())
 						$this->SaveData();
 					$this->fpCloseAll();
 					$this->ShopShow();
 					return 0;
-*/
-				// ショップ(買う)
+				// 商店（买）
 				case($_GET["menu"] === "buy"):
-					$this->LoadUserItem();//アイテムデータ読む
+					$this->LoadUserItem();//读取用户道具数据
 					$this->ShopHeader();
 					if($this->ShopBuyProcess())
 						$this->SaveData();
@@ -217,9 +216,9 @@ class main extends user {
 					$this->ShopBuyShow();
 					return 0;
 
-				// ショップ(売る)
+				// 商店（卖）
 				case($_GET["menu"] === "sell"):
-					$this->LoadUserItem();//アイテムデータ読む
+					$this->LoadUserItem();//读取用户道具数据
 					$this->ShopHeader();
 					if($this->ShopSellProcess())
 						$this->SaveData();
@@ -227,7 +226,7 @@ class main extends user {
 					$this->ShopSellShow();
 					return 0;
 
-				// ショップ(働く)
+				// 商店（打工）
 				case($_GET["menu"] === "work"):
 					$this->ShopHeader();
 					if($this->WorkProcess())
@@ -236,9 +235,9 @@ class main extends user {
 					$this->WorkShow();
 					return 0;
 
-				// ランキング
+				// 排名
 				case($_GET["menu"] === "rank"):
-					$this->CharDataLoadAll();//キャラデータ読む
+					$this->CharDataLoadAll();//读取角色数据
 					$RankProcess	= $this->RankProcess($Ranking);
 
 					if ($RankProcess === "BATTLE") {
@@ -254,7 +253,7 @@ class main extends user {
 					}
 					return 0;
 
-				// 雇用
+				// 招募新队友
 				case($_SERVER["QUERY_STRING"] === "recruit"):
 					if($this->RecruitProcess())
 						$this->SaveData();
@@ -263,19 +262,19 @@ class main extends user {
 					$this->RecruitShow($result);
 					return 0;
 
-				// それ以外(トップ)
+				// 其他（顶级）
 				default:
-					$this->CharDataLoadAll();//キャラデータ読む
+					$this->CharDataLoadAll();//读取角色数据
 					$this->fpCloseAll();
 					$this->LoginMain();
 					return 0;
 			}
 		else:
-		// ログアウト
+		// 注销
 			$this->fpCloseAll();
 			switch(true) {
 				case($this->OptionOrder()):	return false;
-				case($_POST["Make"]):
+				case($_POST["Make"]??null):
 					list($bool,$message) = $this->MakeNewData();
 					if( true === $bool ) {
 						$this->LoginForm($message);
@@ -305,16 +304,16 @@ class main extends user {
 			case($_SERVER["QUERY_STRING"] === "clog"): LogShowCommon(); return true;
 			case($_SERVER["QUERY_STRING"] === "ulog"): LogShowUnion(); return true;
 			case($_SERVER["QUERY_STRING"] === "rlog"): LogShowRanking(); return true;
-			case($_GET["gamedata"]):
+			case($_GET["gamedata"]??null):
 				ShowGameData();
 				return true;
-			case($_GET["log"]):
+			case($_GET["log"]??null):
 				ShowBattleLog($_GET["log"]);
 				return true;
-			case($_GET["ulog"]):
+			case($_GET["ulog"]??null):
 				ShowBattleLog($_GET["ulog"],"UNION");
 				return true;
-			case($_GET["rlog"]):
+			case($_GET["rlog"]??null):
 				ShowBattleLog($_GET["rlog"],"RANK");
 				return true;
 		}
@@ -379,7 +378,7 @@ class main extends user {
 //	キャラ詳細表示から送られたリクエストを処理する
 //	長い...(100行オーバー)
 	function CharStatProcess() {
-		$char	= &$this->char[$_GET["char"]];
+		$char	= $this->char[$_GET["char"]];
 		if(!$char) return false;
 		switch(true):
 			// ステータス上昇
@@ -387,7 +386,7 @@ class main extends user {
 				//ステータスポイント超過(ねんのための絶対値)
 				$Sum	= abs($_POST["upStr"]) + abs($_POST["upInt"]) + abs($_POST["upDex"]) + abs($_POST["upSpd"]) + abs($_POST["upLuk"]);
 				if($char->statuspoint < $Sum) {
-					ShowError("狀態點數過多","margin15");
+					ShowError("状态点数过多","margin15");
 					return false;
 				}
 
@@ -397,7 +396,7 @@ class main extends user {
 				$Stat	= array("Str","Int","Dex","Spd","Luk");
 				foreach($Stat as $val) {//最大値を超えないかチェック
 					if(MAX_STATUS < ($char->{strtolower($val)} + $_POST["up".$val])) {
-						ShowError("超過最大狀態(".MAX_STATUS.")","margin15");
+						ShowError("超过最大状态(".MAX_STATUS.")","margin15");
 						return false;
 					}
 				}
@@ -427,25 +426,25 @@ class main extends user {
 			case($_POST["position"]):
 				if($_POST["position"] == "front") {
 					$char->position	= FRONT;
-					$pos	= "前衛(Front)";
+					$pos	= "前卫(Front)";
 				} else {
 					$char->position	= BACK;
-					$pos	= "後衛(Back)";
+					$pos	= "后卫(Back)";
 				}
 
 				$char->guard	= $_POST["guard"];
 				switch($_POST["guard"]) {
-					case "never":	$guard	= "放棄後衛"; break;
-					case "life25":	$guard	= "體力25%以上時保護後衛"; break;
-					case "life50":	$guard	= "體力50%以上時保護後衛"; break;
-					case "life75":	$guard	= "體力75%以上時保護後衛"; break;
-					case "prob25":	$guard	= "25%的概率保護後衛"; break;
-					case "prob50":	$guard	= "50%的概率保護後衛"; break;
-					case "prob75":	$guard	= "75%的概率保護後衛"; break;
-					default:	$guard	= "必定保護後衛"; break;
+					case "never":	$guard	= "放弃后卫"; break;
+					case "life25":	$guard	= "体力25%以上时保护后卫"; break;
+					case "life50":	$guard	= "体力50%以上时保护后卫"; break;
+					case "life75":	$guard	= "体力75%以上时保护后卫"; break;
+					case "prob25":	$guard	= "25%的概率保护后卫"; break;
+					case "prob50":	$guard	= "50%的概率保护后卫"; break;
+					case "prob75":	$guard	= "75%的概率保护后卫"; break;
+					default:	$guard	= "必定保护后卫"; break;
 				}
 				$char->SaveCharData($this->id);
-				ShowResult($char->Name()." 的配置 {$pos} 。<br />作為前衛時 設置為{$guard} 。\n","margin15");
+				ShowResult($char->Name()." 的配置 {$pos} 。<br />作为前卫时 设置为{$guard} 。\n","margin15");
 				return true;
 			//行動設定
 			case($_POST["ChangePattern"]):
@@ -463,10 +462,10 @@ class main extends user {
 				//if($char->ChangePattern($judge,$action)) {
 				if($char->PatternSave($judge,$quantity,$action)) {
 					$char->SaveCharData($this->id);
-					ShowResult("戰鬥設置保存完成","margin15");
+					ShowResult("战斗设置保存完成","margin15");
 					return true;
 				}
-				ShowError("保存失敗？請嘗試報告03050242","margin15");
+				ShowError("保存失败？请尝试报告03050242","margin15");
 				return false;
 				break;
 			//	行動設定 兼 模擬戦
@@ -492,7 +491,7 @@ class main extends user {
 			case($_POST["PatternMemo"]):
 				if($char->ChangePatternMemo()) {
 					$char->SaveCharData($this->id);
-					ShowResult("模式交換完成","margin15");
+					ShowResult("模式交换完成","margin15");
 					return true;
 				}
 				break;
@@ -519,11 +518,11 @@ class main extends user {
 			//	指定箇所だけ装備をはずす
 			case($_POST["remove"]):
 				if(!$_POST["spot"]) {
-					ShowError("沒有選擇需要去掉的裝備","margin15");
+					ShowError("没有选择需要去掉的装备","margin15");
 					return false;
 				}
 				if(!$char->{$_POST["spot"]}) {// $this と $char の区別注意！
-					ShowError("指定位置沒有裝備","margin15");
+					ShowError("指定位置没有装备","margin15");
 					return false;
 				}
 				$item	= LoadItemData($char->{$_POST["spot"]});
@@ -544,26 +543,26 @@ class main extends user {
 					if($char->item)		{ $this->AddItem($char->item);		$char->item		=NULL; }
 					$this->SaveUserItem();
 					$char->SaveCharData($this->id);
-					ShowResult($char->Name()." 的裝備全部解除","margin15");
+					ShowResult($char->Name()." 的装备全部解除","margin15");
 					return true;
 				}	break;
 			//	指定物を装備する
 			case($_POST["equip_item"]):
 				$item_no	= $_POST["item_no"];
-				if(!$this->item["$item_no"]) {//そのアイテムを所持しているか
-					ShowError("Item not exists.","margin15");
+				if(!$this->item["$item_no"]) {//その道具を所持しているか
+					ShowError("这件装备不存在。","margin15");
 					return false;
 				}
 
 				$JobData	= LoadJobData($char->job);
 				$item	= LoadItemData($item_no);//装備しようとしてる物
 				if( !in_array( $item["type"], $JobData["equip"]) ) {//それが装備不可能なら?
-					ShowError("{$char->job_name} can't equip {$item[name]}.","margin15");
+					ShowError("{$char->job_name} 不能装备 {$item[name]}。","margin15");
 					return false;
 				}
 
 				if(false === $return = $char->Equip($item)) {
-					ShowError("裝備過重（handle不足）.","margin15");
+					ShowError("装备过重（负重不足）。","margin15");
 					return false;
 				} else {
 					$this->DeleteItem($item_no);
@@ -574,13 +573,13 @@ class main extends user {
 
 				$this->SaveUserItem();
 				$char->SaveCharData($this->id);
-				ShowResult("{$char->name} 的 {$item[name]} 裝備.","margin15");
+				ShowResult("{$char->name} 的 {$item[name]} 装备.","margin15");
 				return true;
 				break;
 			// スキル習得
 			case($_POST["learnskill"]):
 				if(!$_POST["newskill"]) {
-					ShowError("沒選定技能","margin15");
+					ShowError("没选定技能","margin15");
 					return false;
 				}
 
@@ -596,7 +595,7 @@ class main extends user {
 			// クラスチェンジ(転職)
 			case($_POST["classchange"]):
 				if(!$_POST["job"]) {
-					ShowError("沒選定職業","margin15");
+					ShowError("没选定职业","margin15");
 					return false;
 				}
 				if($char->ClassChange($_POST["job"])) {
@@ -610,7 +609,7 @@ class main extends user {
 					}
 					// 保存
 					$char->SaveCharData($this->id);
-					ShowResult("轉職完成","margin15");
+					ShowResult("转职完成","margin15");
 					return true;
 				}
 				ShowError("failed.","margin15");
@@ -642,7 +641,7 @@ EOD;
 						$this->SaveUserItem();
 						return true;
 					} else {
-						ShowError("沒有道具。","margin15");
+						ShowError("没有道具。","margin15");
 						return false;
 					}
 					return true;
@@ -662,8 +661,8 @@ EOD;
 					}
 				}
 				print("</select>\n");
-				print('<input type="submit" class="btn" name="resetVarious" value="Reset">'."\n");
-				print('<input type="submit" class="btn" value="Cancel">'."\n");
+				print('<input type="submit" class="btn" name="resetVarious" value="重置">'."\n");
+				print('<input type="submit" class="btn" value="取消">'."\n");
 				print('</form>'."\n");
 				print('</div>'."\n");
 				break;
@@ -688,10 +687,10 @@ EOD;
 						$skillReset	= true;
 						break;
 				}
-				// 石ころをSPD1に戻すアイテムにする
+				// 石ころをSPD1に戻す道具にする
 				if($_POST["itemUse"] == 6000) {
 					if($this->DeleteItem(6000) == 0) {
-						ShowError("沒有道具。","margin15");
+						ShowError("没有道具。","margin15");
 						return false;
 					}
 					if(1 < $char->spd) {
@@ -700,13 +699,13 @@ EOD;
 						$char->statuspoint	+= $dif;
 						$char->SaveCharData($this->id);
 						$this->SaveUserItem();
-						ShowResult("點數歸還","margin15");
+						ShowResult("点数归还","margin15");
 						return true;
 					}
 				}
 				if($lowLimit) {
 					if(!$this->item[$_POST["itemUse"]]) {
-						ShowError("沒有道具。","margin15");
+						ShowError("没有道具。","margin15");
 						return false;
 					}
 					if($lowLimit < $char->str) {$dif = $char->str - $lowLimit; $char->str -= $dif; $pointBack += $dif;}
@@ -716,7 +715,7 @@ EOD;
 					if($lowLimit < $char->luk) {$dif = $char->luk - $lowLimit; $char->luk -= $dif; $pointBack += $dif;}
 					if($pointBack) {
 						if($this->DeleteItem($_POST["itemUse"]) == 0) {
-							ShowError("沒有道具。","margin15");
+							ShowError("没有道具。","margin15");
 							return false;
 						}
 						$char->statuspoint	+= $pointBack;
@@ -726,14 +725,14 @@ EOD;
 							if($char->shield)	{ $this->AddItem($char->shield);	$char->shield	=NULL; }
 							if($char->armor)	{ $this->AddItem($char->armor);		$char->armor	=NULL; }
 							if($char->item)		{ $this->AddItem($char->item);		$char->item		=NULL; }
-							ShowResult($char->Name()." 的所有裝備解除","margin15");
+							ShowResult($char->Name()." 的所有装备解除","margin15");
 						}
 						$char->SaveCharData($this->id);
 						$this->SaveUserItem();
-						ShowResult("點數歸還成功","margin15");
+						ShowResult("点数归还成功","margin15");
 						return true;
 					} else {
-						ShowError("點數歸還失敗","margin15");
+						ShowError("点数归还失败","margin15");
 						return false;
 					}
 				}
@@ -770,7 +769,7 @@ HTML_BYEBYE;
 //	キャラクター詳細表示・装備変更などなど
 //	長すぎる...(200行以上)
 	function CharStatShow() {
-		$char	= &$this->char[$_GET["char"]];
+		$char	= $this->char[$_GET["char"]];
 		if(!$char) {
 			print("Not exists");
 			return false;
@@ -792,16 +791,18 @@ HTML_BYEBYE;
 
 		////// ステータス表示 //////////////////////////////
 			?>
-<form action="?char=<?=$_GET["char"]?>" method="post" style="padding:5px 0 0 15px"><?
+<form action="?char=<?php print $_GET["char"]?>" method="post" style="padding:5px 0 0 15px">
+<?php 
 		// その他キャラ
 		print('<div style="padding-top:5px">');
 		foreach($this->char as $key => $val) {
 			//if($key == $_GET["char"]) continue;//表示中キャラスキップ
-			echo "<a href=\"?char={$key}\">{$val->name}</a>&nbsp;&nbsp;";
+			echo "<a href=\"?char={$key}\">{$val->name}</a>  ";
 		}
 		print("</div>");
 	?>
-<h4>人物狀態 <a href="?manual#charstat" target="_blank" class="a0">?</a></h4><?
+<h4>人物状态 <a href="?manual#charstat" target="_blank" class="a0">?</a></h4>
+<?php 
 		$char->ShowCharDetail();
 		// 改名
 		if($this->item["7500"])
@@ -815,19 +816,26 @@ HTML_BYEBYE;
 			print('<input type="submit" class="btn" name="showreset" value="重置">'."\n");
 		}
 ?>
-<input type="submit" class="btn" name="byebye" value="Kick">
-</form><?
+<input type="submit" class="btn" name="byebye" value="离队">
+</form>
+<?php 
 	// ステータス上昇 ////////////////////////////
 	if(0 < $char->statuspoint) {
 print <<< HTML
 	<form action="?char=$_GET[char]" method="post" style="padding:0 15px">
-	<h4>Status <a href="?manual#statup" target="_blank" class="a0">?</a></h4>
+	<h4>角色属性 <a href="?manual#statup" target="_blank" class="a0">?</a></h4>
 HTML;
 
 		$Stat	= array("Str","Int","Dex","Spd","Luk");
-		print("Point : {$char->statuspoint}<br />\n");
+		print("剩余属性点：{$char->statuspoint}<br />\n");
 		foreach($Stat as $val) {
-			print("{$val}:\n");
+			$vnam = "";
+			if($val == "Str"){$vnam = "力量";}
+			if($val == "Int"){$vnam = "智慧";}
+			if($val == "Dex"){$vnam = "敏捷";}
+			if($val == "Spd"){$vnam = "速度";}
+			if($val == "Luk"){$vnam = "幸运";}
+			print("{$vnam}：\n");
 			print("<select name=\"up{$val}\" class=\"vcent\">\n");
 			for($i=0; $i < $char->statuspoint + 1; $i++)
 				print("<option value=\"{$i}\">+{$i}</option>\n");
@@ -840,8 +848,9 @@ HTML;
 	print("</form>\n");
 	}
 	?>
-	<form action="?char=<?=$_GET["char"]?>" method="post" style="padding:0 15px">
-	<h4>行動模式 <a href="?manual#jdg" target="_blank" class="a0">?</a></h4><?
+	<form action="?char=<?php print $_GET["char"]?>" method="post" style="padding:0 15px">
+	<h4>行动模式 <a href="?manual#jdg" target="_blank" class="a0">?</a></h4>
+<?php 
 
 		// Action Pattern 行動判定 /////////////////////////
 		$list	= JudgeList();// 行動判定条件一覧
@@ -854,7 +863,7 @@ HTML;
 			print("<select name=\"judge".$i."\">\n");
 			foreach($list as $val) {//判断のoption
 				$exp	= LoadJudgeData($val);
-				print("<option value=\"{$val}\"".($char->judge[$i] == $val ? " selected" : NULL).($exp["css"]?' class="select0"':NULL).">".($exp["css"]?'&nbsp;':'&nbsp;&nbsp;&nbsp;')."{$exp[exp]}</option>\n");
+				print("<option value=\"{$val}\"".($char->judge[$i] == $val ? " selected" : NULL).($exp["css"]?' class="select0"':NULL).">".($exp["css"]?' ':'   ')."{$exp[exp]}</option>\n");
 			}
 			print("</select>\n");
 			print("</td><td>\n");
@@ -876,20 +885,23 @@ HTML;
 		}
 		print("</tbody></table>\n");
 	?>
-<input type="submit" class="btn" value="確定模式" name="ChangePattern">
-<input type="submit" class="btn" value="設置 & 測試" name="TestBattle">
-&nbsp;<a href="?simulate">Simulate</a><br />
-<input type="submit" class="btn" value="切換模式" name="PatternMemo">
+<input type="submit" class="btn" value="确定模式" name="ChangePattern">
+<input type="submit" class="btn" value="设置 & 测试" name="TestBattle">
+ <a href="?simulate">模拟战斗</a><br />
+<input type="submit" class="btn" value="切换模式" name="PatternMemo">
 <input type="submit" class="btn" value="添加" name="AddNewPattern">
-<input type="submit" class="btn" value="刪除" name="DeletePattern">
+<input type="submit" class="btn" value="删除" name="DeletePattern">
 </form>
-<form action="?char=<?=$_GET["char"]?>" method="post" style="padding:0 15px">
-<h4>位置 & 保護 <a href="?manual#posi" target="_blank" class="a0">?</a></h4>
+<form action="?char=<?php print $_GET["char"]?>" method="post" style="padding:0 15px">
+<h4>位置 & 保护<a href="?manual#posi" target="_blank" class="a0">?</a></h4>
 <table><tbody>
-<tr><td>位置(Position) :</td><td><input type="radio" class="vcent" name="position" value="front"<? ($char->position=="front"?print(" checked"):NULL) ?>>前衛(Front)</td></tr>
-<tr><td></td><td><input type="radio" class="vcent" name="position" value="back"<? ($char->position=="back"?print(" checked"):NULL) ?>>後衛(Backs)</td></tr>
-<tr><td>護衛(Guarding) :</td><td>
-<select name="guard"><?
+<tr><td>位置(Position) :</td><td><input type="radio" class="vcent" name="position" value="front"
+<?php  ($char->position=="front"?print(" checked"):NULL) ?>>前卫(Front)</td></tr>
+<tr><td></td><td><input type="radio" class="vcent" name="position" value="back"
+<?php  ($char->position=="back"?print(" checked"):NULL) ?>>后卫(Backs)</td></tr>
+<tr><td>护卫(Guarding) :</td><td>
+<select name="guard">
+<?php 
 
 		// 前衛の時の後衛守り //////////////////////////////
 		$option	= array(/*
@@ -902,14 +914,14 @@ HTML;
 		"prpb50"	=> "Probability of 50%",
 		"prob75"	=> "Probability of 75%",
 		*/
-		"always"=> "必定保護",
-		"never"	=> "不保護",
-		"life25"	=> "體力25%以上時保護",
-		"life50"	=> "體力50%以上時保護",
-		"life75"	=> "體力75%以上時保護",
-		"prob25"	=> "25%的概率保護",
-		"prpb50"	=> "50%的概率保護",
-		"prob75"	=> "75%的概率保護",
+		"always"=> "必定保护",
+		"never"	=> "不保护",
+		"life25"	=> "体力25%以上时保护",
+		"life50"	=> "体力50%以上时保护",
+		"life75"	=> "体力75%以上时保护",
+		"prob25"	=> "25%的概率保护",
+		"prpb50"	=> "50%的概率保护",
+		"prob75"	=> "75%的概率保护",
 		);
 		foreach($option as $key => $val)
 			print("<option value=\"{$key}\"".($char->guard==$key ? " selected" : NULL ).">{$val}</option>");
@@ -917,9 +929,9 @@ HTML;
 	</select>
 	</td></tr>
 	</tbody></table>
-	<input type="submit" class="btn" value="設置">
+	<input type="submit" class="btn" value="设置">
 	</form>
-<?
+<?php 
 		// 装備中の物表示 ////////////////////////////////
 		$weapon	= LoadItemData($char->weapon);
 		$shield	= LoadItemData($char->shield);
@@ -930,32 +942,36 @@ HTML;
 		$handle	= $weapon["handle"] + $shield["handle"] + $armor["handle"] + $item["handle"];
 	?>
 	<div style="margin:0 15px">
-	<h4>裝備<a href="?manual#equip" target="_blank" class="a0">?</a></h4>
-	<div class="bold u">Current Equip's</div>
+	<h4>装备<a href="?manual#equip" target="_blank" class="a0">?</a></h4>
+	<div class="bold u">角色当前状态</div>
 	<table>
-	<tr><td class="dmg" style="text-align:right">Atk :</td><td class="dmg"><?=$char->atk[0]?></td></tr>
-	<tr><td class="spdmg" style="text-align:right">Matk :</td><td class="spdmg"><?=$char->atk[1]?></td></tr>
-	<tr><td class="recover" style="text-align:right">Def :</td><td class="recover"><?=$char->def[0]." + ".$char->def[1]?></td></tr>
-	<tr><td class="support" style="text-align:right">Mdef :</td><td class="support"><?=$char->def[2]." + ".$char->def[3]?></td></tr>
-	<tr><td class="charge" style="text-align:right">handle :</td><td class="charge"><?=$handle?> / <?=$char->GetHandle()?></td></tr>
+	<tr><td class="dmg" style="text-align:right">物理攻击：</td><td class="dmg"><?php print $char->atk[0]?></td></tr>
+	<tr><td class="spdmg" style="text-align:right">魔法攻击：</td><td class="spdmg"><?php print $char->atk[1]?></td></tr>
+	<tr><td class="recover" style="text-align:right">物理防御：</td><td class="recover"><?php print $char->def[0]." + ".$char->def[1]?></td></tr>
+	<tr><td class="support" style="text-align:right">魔法防御：</td><td class="support"><?php print $char->def[2]." + ".$char->def[3]?></td></tr>
+	<tr><td class="charge" style="text-align:right">角色负重：</td><td class="charge"><?php print $handle?> / <?php print $char->GetHandle()?></td></tr>
 	</table>
-	<form action="?char=<?=$_GET["char"]?>" method="post">
+	<form action="?char=<?php print $_GET["char"]?>" method="post">
 	<table>
 	<tr><td class="align-right">
-	武器 :</td><td><input type="radio" class="vcent" name="spot" value="weapon"><?ShowItemDetail(LoadItemData($char->weapon));?>
+	武器:</td><td><input type="radio" class="vcent" name="spot" value="weapon">
+<?php ShowItemDetail(LoadItemData($char->weapon));?>
 	</td></tr><tr><td class="align-right">
-	盾 :</td><td><input type="radio" class="vcent" name="spot" value="shield"><?ShowItemDetail(LoadItemData($char->shield));?>
+	盾:</td><td><input type="radio" class="vcent" name="spot" value="shield">
+<?php ShowItemDetail(LoadItemData($char->shield));?>
 	</td></tr><tr><td class="align-right">
-	甲 :</td><td><input type="radio" class="vcent" name="spot" value="armor"><?ShowItemDetail(LoadItemData($char->armor));?>
+	甲:</td><td><input type="radio" class="vcent" name="spot" value="armor">
+<?php ShowItemDetail(LoadItemData($char->armor));?>
 	</td></tr><tr><td class="align-right">
-	道具 :</td><td><input type="radio" class="vcent" name="spot" value="item"><?ShowItemDetail(LoadItemData($char->item));?>
+	道具:</td><td><input type="radio" class="vcent" name="spot" value="item">
+<?php ShowItemDetail(LoadItemData($char->item));?>
 	</td></tr></tbody>
 	</table>
 	<input type="submit" class="btn" name="remove" value="卸下">
 	<input type="submit" class="btn" name="remove_all" value="全卸">
 	</form>
 	</div>
-<?
+<?php 
 
 		// 装備可能な物表示 ////////////////////////////////
 		if($JobData["equip"])
@@ -965,7 +981,7 @@ HTML;
 		$Equips		= array("Weapon"=>"2999","Shield"=>"4999","Armor"=>"5999","Item"=>"9999");
 
 		print("<div style=\"padding:15px 15px 0 15px\">\n");
-		print("\t<div class=\"bold u\">擁有的 & 容許裝備的</div>\n");
+		print("\t<div class=\"bold u\">可装备道具</div>\n");
 		if($this->item) {
 			include(CLASS_JS_ITEMLIST);
 			$EquipList	= new JS_ItemList();
@@ -988,10 +1004,10 @@ HTML;
 			print($EquipList->ShowSelect());
 			print('<form action="?char='.$_GET["char"].'" method="post">'."\n");
 			print('<div id="list0">'.$EquipList->ShowDefault().'</div>'."\n");
-			print('<input type="submit" class="btn" name="equip_item" value="裝備">'."\n");
+			print('<input type="submit" class="btn" name="equip_item" value="装备">'."\n");
 			print("</form>\n");
 		} else {
-			print("暫無道具.<br />\n");
+			print("暂无道具.<br />\n");
 		}
 		print("</div>\n");
 
@@ -1026,14 +1042,15 @@ HTML;
 		print("\t</tbody></table>\n");
 		*/
 	?>
-	<form action="?char=<?=$_GET["char"]?>" method="post" style="padding:0 15px">
-	<h4>技能 <a href="?manual#skill" target="_blank" class="a0">?</a></h4><?
+	<form action="?char=<?php print $_GET["char"]?>" method="post" style="padding:0 15px">
+	<h4>技能<a href="?manual#skill" target="_blank" class="a0">?</a></h4>
+<?php 
 
 		// スキル表示 //////////////////////////////////////
 		//include(DATA_SKILL);//ActionPatternに移動
 		include_once(DATA_SKILL_TREE);
 		if($char->skill) {
-			print('<div class="u bold">已掌握的</div>');
+			print('<div class="u bold">掌握技能</div>');
 			print("<table><tbody>");
 			foreach($char->skill as $val) {
 				print("<tr><td>");
@@ -1042,8 +1059,8 @@ HTML;
 				print("</td></tr>");
 			}
 			print("</tbody></table>");
-			print('<div class="u bold">新技能</div>');
-			print("技能點 : {$char->skillpoint}");
+			print('<div class="u bold">可学技能</div>');
+			print("剩余技能点：{$char->skillpoint}");
 			print("<table><tbody>");
 			$tree	= LoadSkillTree($char);
 			foreach(array_diff($tree,$char->skill) as $val) {
@@ -1055,7 +1072,7 @@ HTML;
 			print("</tbody></table>");
 			//dump($char->skill);
 			//dump($tree);
-			print('<input type="submit" class="btn" name="learnskill" value="習得">'."\n");
+			print('<input type="submit" class="btn" name="learnskill" value="习得">'."\n");
 			print('<input type="hidden" name="learnskill" value="1">'."\n");
 		}
 		// 転職 ////////////////////////////////////////////
@@ -1063,9 +1080,10 @@ HTML;
 			?>
 
 	</form>
-	<form action="?char=<?=$_GET["char"]?>" method="post" style="padding:0 15px">
-	<h4>轉職</h4>
-	<table><tbody><tr><?
+	<form action="?char=<?php print $_GET["char"]?>" method="post" style="padding:0 15px">
+	<h4>转职</h4>
+	<table><tbody><tr>
+<?php 
 			foreach($CanChange as $job) {
 				print("<td valign=\"bottom\" style=\"padding:5px 30px;text-align:center\">");
 				$JOB	= LoadJobData($job);
@@ -1077,17 +1095,18 @@ HTML;
 			?>
 
 	</tr></tbody></table>
-	<input type="submit" class="btn" name="classchange" value="轉職">
-	<input type="hidden" name="classchange" value="1"><?
+	<input type="submit" class="btn" name="classchange" value="转职">
+	<input type="hidden" name="classchange" value="1">
+<?php 
 		}
 	?>
 
 	</form>
-	<?//その他キャラ
+<?php //その他キャラ
 		print('<div  style="padding:15px">');
 		foreach($this->char as $key => $val) {
 			//if($key == $_GET["char"]) continue;//表示中キャラスキップ
-			echo "<a href=\"?char={$key}\">{$val->name}</a>&nbsp;&nbsp;";
+			echo "<a href=\"?char={$key}\">{$val->name}</a>  ";
 		}
 		print('</div>');
 	}
@@ -1137,10 +1156,10 @@ HTML;
 					$MyParty[]	= $this->char[$key];
 			}
 			if( count($MyParty) === 0) {
-				ShowError('戰鬥至少要一個人參加',"margin15");
+				ShowError('战斗至少要一个人参加',"margin15");
 				return false;
 			} else if(5 < count($MyParty)) {
-				ShowError('戰鬥最多只能上五個人',"margin15");
+				ShowError('战斗最多只能上五个人',"margin15");
 				return false;
 			}
 			$this->DoppelBattle($MyParty,50);
@@ -1152,17 +1171,17 @@ HTML;
 	function SimuBattleShow($message=false) {
 		print('<div style="margin:15px">');
 		ShowError($message);
-		print('<span class="bold">模擬戦</span>');
+		print('<span class="bold">模拟战</span>');
 		print('<h4>Teams</h4></div>');
 		print('<form action="'.INDEX.'?simulate" method="post">');
 		$this->ShowCharacters($this->char,CHECKBOX,explode("<>",$this->party_memo));
 			?>
 	<div style="margin:15px;text-align:center">
-	<input type="submit" class="btn" name="simu_battle" value="戰鬥!">
+	<input type="submit" class="btn" name="simu_battle" value="战斗!">
 	<input type="reset" class="btn" value="重置"><br>
-	保存此隊伍:<input type="checkbox" name="memory_party" value="1">
+	保存此队伍:<input type="checkbox" name="memory_party" value="1">
 	</div></form>
-		<?
+<?php 
 	}
 //////////////////////////////////////////////////
 //	
@@ -1176,7 +1195,7 @@ HTML;
 		$mapList	= LoadMapAppear($this);
 		foreach($mapList as $map) {
 			list($land)	= LandInformation($map);
-			print("<p><a href=\"?common={$map}\">{$land[name]}</a>");
+			print("<p style='display:inline;margin-right:32px;'><a href=\"?common={$map}\">{$land[name]}</a>");
 			//print(" ({$land[proper]})");
 			print("</p>");
 		}
@@ -1194,13 +1213,13 @@ HTML;
 			}
 		}
 		if($Union) {
-			print('<h4>UnionMonster</h4>');
+			print('<h4>BOSS</h4>');
 			$result = $this->CanUnionBattle();
 			if($result !== true) {
 				$left_minute	= floor($result/60);
 				$left_second	= $result%60;
 				print('<div style="margin:0 20px">');
-				print('離下次戰鬥還需要 : <span class="bold">'.$left_minute. ":".sprintf("%02d",$left_second)."</span>");
+				print('离下次战斗还需要 : <span class="bold">'.$left_minute. ":".sprintf("%02d",$left_second)."</span>");
 				print("</div>");
 			}
 			print("</div>");
@@ -1211,7 +1230,7 @@ HTML;
 
 		// union
 		print("<div style=\"margin:0 15px\">\n");
-		print("<h4>Union Battle Log <a href=\"?ulog\">全表示</a></h4>\n");
+		print("<h4>BOSS战记录 <a href=\"?ulog\">全表示</a></h4>\n");
 		print("<div style=\"margin:0 20px\">\n");
 		$log	= @glob(LOG_BATTLE_UNION."*");
 		foreach(array_reverse($log) as $file) {
@@ -1242,23 +1261,23 @@ HTML;
 		print('<div style="margin:15px">');
 		ShowError($message);
 		print('<span class="bold">'.$land["name"].'</span>');
-		print('<h4>隊伍</h4></div>');
+		print('<h4>队伍</h4></div>');
 		print('<form action="'.INDEX.'?common='.$_GET["common"].'" method="post">');
 		$this->ShowCharacters($this->char,"CHECKBOX",explode("<>",$this->party_memo));
 			?>
 	<div style="margin:15px;text-align:center">
-	<input type="submit" class="btn" name="monster_battle" value="戰鬥!">
+	<input type="submit" class="btn" name="monster_battle" value="战斗!">
 	<input type="reset" class="btn" value="重置"><br>
-	保存此隊伍:<input type="checkbox" name="memory_party" value="1">
+	保存此队伍:<input type="checkbox" name="memory_party" value="1">
 	</div></form>
-<?
+<?php 
 		include(DATA_MONSTER);
 		include(CLASS_MONSTER);
 		foreach($monster_list as $id =>$val) {
 			if($val[1])
 				$monster[]	= new monster(CreateMonster($id));
 		}
-		print('<div style="margin:15px"><h4>MonsterAppearance</h4></div>');
+		print('<div style="margin:15px"><h4>出现敌人</h4></div>');
 		$this->ShowCharacters($monster,"MONSTER",$land["land"]);
 	}
 
@@ -1271,7 +1290,7 @@ HTML;
 			include_once(DATA_LAND_APPEAR);
 			$land	= LoadMapAppear($this);
 			if(!in_array($_GET["common"],$land)) {
-				ShowError("沒有出現地圖","margin15");
+				ShowError("没有出现地图","margin15");
 				return false;
 			}
 
@@ -1286,10 +1305,10 @@ HTML;
 					$MyParty[]	= $this->char[$key];
 			}
 			if( count($MyParty) === 0) {
-				ShowError('戰鬥至少要一個人參加',"margin15");
+				ShowError('战斗至少要一个人参加',"margin15");
 				return false;
 			} else if(5 < count($MyParty)) {
-				ShowError('戰鬥最多只能上五個人',"margin15");
+				ShowError('战斗最多只能上五个人',"margin15");
 				return false;
 			}
 			// 敵パーティー(または一匹)
@@ -1313,7 +1332,7 @@ HTML;
 			if($this->record_btl_log)
 				$battle->RecordLog();
 
-			// アイテムを受け取る
+			// 道具を受け取る
 			if($itemdrop	= $battle->ReturnItemGet(0)) {
 				$this->LoadUserItem();
 				foreach($itemdrop as $itemno => $amount)
@@ -1338,7 +1357,7 @@ HTML;
 		<div style="margin:15px">
 		<h4>道具</h4>
 		<div style="margin:0 20px">
-<?
+<?php 
 		if($this->item) {
 			include(CLASS_JS_ITEMLIST);
 			$goods	= new JS_ItemList();
@@ -1359,7 +1378,7 @@ HTML;
 			print($goods->ShowSelect());
 			print('<div id="list">'.$goods->ShowDefault().'</div>');
 		} else {
-			print("No items.");
+			print("没有获得过道具");
 		}
 		print("</div></div>");
 	}
@@ -1372,17 +1391,18 @@ HTML;
 
 <div style="width:600px">
 <div style="float:left;width:50px;">
-<img src="<?=IMG_CHAR?>ori_002.gif" />
+<img src="<?php print IMG_CHAR?>ori_002.gif" />
 </div>
 <div style="float:right;width:550px;">
-歡迎光臨一<br />
-<a href="?menu=buy">買</a> / <a href="?menu=sell">賣</a><br />
+欢迎光临ー<br />
+<a href="?menu=buy">买</a> / <a href="?menu=sell">卖</a><br />
 <a href="?menu=work">打工</a>
 </div>
 <div style="clear:both"></div>
 </div>
 
-</div><?
+</div>
+<?php 
 	}
 //////////////////////////////////////////////////
 //
@@ -1391,16 +1411,16 @@ HTML;
 			case($_POST["partjob"]):
 				if($this->WasteTime(100)) {
 					$this->GetMoney(500);
-					ShowResult("働いて ".MoneyFormat(500)." げっとした!","margin15");
+					ShowResult("工作".MoneyFormat(500)." げっとした!(?)","margin15");
 					return true;
 				} else {
-					ShowError("時間が無い。働くなんてもったいない。","margin15");
+					ShowError("時間が無い。働くなんてもったいない。(?)","margin15");
 					return false;
 				}
 			case($_POST["shop_buy"]):
 				$ShopList	= ShopList();//売ってるものデータ
 				if($_POST["item_no"] && in_array($_POST["item_no"],$ShopList)) {
-					if(ereg("^[0-9]",$_POST["amount"])) {
+					if(mb_ereg("^[0-9]",$_POST["amount"])) {
 						$amount	= (int)$_POST["amount"];
 						if($amount == 0)
 							$amount	= 1;
@@ -1414,22 +1434,22 @@ HTML;
 						$this->SaveUserItem();
 						if(1 < $amount) {
 							$img	= "<img src=\"".IMG_ICON.$item[img]."\" class=\"vcent\" />";
-							ShowResult("{$img}{$item[name]}  {$amount}個 買入 (".MoneyFormat($item["buy"])." x{$amount} = ".MoneyFormat($need).")","margin15");
+							ShowResult("{$img}{$item[name]}  {$amount}个 买入 (".MoneyFormat($item["buy"])." x{$amount} = ".MoneyFormat($need).")","margin15");
 							return true;
 						} else {
 							$img	= "<img src=\"".IMG_ICON.$item[img]."\" class=\"vcent\" />";
-							ShowResult("{$img}{$item[name]}個 買入 (".MoneyFormat($need).")","margin15");
+							ShowResult("{$img}{$item[name]}个 买入 (".MoneyFormat($need).")","margin15");
 							return true;
 						}
 					} else {//資金不足
-						ShowError("資金不足(需要".MoneyFormat($need).")","margin15");
+						ShowError("资金不足(需要".MoneyFormat($need).")","margin15");
 						return false;
 					}
 				}
 				break;
 			case($_POST["shop_sell"]):
 				if($_POST["item_no"] && $this->item[$_POST["item_no"]]) {
-					if(ereg("^[0-9]",$_POST["amount"])) {
+					if(mb_ereg("^[0-9]",$_POST["amount"])) {
 						$amount	= (int)$_POST["amount"];
 						if($amount == 0)
 							$amount	= 1;
@@ -1456,10 +1476,10 @@ HTML;
 	function ShopShow($message=NULL) {
 		?>
 	<div style="margin:15px">
-	<?=ShowError($message)?>
+	<?php print ShowError($message)?>
 	<h4>Goods List</h4>
 	<div style="margin:0 20px">
-	<?
+<?php 
 		include(CLASS_JS_ITEMLIST);
 		$ShopList	= ShopList();//売ってるものデータ
 
@@ -1480,7 +1500,7 @@ HTML;
 
 		print('<form action="?shop" method="post">'."\n");
 		print('<div id="list_buy">'.$goods->ShowDefault().'</div>'."\n");
-		print('<input type="submit" class="btn" name="shop_buy" value="Buy">'."\n");
+		print('<input type="submit" class="btn" name="shop_buy" value="买">'."\n");
 		print('Amount <input type="text" name="amount" style="width:60px" class="text vcent">(input if 2 or more)<br />'."\n");
 		print('<input type="hidden" name="shop_buy" value="1">');
 		print('</form></div>'."\n");
@@ -1522,7 +1542,7 @@ HTML;
 				$price	= (isset($item["sell"]) ? $item["sell"] : round($item["buy"]*SELLING_PRICE));
 				print('<input type="radio" class="vcent" name="item_no" value="'.$no.'">');
 				print(MoneyFormat($price));
-				print("&nbsp;&nbsp;&nbsp;{$val}x");
+				print("   {$val}x");
 				ShowItemDetail($item);
 				print("<br>");
 			}
@@ -1534,12 +1554,13 @@ HTML;
 		print('</form>');*/
 		?>
 <form action="?shop" method="post">
-<h4>Work</h4>
+<h4>打工</h4>
 <div style="margin:0 20px">
-店でアルバイトしてお金を得ます...<br />
-<input type="submit" class="btn" name="partjob" value="Work at Shop">
-Get <?=MoneyFormat("500")?> for 100Time.
-</form></div></div><?
+店で打工してお金を得ます...<br />
+<input type="submit" class="btn" name="partjob" value="打工">
+Get <?php print MoneyFormat("500")?> for 100Time.
+</form></div></div>
+<?php 
 	}
 
 //////////////////////////////////////////////////
@@ -1550,9 +1571,9 @@ Get <?=MoneyFormat("500")?> for 100Time.
 
 		print("<div style=\"margin:15px\">");
 		print("<table cellspacing=\"0\">\n");
-		print('<tr><td class="td6" style="text-align:center">價格</td>'.
-		'<td class="td6" style="text-align:center">數</td>'.
-		'<td class="td6" style="text-align:center">共計</td>'.
+		print('<tr><td class="td6" style="text-align:center">价格</td>'.
+		'<td class="td6" style="text-align:center">数</td>'.
+		'<td class="td6" style="text-align:center">共计</td>'.
 		'<td class="td6" style="text-align:center">道具</td></tr>'."\n");
 		$moneyNeed	= 0;
 		$ShopList	= ShopList();
@@ -1580,21 +1601,21 @@ Get <?=MoneyFormat("500")?> for 100Time.
 			print("</td></tr>\n");
 			$this->AddItem($itemNo,$amount);
 		}
-		print("<tr><td colspan=\"4\" class=\"td8\">合計 : ".MoneyFormat($moneyNeed)."</td></tr>");
+		print("<tr><td colspan=\"4\" class=\"td8\">共计 : ".MoneyFormat($moneyNeed)."</td></tr>");
 		print("</table>\n");
 		print("</div>");
 		if($this->TakeMoney($moneyNeed)) {
 			$this->SaveUserItem();
 			return true;
 		} else {
-			ShowError("您沒有足夠的錢","margin15");
+			ShowError("您没有足够的钱","margin15");
 			return false;
 		}
 	}
 //////////////////////////////////////////////////
 	function ShopBuyShow() {
 		print('<div style="margin:15px">'."\n");
-		print("<h4>購買</h4>\n");
+		print("<h4>购买</h4>\n");
 
 print <<< JS_HTML
 <script type="text/javascript">
@@ -1622,8 +1643,8 @@ JS_HTML;
 		print('<form action="?menu=buy" method="post">'."\n");
 		print("<table cellspacing=\"0\">\n");
 		print('<tr><td class="td6"></td>'.
-		'<td style="text-align:center" class="td6">價格</td>'.
-		'<td style="text-align:center" class="td6">數</td>'.
+		'<td style="text-align:center" class="td6">价格</td>'.
+		'<td style="text-align:center" class="td6">数</td>'.
 		'<td style="text-align:center" class="td6">道具</td></tr>'."\n");
 		$ShopList	= ShopList();
 		foreach($ShopList as $itemNo) {
@@ -1642,7 +1663,7 @@ JS_HTML;
 			print("</td></tr>\n");
 		}
 		print("</table>\n");
-		print('<input type="submit" name="ItemBuy" value="Buy" class="btn">'."\n");
+		print('<input type="submit" name="ItemBuy" value="买" class="btn">'."\n");
 		print("</form>\n");
 
 		print("</div>\n");
@@ -1656,9 +1677,9 @@ JS_HTML;
 		$GetMoney	= 0;
 		print("<div style=\"margin:15px\">");
 		print("<table cellspacing=\"0\">\n");
-		print('<tr><td class="td6" style="text-align:center">價格</td>'.
-		'<td class="td6" style="text-align:center">數</td>'.
-		'<td class="td6" style="text-align:center">共計</td>'.
+		print('<tr><td class="td6" style="text-align:center">价格</td>'.
+		'<td class="td6" style="text-align:center">数</td>'.
+		'<td class="td6" style="text-align:center">共计</td>'.
 		'<td class="td6" style="text-align:center">道具</td></tr>'."\n");
 		foreach($this->item as $itemNo => $amountHave) {
 			if(!$_POST["check_".$itemNo])
@@ -1683,7 +1704,7 @@ JS_HTML;
 			print(ShowItemDetail($item)."\n");
 			print("</td></tr>\n");
 		}
-		print("<tr><td colspan=\"4\" class=\"td8\">合計 : ".MoneyFormat($getMoney)."</td></tr>");
+		print("<tr><td colspan=\"4\" class=\"td8\">共计 : ".MoneyFormat($getMoney)."</td></tr>");
 		print("</table>\n");
 		print("</div>");
 		$this->SaveUserItem();
@@ -1721,8 +1742,8 @@ JS_HTML;
 		print('<form action="?menu=sell" method="post">'."\n");
 		print("<table cellspacing=\"0\">\n");
 		print('<tr><td class="td6"></td>'.
-		'<td style="text-align:center" class="td6">價格</td>'.
-		'<td style="text-align:center" class="td6">數</td>'.
+		'<td style="text-align:center" class="td6">价格</td>'.
+		'<td style="text-align:center" class="td6">数</td>'.
 		'<td style="text-align:center" class="td6">道具</td></tr>'."\n");
 		foreach($this->item as $itemNo => $amount) {
 			$item	= LoadItemData($itemNo);
@@ -1730,7 +1751,7 @@ JS_HTML;
 			print("<tr><td class=\"td7\" id=\"i{$itemNo}a\">\n");
 			print('<input type="checkbox" name="check_'.$itemNo.'" value="1" onclick="toggleCSS(\''.$itemNo.'\')">'."\n");
 			print("</td><td class=\"td7\" id=\"i{$itemNo}b\" onclick=\"toggleCheckBox('{$itemNo}')\">\n");
-			// 売値
+			// 价格
 			$price	= ItemSellPrice($item);
 			print(MoneyFormat($price));
 			print("</td><td class=\"td7\" id=\"i{$itemNo}c\">\n");
@@ -1747,9 +1768,9 @@ JS_HTML;
 		print("</div>\n");
 	}
 //////////////////////////////////////////////////
-//	アルバイト処理
+//	打工処理
 	function WorkProcess() {
-		if($_POST["amount"]) {
+		/*if($_POST["amount"]) {
 			$amount	= (int)$_POST["amount"];
 			// 1以上10以下
 			if(0 < $amount && $amount < 11) {
@@ -1760,21 +1781,21 @@ JS_HTML;
 					$this->GetMoney($money);
 					return true;
 				} else {
-					ShowError("您沒有足夠的時間。","margin15");
+					ShowError("您没有足够的体力。","margin15");
 					return false;
 				}
 			}
-		}
+		}*/
 	}
 //////////////////////////////////////////////////
-//	アルバイト表示
+//	打工表示
 	function WorkShow() {
 		?>
 <div style="margin:15px">
-<h4>一份兼職工作！</h4>
+<h4>一份兼职工作！</h4>
 <form method="post" action="?menu=work">
 <p>1回 100Time<br />
-給与 : <?=MoneyFormat(500)?>/回</p>
+給与 : <?php print MoneyFormat(500)?>/回</p>
 <select name="amount">
 <option value="1">1</option>
 <option value="2">2</option>
@@ -1787,23 +1808,23 @@ JS_HTML;
 <option value="9">9</option>
 <option value="10">10</option>
 </select><br />
-<input type="submit" value="Work" class="btn" />
+<input type="submit" value="打工" class="btn"/>
 </form>
 </div>
-<?
+<?php 
 	}
 //////////////////////////////////////////////////
-	function RankProcess(&$Ranking) {
+	function RankProcess($Ranking) {
 
 		// RankBattle
 		if($_POST["ChallengeRank"]) {
 			if(!$this->party_rank) {
-				ShowError("小隊尚未設定","margin15");
+				ShowError("小队尚未设定","margin15");
 				return false;
 			}
 			$result	= $this->CanRankBattle();
 			if(is_array($result)) {
-				ShowError("仍需等待時間（？）","margin15");
+				ShowError("仍需等待体力（？）","margin15");
 				return false;
 			}
 
@@ -1812,8 +1833,8 @@ JS_HTML;
 				$BattleResult = 1;//敗北
 				$BattleResult = "d";//引分
 			*/
-			//list($message,$BattleResult)	= $Rank->Challenge(&$this);
-			$Result	= $Ranking->Challenge(&$this);
+			//list($message,$BattleResult)	= $Rank->Challenge($this);
+			$Result	= $Ranking->Challenge($this);
 
 			//if($Result === "Battle")
 			//	$this->RankRecord($BattleResult,"CHALLENGE",false);
@@ -1848,7 +1869,7 @@ JS_HTML;
 				$hour	= floor($left / 3600)%24;
 				$min	= floor(($left % 3600)/60);
 				$sec	= floor(($left % 3600)%60);
-				ShowError("離再設定隊伍還需 {$day}日 と {$hour}小時 {$min}分 {$sec}秒","margin15");
+				ShowError("离再设定队伍还需 {$day}日 と {$hour}小时 {$min}分 {$sec}秒","margin15");
 				return false;
 			}
 			foreach($this->char as $key => $val) {//チェックされたやつリスト
@@ -1857,19 +1878,19 @@ JS_HTML;
 			}
 			// 設定キャラ数が多いか少なすぎる
 			if(count($checked) == 0 || 5 < count($checked)) {
-				ShowError("隊伍人數應大於1人小於5人","margin15");
+				ShowError("队伍人数应大于1人小于5人","margin15");
 				return false;
 			}
 
 			$this->party_rank	= implode("<>",$checked);
 			$this->rank_set_time	= $now;
-			ShowResult("隊伍設定完成","margin15");
+			ShowResult("队伍设定完成","margin15");
 			return true;
 		}
 	}
 //////////////////////////////////////////////////
 //	
-	function RankShow(&$Ranking) {
+	function RankShow($Ranking) {
 
 		//$ProcessResult	= $this->RankProcess($Ranking);// array();
 
@@ -1889,9 +1910,9 @@ JS_HTML;
 			?>
 
 	<div style="margin:15px">
-	<?=ShowError($message)?>
+	<?php print ShowError($message)?>
 	<form action="?menu=rank" method="post">
-	<h4>排行榜(Ranking) - <a href="?rank">查看排名</a>&nbsp;<a href="?manual#ranking" target="_blank" class="a0">?</a></h4>
+	<h4>排行榜(Ranking) - <a href="?rank">查看排名</a> <a href="?manual#ranking" target="_blank" class="a0">?</a></h4>
 	<?php
 		// 挑戦できるかどうか(時間の経過で)
 		$CanRankBattle	= $this->CanRankBattle();
@@ -1926,23 +1947,23 @@ JS_HTML;
 		print("</td></tr></tbody></table>\n");
 		*/
 	?>
-	<input type="submit" class="btn" value="挑戰！" name="ChallengeRank" style="width:160px"<?=$disableRB?> />
+	<input type="submit" class="btn" value="挑战！" name="ChallengeRank" style="width:160px"<?php print $disableRB?> />
 	</form>
 	<form action="?menu=rank" method="post">
-	<h4>隊伍設置(Team Setting)</h4>
-	<p>排名戰隊伍設定。<br />
-	這裡設置排名戰隊伍。</p>
+	<h4>队伍设置(Team Setting)</h4>
+	<p>排名战队伍设定。<br />
+	这里设置排名战队伍。</p>
 	</div>
-	<?$this->ShowCharacters($this->char,CHECKBOX,explode("<>",$this->party_rank));?>
+<?php $this->ShowCharacters($this->char,CHECKBOX,explode("<>",$this->party_rank));?>
 
 	<div style="margin:15px">
-	<?=$left_mes?>
-	<input type="submit" class="btn" style="width:160px" value="設定隊伍"<?=$disable?> />
+	<?php print $left_mes?>
+	<input type="submit" class="btn" style="width:160px" value="设定队伍"<?php print $disable?> />
 	<input type="hidden" name="SetRankTeam" value="1" />
-	<p>設定後、<?=$reset=floor(RANK_TEAM_SET_TIME/(60*60))?>小時後才能再設置。<br />Team setting disabled after <?=$reset?>hours once set.</p>
+	<p>设定后<?php print $reset=floor(RANK_TEAM_SET_TIME/(60*60))?>小时后才能再设置。<br />Team setting disabled after <?php print $reset?>hours once set.</p>
 	</form>
 	</div>
-<?
+<?php 
 	}
 //////////////////////////////////////////////////
 	function RecruitProcess() {
@@ -1960,7 +1981,7 @@ JS_HTML;
 				case "3": $hire = 2500; $charNo	= 3; break;
 				case "4": $hire = 4000; $charNo	= 4; break;
 				default:
-					ShowError("未選擇人物","margin15");
+					ShowError("未选择人物","margin15");
 					return false;
 			}
 			// 名前処理
@@ -1971,17 +1992,17 @@ JS_HTML;
 				$name	= stripslashes($name);
 				$len	= strlen($name);
 				if ( 0 == $len || 16 < $len ) {
-					ShowError("名稱太短或太長","margin15");
+					ShowError("名称太短或太长","margin15");
 					return false;
 				}
 				$name	= htmlspecialchars($name,ENT_QUOTES);
 			} else {
-				ShowError("名稱不能是空","margin15");
+				ShowError("名称不能是空","margin15");
 				return false;
 			}
 			//性別
 			if( !isset($_POST["recruit_gend"]) ) {
-				ShowError("未選定性別","margin15");
+				ShowError("未选定性別","margin15");
 				return false;
 			} else {
 				$Gender	= $_POST["recruit_gend"]?"♀":"♂";
@@ -1995,12 +2016,12 @@ JS_HTML;
 			if($hire <= $this->money) {
 				$this->TakeMoney($hire);
 			} else {
-				ShowError("您沒有足夠的錢","margin15");
+				ShowError("您没有足够的钱","margin15");
 				return false;
 			}
 			// キャラを保存する
 			$char->SaveCharData($this->id);
-			ShowResult($char->Name()."($char->job_name:{$Gender}) 加為同伴！","margin15");
+			ShowResult($char->Name()."($char->job_name:{$Gender}) 加为同伴！","margin15");
 			return true;
 		}
 	}
@@ -2014,9 +2035,10 @@ JS_HTML;
 	<div style="margin:15px">
 	<p>Maximum characters.<br>
 	Need to make a space to recruit new character.</p>
-	<p>人物上限數達到。<br>
-	要添加新的空間來僱用新人。</p>
-	</div><?
+	<p>人物上限数达到。<br>
+	要添加新的空间来雇用新人（？）。</p>
+	</div>
+<?php 
 			return false;
 		}
 		include_once(CLASS_MONSTER);
@@ -2039,73 +2061,78 @@ JS_HTML;
 		?>
 
 	<form action="?recruit" method="post" style="margin:15px">
-	<h4>新人物的職業</h4>
+	<h4>新人物的职业</h4>
 	<table cellspacing="0"><tbody><tr>
 	<td class="td1" style="text-align:center">
-	<?$char[0]->ShowImage()?><?$char[1]->ShowImage()?><br>
+<?php $char[0]->ShowImage()?>
+<?php $char[1]->ShowImage()?><br>
 	<input type="radio" name="recruit_no" value="1" style="margin:3px"><br>
-	<?=MoneyFormat(2000)?></td>
+	<?php print MoneyFormat(2000)?></td>
 	<td class="td1" style="text-align:center">
-	<?$char[2]->ShowImage()?><?$char[3]->ShowImage()?><br>
+<?php $char[2]->ShowImage()?>
+<?php $char[3]->ShowImage()?><br>
 	<input type="radio" name="recruit_no" value="2" style="margin:3px"><br>
-	<?=MoneyFormat(2000)?></td>
+	<?php print MoneyFormat(2000)?></td>
 	<td class="td1" style="text-align:center">
-	<?$char[4]->ShowImage()?><?$char[5]->ShowImage()?><br>
+<?php $char[4]->ShowImage()?>
+<?php $char[5]->ShowImage()?><br>
 	<input type="radio" name="recruit_no" value="3" style="margin:3px"><br>
-	<?=MoneyFormat(2500)?></td>
+	<?php print MoneyFormat(2500)?></td>
 	<td class="td1" style="text-align:center">
-	<?$char[6]->ShowImage()?><?$char[7]->ShowImage()?><br>
+<?php $char[6]->ShowImage()?>
+<?php $char[7]->ShowImage()?><br>
 	<input type="radio" name="recruit_no" value="4" style="margin:3px"><br>
-	<?=MoneyFormat(4000)?></td>
+	<?php print MoneyFormat(4000)?></td>
 	</tr><tr>
 	<td class="td4" style="text-align:center">
-	戰士</td>
+	战士</td>
 	<td class="td5" style="text-align:center">
-	法師</td>
+	法师</td>
 	<td class="td4" style="text-align:center">
-	牧師</td>
+	牧师</td>
 	<td class="td5" style="text-align:center">
-	獵人</td>
+	猎人</td>
 	</tr>
 	</tbody></table>
 
-	<h4>新人物的性別</h4>
+	<h4>新人物的性别</h4>
 	<table><tbody><tr><td valign="top">
 	<input type="text" class="text" name="recruit_name" style="width:160px" maxlength="16"><br>
 	<div style="margin:5px 0px">
 	<input type="radio" class="vcent" name="recruit_gend" value="0">男
 	<input type="radio" class="vcent" name="recruit_gend" value="1" style="margin-left:15px;">女</div>
-	<input type="submit" class="btn" name="recruit" value="僱傭">
+	<input type="submit" class="btn" name="recruit" value="雇佣">
 	<input type="hidden" class="btn" name="recruit" value="Recruit">
 	</td><td valign="top">
-	<p>1 to 16 letters.<br>
-	Japanese characters count as 2.<br>
-	日本語は1文字 = 2 letter.
+	<p>请输入1到16个字符，<br>
+	一个汉字占用3个字符。<br>
 	</p>
 	</td></tr></tbody></table>
-	</form><?
+	</form>
+<?php 
 	}
 //////////////////////////////////////////////////
 //	鍛冶屋精錬ヘッダ
 	function SmithyRefineHeader() {
 	?>
 <div style="margin:15px">
-<h4>鍛冶屋(Smithy)</h4>
+<h4>精炼工房(Refine)</h4>
 
 <div style="width:600px">
 <div style="float:left;width:80px;">
-<img src="<?=IMG_CHAR?>mon_053r.gif" />
+<img src="<?php print IMG_CHAR?>mon_053r.gif" />
 </div>
 <div style="float:right;width:520px;">
-在這裡 可以進行物品的精煉！<br />
-選擇需要精練的物品以及精練的次數。<br />
-不過加工壞了我們不負責。<br />
-弟弟在管理的 <span class="bold">製作工房</span> 在<a href="?menu=create">這邊</a>。
+在这里 可以进行物品的精炼！<br />
+选择需要精练的物品以及精练的次数。<br />
+不过加工坏了我们不负责。<br />
+弟弟在管理的 <span class="bold">制作工房</span> 在<a href="?menu=create">这边</a>。
 </div>
 <div style="clear:both"></div>
 </div>
-<h4>精煉道具<a name="refine"></a></h4>
-<div style="margin:0 20px"><?
+<h4>精炼道具<a name="refine"></a></h4>
+<div style="margin:0 20px">
+<?php 
 	}
 //////////////////////////////////////////////////
 //	鍛冶屋処理(精錬)
@@ -2116,12 +2143,12 @@ JS_HTML;
 			ShowError("Select Item.");
 			return false;
 		}
-		// アイテムが読み込めない場合
+		// 道具が読み込めない場合
 		if(!$item	= LoadItemData($_POST["item_no"])) {
 			ShowError("Failed to load item data.");
 			return false;
 		}
-		// アイテムを所持していない場合
+		// 道具を所持していない場合
 		if(!$this->item[$_POST["item_no"]]) {
 			ShowError("Item \"{$item[name]}\" doesn't exists.");
 			return false;
@@ -2137,13 +2164,13 @@ JS_HTML;
 		}
 		include(CLASS_SMITHY);
 		$obj_item	= new Item($_POST["item_no"]);
-		// そのアイテムが精錬できない場合
+		// その道具が精錬できない場合
 		if(!$obj_item->CanRefine()) {
 			ShowError("Cant refine \"{$item[name]}\"");
 			return false;
 		}
 		// ここから精錬を始める処理
-		$this->DeleteItem($_POST["item_no"]);// アイテムは消えるか変化するので消す
+		$this->DeleteItem($_POST["item_no"]);// 道具は消えるか変化するので消す
 		$Price	= round($item["buy"]/2);
 		// 最大精錬数の調整。
 		if( REFINE_LIMIT < ($item["refine"] + $times) ) {
@@ -2200,7 +2227,7 @@ JS_HTML;
 			$goods->SetName("type");
 
 			$goods->ListTable("<table cellspacing=\"0\">");// テーブルタグのはじまり
-			$goods->ListTableInsert("<tr><td class=\"td9\"></td><td class=\"align-center td9\">精錬費</td><td class=\"align-center td9\">Item</td></tr>"); // テーブルの最初と最後の行に表示させるやつ。
+			$goods->ListTableInsert("<tr><td class=\"td9\"></td><td class=\"align-center td9\">精炼费</td><td class=\"align-center td9\">Item</td></tr>"); // テーブルの最初と最後の行に表示させるやつ。
 
 			// JSを使用しない。
 			if($this->no_JS_itemlist)
@@ -2224,7 +2251,7 @@ JS_HTML;
 			}
 			// JavaScript部分の書き出し
 			print($goods->GetJavaScript("list"));
-			print('精錬可能な物一覧');
+			print('可以精炼的名单');
 			// 種類のセレクトボックス
 			print($goods->ShowSelect());
 			print('<form action="?menu=refine" method="post">'."\n");
@@ -2254,50 +2281,51 @@ JS_HTML;
 		print("</div>\n");
 	?>
 	</div>
-<?
+<?php 
 	}
 //////////////////////////////////////////////////
 //	鍛冶屋 製作 ヘッダ
 	function SmithyCreateHeader() {
 		?>
 <div style="margin:15px">
-<h4>鍛冶屋(Smithy)<a name="sm"></a></h4>
+<h4>制作工房(Create)<a name="sm"></a></h4>
 <div style="width:600px">
 <div style="float:left;width:80px;">
-<img src="<?=IMG_CHAR?>mon_053rz.gif" />
+<img src="<?php print IMG_CHAR?>mon_053rz.gif" />
 </div>
 <div style="float:right;width:520px;">
-在這裡 可以進行物品的製作！<br />
-只要你有素材就可以製作裝備。<br />
-加入特殊素材的話可以製作特殊的武器。<br />
-哥哥在管理的 <span class="bold">精錬工房</span> 在<a href="?menu=refine">這邊</a>。<br />
-<a href="#mat">所持素材一覧</a>
+在这里 可以进行物品的制作！<br />
+只要你有素材就可以制作装备。<br />
+加入特殊素材的话可以制作特殊的武器。<br />
+哥哥在管理的 <span class="bold">精炼工房</span> 在<a href="?menu=refine">这边</a>。<br />
+<a href="#mat">所持素材一览</a>
 </div>
 <div style="clear:both"></div>
 </div>
-<h4>道具製作<a name="refine"></a></h4>
-<div style="margin:0 15px"><?
+<h4>道具制作<a name="refine"></a></h4>
+<div style="margin:0 15px">
+<?php 
 	}
 //////////////////////////////////////////////////
 //	製作処理
 	function SmithyCreateProcess() {
 		if(!$_POST["Create"]) return false;
 
-		// アイテムが選択されていない
+		// 道具が選択されていない
 		if(!$_POST["ItemNo"]) {
-			ShowError("請選擇一個道具製造");
+			ShowError("请选择一个道具制造");
 			return false;
 		}
 
-		// アイテムを読む
+		// 道具を読む
 		if(!$item	= LoadItemData($_POST["ItemNo"])) {
 			ShowError("error12291703");
 			return false;
 		}
 
-		// 作れるアイテムかどうかたしかめる
+		// 作れる道具かどうかたしかめる
 		if(!HaveNeeds($item,$this->item)) {
-			ShowError($item["name"]." 您沒有足夠的原料生產。");
+			ShowError($item["name"]." 您没有足够的原料生产。");
 			return false;
 		}
 
@@ -2305,20 +2333,20 @@ JS_HTML;
 		if($_POST["AddMaterial"]) {
 			// 所持していない場合
 			if(!$this->item[$_POST["AddMaterial"]]) {
-				ShowError("該素材不能追加。");
+				ShowError("该素材不能追加。");
 				return false;
 			}
-			// 追加素材のアイテムデータ
+			// 追加素材の道具データ
 			$ADD	= LoadItemData($_POST["AddMaterial"]);
 			$this->DeleteItem($_POST["AddMaterial"]);
 		}
 
-		// アイテムの製作
+		// 道具の製作
 		// お金を減らす
 		//$Price	= $item["buy"];
 		$Price	= 0;
 		if(!$this->TakeMoney($Price)) {
-			ShowError("您沒有足夠的錢。需要".MoneyFormat($Price)."。");
+			ShowError("您没有足够的钱。需要".MoneyFormat($Price)."。");
 			return false;
 		}
 		// 素材を減らす
@@ -2331,7 +2359,7 @@ JS_HTML;
 		// 付加効果
 		if($ADD["Add"])
 			$item->AddSpecial($ADD["Add"]);
-		// できたアイテムを保存する
+		// できた道具を保存する
 		$done	= $item->ReturnItem();
 		$this->AddItem($done);
 		$this->SaveUserItem();
@@ -2354,7 +2382,7 @@ JS_HTML;
 		$CreateList->SetName("type_create");
 
 		$CreateList->ListTable("<table cellspacing=\"0\">");// テーブルタグのはじまり
-		$CreateList->ListTableInsert("<tr><td class=\"td9\"></td><td class=\"align-center td9\">製作費</td><td class=\"align-center td9\">Item</td></tr>"); // テーブルの最初と最後の行に表示させるやつ。
+		$CreateList->ListTableInsert("<tr><td class=\"td9\"></td><td class=\"align-center td9\">制作费用</td><td class=\"align-center td9\">Item</td></tr>"); // テーブルの最初と最後の行に表示させるやつ。
 
 		// JSを使用しない。
 		if($this->no_JS_itemlist)
@@ -2376,11 +2404,11 @@ JS_HTML;
 			print($CreateList->ShowSelect());
 		?>
 <form action="?menu=create" method="post">
-<div id="list"><?=$CreateList->ShowDefault()?></div>
-<input type="submit" class="btn" name="Create" value="Create">
-<input type="reset" class="btn" value="Reset">
+<div id="list"><?php print $CreateList->ShowDefault()?></div>
+<input type="submit" class="btn" name="Create" value="创建">
+<input type="reset" class="btn" value="重置">
 <input type="hidden" name="Create" value="1"><br />
-<?
+<?php 
 		// 追加素材の表示
 		print('<div class="bold u" style="margin-top:15px">追加素材</div>'."\n");
 		for($item_no=7000; $item_no<7200; $item_no++) {
@@ -2392,18 +2420,18 @@ JS_HTML;
 			}
 		}
 		?>
-<input type="submit" class="btn" name="Create" value="Create">
-<input type="reset" class="btn" value="Reset">
+<input type="submit" class="btn" name="Create" value="创建">
+<input type="reset" class="btn" value="重置">
 </form>
-<?
+<?php 
 		} else {
-			print("就目前手上所持有的素材的話什麼也不能作啊。");
+			print("就目前手上所持有的素材的话什么也不能作啊。");
 		}
 
 
 		// 所持素材一覧
 		print("</div>\n");
-		print("<h4>所持素材一覧<a name=\"mat\"></a> <a href=\"#sm\">↑</a></h4>");
+		print("<h4>所持素材一览<a name=\"mat\"></a> <a href=\"#sm\">↑</a></h4>");
 		print("<div style=\"margin:0 15px\">");
 		for($i=6000; $i<7000; $i++) {
 			if(!$this->item["$i"])
@@ -2415,7 +2443,7 @@ JS_HTML;
 		?>
 </div>
 </div>
-<?
+<?php 
 		return $result;
 	}
 //////////////////////////////////////////////////
@@ -2429,14 +2457,14 @@ JS_HTML;
 		}
 		// お金が足りない
 		if(!$this->TakeMoney(round(START_MONEY * 1.10))) {
-			ShowError("您沒有足夠的錢<br />\n");
+			ShowError("您没有足够的钱<br />\n");
 			return false;
 		}
-		// アイテムを足す
+		// 道具を足す
 		$this->AddItem(9000);
 		$this->SaveUserItem();
 		$this->SaveData();
-		ShowResult("拍賣會的成員。<br />\n");
+		ShowResult("拍卖会的成员。<br />\n");
 		return true;
 	}
 //////////////////////////////////////////////////
@@ -2452,54 +2480,57 @@ JS_HTML;
 	function AuctionHeader() {
 		?>
 <div style="margin:15px 0 0 15px">
-<h4>拍賣(Auction)</h4>
+<h4>拍卖(Auction)</h4>
 <div style="margin-left:20px">
 
 <div style="width:500px">
 <div style="float:left;width:50px;">
-<img src="<?=IMG_CHAR?>ori_003.gif" />
+<img src="<?php print IMG_CHAR?>ori_003.gif" />
 </div>
-<div style="float:right;width:450px;"><?
+<div style="float:right;width:450px;">
+<?php 
 
 		$this->AuctionJoinMember();
 		if($this->AuctionEnter()) {
-			print("您有會員卡麼。<br />\n");
-			print("歡迎您到拍賣場。<br />\n");
-			print("<a href=\"#log\">回顧記錄</a>\n");
+			print("您有会员卡么。<br />\n");
+			print("欢迎您到拍卖场。<br />\n");
+			print("<a href=\"#log\">回顾记录</a>\n");
 		} else {
-			print("想在拍賣會拍賣那您要加入會員啊。<br />\n");
-			print("入會費用可要 ".MoneyFormat(round(START_MONEY * 1.10))." 呢。<br />\n");
-			print("入會麼?<br />\n");
+			print("想在拍卖会拍卖那您要加入会员啊。<br />\n");
+			print("入会费用可要 ".MoneyFormat(round(START_MONEY * 1.10))." 呢。<br />\n");
+			print("入会么?<br />\n");
 			print('<form action="" method="post">'."\n");
-			print('<input type="submit" value="入會" name="JoinMember" class="btn"/>'."\n");
+			print('<input type="submit" value="入会" name="JoinMember" class="btn"/>'."\n");
 			print("</form>\n");
 		}
 		if(!AUCTION_TOGGLE)
-			ShowError("功能暫停");
+			ShowError("功能暂停");
 		if(!AUCTION_EXHIBIT_TOGGLE)
-			ShowError("暫停拍賣");
+			ShowError("暂停拍卖");
 		?>
 </div>
 <div style="clear:both"></div>
 </div>
 </div>
-<h4>道具拍賣(Item Auction)</h4>
-<div style="margin-left:20px"><?
+<h4>道具拍卖(Item Auction)</h4>
+<div style="margin-left:20px">
+<?php 
 	}
 //////////////////////////////////////////////////
 //	オークションの表示
-	function AuctionFoot(&$ItemAuction) {
+	function AuctionFoot($ItemAuction) {
 		?>
 </div>
 <a name="log"></a>
-<h4>拍賣紀錄(AuctionLog)</h4>
+<h4>拍卖纪录(AuctionLog)</h4>
 <div style="margin-left:20px">
-<?$ItemAuction->ShowLog();?>
-</div><?
+<?php $ItemAuction->ShowLog();?>
+</div>
+<?php 
 	}
 //////////////////////////////////////////////////
-//	入札処理
-	function AuctionItemBiddingProcess(&$ItemAuction) {
+//	竞标処理
+	function AuctionItemBiddingProcess($ItemAuction) {
 		if(!$this->AuctionEnter())
 			return false;
 		if(!isset($_POST["ArticleNo"]))
@@ -2508,40 +2539,40 @@ JS_HTML;
 		$ArticleNo	= $_POST["ArticleNo"];
 		$BidPrice	= (int)$_POST["BidPrice"];
 		if($BidPrice < 1) {
-			ShowError("輸入的是個錯誤的價格。");
+			ShowError("输入的是个错误的价格。");
 			return false;
 		}
 		// まだ出品中かどうか確認する。
 		if(!$ItemAuction->ItemArticleExists($ArticleNo)) {
-			ShowError("這個拍賣品的賣方無法確認。");
+			ShowError("这个拍卖品的卖方无法确认。");
 			return false;
 		}
-		// 自分が入札できる人かどうかの確認
+		// 自分が竞标できる人かどうかの確認
 		if(!$ItemAuction->ItemBidRight($ArticleNo,$this->id)) {
-			ShowError("No.".$ArticleNo." 賣方是否已經招標");
+			ShowError("No.".$ArticleNo." 卖方是否已经招标");
 			return false;
 		}
-		// 最低入札価格を割っていないか確認する。
+		// 最低竞标価格を割っていないか確認する。
 		$Bottom	= $ItemAuction->ItemBottomPrice($ArticleNo);
 		if($BidPrice < $Bottom) {
-			ShowError("低於最低投標價");
-			ShowError("目前出價:".MoneyFormat($BidPrice)." 最低出價:".MoneyFormat($Bottom));
+			ShowError("低于最低投标价");
+			ShowError("目前出价:".MoneyFormat($BidPrice)." 最低出价:".MoneyFormat($Bottom));
 			return false;
 		}
 		// 金持ってるか確認する
 		if(!$this->TakeMoney($BidPrice)) {
-			ShowError("您的資金不足。");
+			ShowError("您的资金不足。");
 			return false;
 		}
 
-		// 実際に入札する。
+		// 実際に竞标する。
 		if($ItemAuction->ItemBid($ArticleNo,$BidPrice,$this->id,$this->name)) {
-			ShowResult("No:{$ArticleNo}  ".MoneyFormat($BidPrice)." 被收購。<br />\n");
+			ShowResult("No:{$ArticleNo}  ".MoneyFormat($BidPrice)." 被收购。<br />\n");
 			return true;
 		}
 	}
 //////////////////////////////////////////////////
-//	アイテムオークション用のオブジェクトを読んで返す
+//	道具オークション用のオブジェクトを読んで返す
 /*
 	function AuctionItemLoadData() {
 		include(CLASS_AUCTION);
@@ -2553,32 +2584,37 @@ JS_HTML;
 	}
 */
 //////////////////////////////////////////////////
-//	入札用フォーム(画面)
-	function AuctionItemBiddingForm(&$ItemAuction) {
+//	竞标用フォーム(画面)
+	function AuctionItemBiddingForm($ItemAuction) {
 
 		if(!AUCTION_TOGGLE)
 			return false;
 
 		// 出品用フォームにいくボタン
 		if($this->AuctionEnter()) {
-			// 入会してた場合　入札できるように
+		if(AUCTION_EXHIBIT_TOGGLE) {
+				print("<form action=\"?menu=auction\" method=\"post\">\n");
+				print('<input type="submit" value="拍卖物品" name="ExhibitItemForm" class="btn" style="width:160px">'."\n");
+				print("</form>\n");
+			}
+			// 入会してた場合　竞标できるように
 			$ItemAuction->ItemSortBy($_GET["sort"]);
 			$ItemAuction->ItemShowArticle2(true);
 
 			if(AUCTION_EXHIBIT_TOGGLE) {
 				print("<form action=\"?menu=auction\" method=\"post\">\n");
-				print('<input type="submit" value="拍賣物品" name="ExhibitItemForm" class="btn" style="width:160px">'."\n");
+				print('<input type="submit" value="拍卖物品" name="ExhibitItemForm" class="btn" style="width:160px">'."\n");
 				print("</form>\n");
 			}
 
 		} else {
-			// 入札できない
+			// 竞标できない
 			$ItemAuction->ItemShowArticle2(false);
 		}
 	}
 //////////////////////////////////////////////////
-//	アイテム出品処理
-	function AuctionItemExhibitProcess(&$ItemAuction) {
+//	道具出品処理
+	function AuctionItemExhibitProcess($ItemAuction) {
 
 		if(!AUCTION_EXHIBIT_TOGGLE)
 			return "BIDFORM";// 出品凍結
@@ -2601,7 +2637,7 @@ JS_HTML;
 		}
 		// 同時出品数の制限
 		if(AUCTION_MAX <= $ItemAuction->ItemAmount()) {
-			ShowError("拍賣數量已達到極限。(".$ItemAuction->ItemAmount()."/".AUCTION_MAX.")");
+			ShowError("拍卖数量已达到极限。(".$ItemAuction->ItemAmount()."/".AUCTION_MAX.")");
 			return false;
 		}
 		// 出品費用
@@ -2609,17 +2645,17 @@ JS_HTML;
 			ShowError("Need ".MoneyFormat(500)." to exhibit auction.");
 			return false;
 		}
-		// アイテムが読み込めない場合
+		// 道具が読み込めない場合
 		if(!$item	= LoadItemData($_POST["item_no"])) {
 			ShowError("Failed to load item data.");
 			return false;
 		}
-		// アイテムを所持していない場合
+		// 道具を所持していない場合
 		if(!$this->item[$_POST["item_no"]]) {
 			ShowError("Item \"{$item[name]}\" doesn't exists.");
 			return false;
 		}
-		// そのアイテムが出品できない場合
+		// その道具が出品できない場合
 		$possible	= CanExhibitType();
 		if(!$possible[$item["type"]]) {
 			ShowError("Cant put \"{$item[name]}\" to the Auction");
@@ -2637,7 +2673,7 @@ JS_HTML;
 			return false;
 		}
 		// 数量の確認
-		if(ereg("^[0-9]",$_POST["Amount"])) {
+		if(mb_ereg("^[0-9]",$_POST["Amount"])) {
 			$amount	= (int)$_POST["Amount"];
 			if($amount == 0)
 				$amount	= 1;
@@ -2652,7 +2688,7 @@ JS_HTML;
 		// 出品する
 		// $ItemAuction	= new Auction(item);// (2008/2/28:コメント化)
 		$ItemAuction->ItemAddArticle($_POST["item_no"],$amount,$this->id,$_POST["ExhibitTime"],$_POST["StartPrice"],$_POST["Comment"]);
-		print($item["name"]."{$amount}個 展覽品。");
+		print($item["name"]."{$amount}个 展览品。");
 		return true;
 	}
 //////////////////////////////////////////////////
@@ -2665,26 +2701,26 @@ JS_HTML;
 		include(CLASS_JS_ITEMLIST);
 		$possible	= CanExhibitType();
 		?>
-<div class="u bold">如何參展</div>
+<div class="u bold">如何参展</div>
 <ol>
-<li>選擇一種道具，拍賣。</li>
-<li>如果要拍賣超過兩個以上是要輸入數量。</li>
-<li>指定拍賣的時間。</li>
-<li>指定起拍價(不輸入的話為0)</li>
-<li>輸入您的描述。</li>
-<li>發送。</li>
+<li>选择一种道具，拍卖。</li>
+<li>如果要拍卖超过两个以上是要输入数量。</li>
+<li>指定拍卖的时间。</li>
+<li>指定起拍价(不输入的话为0)</li>
+<li>输入您的描述。</li>
+<li>发送。</li>
 </ol>
-<div class="u bold">注意事項</div>
+<div class="u bold">注意事项</div>
 <ul>
-<li>拍賣要交$500的手續費。</li>
-<li>負責拍賣工作的人似乎不會認真幫你辦事的樣子</li>
+<li>拍卖要交$500的手续费。</li>
+<li>负责拍卖工作的人似乎不会认真帮你办事的样子</li>
 </ul>
-<a href="?menu=auction">查看所有拍賣物</a>
+<a href="?menu=auction">查看所有拍卖物</a>
 </div>
-<h4>出品する</h4>
+<h4>出售</h4>
 <div style="margin-left:20px">
-<div class="u bold">可以拍賣的道具</div>
-<?
+<div class="u bold">可以拍卖的道具</div>
+<?php 
 		if(!$this->item) {
 			print("No items<br />\n");
 			return false;
@@ -2707,11 +2743,11 @@ JS_HTML;
 		print($ExhibitList->ShowSelect());
 		?>
 <form action="?menu=auction" method="post">
-<div id="list"><?=$ExhibitList->ShowDefault()?></div>
+<div id="list"><?php print $ExhibitList->ShowDefault()?></div>
 <table><tr><td style="text-align:right">
 数量(Amount) :</td><td><input type="text" name="Amount" class="text" style="width:60px" value="1" /><br />
 </td></tr><tr><td style="text-align:right">
-時間(Time) :</td><td>
+时间(Time) :</td><td>
 <select name="ExhibitTime">
 <option value="24" selected>24 hour</option>
 <option value="18">18 hour</option>
@@ -2721,7 +2757,7 @@ JS_HTML;
 <option value="1">1 hour</option>
 </select>
 </td></tr><tr><td>
-開始価格(Start Price) :</td><td><input type="text" name="StartPrice" class="text" style="width:240px" maxlength="10"><br />
+起拍价(Start Price) :</td><td><input type="text" name="StartPrice" class="text" style="width:240px" maxlength="10"><br />
 </td></tr><tr><td style="text-align:right">
 描述(Comment) :</td><td>
 <input type="text" name="Comment" class="text" style="width:240px" maxlength="40">
@@ -2731,7 +2767,7 @@ JS_HTML;
 </td></tr></table>
 </form>
 
-<?
+<?php 
 		
 	}
 //////////////////////////////////////////////////
@@ -2765,14 +2801,14 @@ JS_HTML;
 		}
 		// 合計レベル制限
 		if($UnionMob["LevelLimit"] < $TotalLevel) {
-			ShowError('合計級別水平('.$TotalLevel.'/'.$UnionMob["LevelLimit"].')',"margin15");
+			ShowError('合计级别水平('.$TotalLevel.'/'.$UnionMob["LevelLimit"].')',"margin15");
 			return false;
 		}
 		if( count($MyParty) === 0) {
-			ShowError('戰鬥至少要一個人參加',"margin15");
+			ShowError('战斗至少要一个人参加',"margin15");
 			return false;
 		} else if(5 < count($MyParty)) {
-			ShowError('戰鬥最多只能上五個人',"margin15");
+			ShowError('战斗最多只能上五个人',"margin15");
 			return false;
 		}
 		if(!$this->WasteTime(UNION_BATTLE_TIME)) {
@@ -2810,7 +2846,7 @@ JS_HTML;
 			list($UserMoney)	= $battle->ReturnMoney();//戦闘で得た合計金額
 			$this->GetMoney($UserMoney);//お金を増やす
 			$battle->RecordLog("UNION");
-			// アイテムを受け取る
+			// 道具を受け取る
 			if($itemdrop	= $battle->ReturnItemGet(0)) {
 				$this->LoadUserItem();
 				foreach($itemdrop as $itemno => $amount)
@@ -2849,12 +2885,12 @@ JS_HTML;
 		$this->ShowCharacters($this->char,CHECKBOX,explode("<>",$this->party_memo));
 			?>
 	<div style="margin:15px;text-align:center">
-	<input type="submit" class="btn" value="戰鬥!">
+	<input type="submit" class="btn" value="战斗!">
 	<input type="hidden" name="union_battle" value="1">
 	<input type="reset" class="btn" value="重置"><br>
-	保存此隊伍:<input type="checkbox" name="memory_party" value="1">
+	保存此队伍:<input type="checkbox" name="memory_party" value="1">
 	</div></form>
-<?
+<?php 
 	}
 //////////////////////////////////////////////////
 //	町の表示
@@ -2870,12 +2906,12 @@ JS_HTML;
 			?>
 <li>店(Shop)
 <ul>
-<li><a href="?menu=buy">買(Buy)</a></li>
-<li><a href="?menu=sell">賣(Sell)</a></li>
+<li><a href="?menu=buy">买(Buy)</a></li>
+<li><a href="?menu=sell">卖(Sell)</a></li>
 <li><a href="?menu=work">打工</a></li>
 </ul>
 </li>
-<?
+<?php 
 		}
 		// 斡旋所
 		if($PlaceList["Recruit"])
@@ -2883,23 +2919,23 @@ JS_HTML;
 		// 鍛冶屋
 		if($PlaceList["Smithy"]) {
 			?>
-<li>鍛冶屋(Smithy)
+<li>锻冶屋(Smithy)
 <ul>
-<li><a href="?menu=refine">精錬工房(Refine)</a></li>
-<li><a href="?menu=create">製作工房(Create)</a></li>
+<li><a href="?menu=refine">精炼工房(Refine)</a></li>
+<li><a href="?menu=create">制作工房(Create)</a></li>
 </ul>
 </li>
-<?
+<?php 
 		}
 		// オークション会場
 		if($PlaceList["Auction"] && AUCTION_TOGGLE)
-			print("<li><a href=\"?menu=auction\">拍賣會場(Auction)</li>");
+			print("<li><a href=\"?menu=auction\">拍卖会場(Auction)</li>");
 		// コロシアム
 		if($PlaceList["Colosseum"])
-			print("<li><a href=\"?menu=rank\">競技場(Colosseum)</a></li>");
+			print("<li><a href=\"?menu=rank\">竞技场(Colosseum)</a></li>");
 		print("</ul>\n");
 		print("</div>\n");
-		print("<h4>広場</h4>");
+		print("<h4>广场</h4>");
 		$this->TownBBS();
 		print("</div>\n");
 	}
@@ -2913,7 +2949,7 @@ JS_HTML;
 <input type="text" maxlength="60" name="message" class="text" style="width:300px"/>
 <input type="submit" value="post" class="btn" style="width:100px" />
 </form>
-<?
+<?php 
 		if(!file_exists($file))
 			return false;
 		$log	= file($file);
@@ -2955,7 +2991,7 @@ JS_HTML;
 			}
 			$userName	= userNameLoad();
 			if(in_array($NewName,$userName)) {
-				ShowError("該名稱已被使用。","margin15");
+				ShowError("该名称已被使用。","margin15");
 				return false;
 			}
 			if(!$this->TakeMoney(NEW_NAME_COST)) {
@@ -2988,7 +3024,7 @@ JS_HTML;
 		}
 		if($_POST["color"]) {
 			if(	strlen($_POST["color"]) != 6 &&
-				!ereg("^[0369cf]{6}",$_POST["color"]))
+				!mb_ereg("^[0369cf]{6}",$_POST["color"]))
 				return "error 12072349";
 			$this->UserColor	= $_POST["color"];
 			ShowResult("Setting changed.","margin15");
@@ -3002,44 +3038,37 @@ JS_HTML;
 		if($this->record_btl_log) $record_btl_log	= " checked";
 		if($this->no_JS_itemlist) $no_JS_itemlist	= " checked";
 		?>
-<h4>設置</h4>
+<h4>设置</h4>
 <form action="?setting" method="post">
 <table><tbody>
-<tr><td><input type="checkbox" name="record_battle_log" value="1" <?=$record_btl_log?>></td><td>戰鬥記錄</td></tr>
-<tr><td><input type="checkbox" name="no_JS_itemlist" value="1" <?=$no_JS_itemlist?>></td><td>道具列表不使用JavaScript</td></tr>
+<tr><td><input type="checkbox" name="record_battle_log" value="1" <?php print $record_btl_log?>></td><td>战斗记录</td></tr>
+<tr><td><input type="checkbox" name="no_JS_itemlist" value="1" <?php print $no_JS_itemlist?>></td><td>道具列表不使用javascript</td></tr>
 </tbody></table>
 <!--<tr><td>None</td><td><input type="checkbox" name="none" value="1"></td></tr>-->
-顏色 : <?
-		$color	= file(COLOR_FILE);
-		print('<select name="color" class="bgcolor">'."\n");
-		foreach($color as $value) {
-			$value	= trim($value);
-			print("<option value=\"{$value}\" style=\"color:{$value}\" ".($this->UserColor == $value?" selected":"").">");
-			print("SampleColor</option>\n");
-		}
-		print('</select>');
-	?><br />
-<input type="submit" class="btn" name="setting01" value="modify" style="width:100px">
+颜色: 
+<SELECT class=bgcolor name=color> <OPTION style="COLOR: #ffffff" value=ffffff selected>SampleColor</OPTION> <OPTION style="COLOR: #ffffcc" value=ffffcc>SampleColor</OPTION> <OPTION style="COLOR: #ffff99" value=ffff99>SampleColor</OPTION> <OPTION style="COLOR: #ffff66" value=ffff66>SampleColor</OPTION> <OPTION style="COLOR: #ffff33" value=ffff33>SampleColor</OPTION> <OPTION style="COLOR: #ffff00" value=ffff00>SampleColor</OPTION> <OPTION style="COLOR: #ffccff" value=ffccff>SampleColor</OPTION> <OPTION style="COLOR: #ffcccc" value=ffcccc>SampleColor</OPTION> <OPTION style="COLOR: #ffcc99" value=ffcc99>SampleColor</OPTION> <OPTION style="COLOR: #ffcc66" value=ffcc66>SampleColor</OPTION> <OPTION style="COLOR: #ffcc33" value=ffcc33>SampleColor</OPTION> <OPTION style="COLOR: #ffcc00" value=ffcc00>SampleColor</OPTION> <OPTION style="COLOR: #ff99ff" value=ff99ff>SampleColor</OPTION> <OPTION style="COLOR: #ff99cc" value=ff99cc>SampleColor</OPTION> <OPTION style="COLOR: #ff9999" value=ff9999>SampleColor</OPTION> <OPTION style="COLOR: #ff9966" value=ff9966>SampleColor</OPTION> <OPTION style="COLOR: #ff9933" value=ff9933>SampleColor</OPTION> <OPTION style="COLOR: #ff9900" value=ff9900>SampleColor</OPTION> <OPTION style="COLOR: #ff66ff" value=ff66ff>SampleColor</OPTION> <OPTION style="COLOR: #ff66cc" value=ff66cc>SampleColor</OPTION> <OPTION style="COLOR: #ff6699" value=ff6699>SampleColor</OPTION> <OPTION style="COLOR: #ff6666" value=ff6666>SampleColor</OPTION> <OPTION style="COLOR: #ff6633" value=ff6633>SampleColor</OPTION> <OPTION style="COLOR: #ff6600" value=ff6600>SampleColor</OPTION> <OPTION style="COLOR: #ff33ff" value=ff33ff>SampleColor</OPTION> <OPTION style="COLOR: #ff33cc" value=ff33cc>SampleColor</OPTION> <OPTION style="COLOR: #ff3399" value=ff3399>SampleColor</OPTION> <OPTION style="COLOR: #ff3366" value=ff3366>SampleColor</OPTION> <OPTION style="COLOR: #ff3333" value=ff3333>SampleColor</OPTION> <OPTION style="COLOR: #ff3300" value=ff3300>SampleColor</OPTION> <OPTION style="COLOR: #ff00ff" value=ff00ff>SampleColor</OPTION> <OPTION style="COLOR: #ff00cc" value=ff00cc>SampleColor</OPTION> <OPTION style="COLOR: #ff0099" value=ff0099>SampleColor</OPTION> <OPTION style="COLOR: #ff0066" value=ff0066>SampleColor</OPTION> <OPTION style="COLOR: #ff0033" value=ff0033>SampleColor</OPTION> <OPTION style="COLOR: #ff0000" value=ff0000>SampleColor</OPTION> <OPTION style="COLOR: #ccffff" value=ccffff>SampleColor</OPTION> <OPTION style="COLOR: #ccffcc" value=ccffcc>SampleColor</OPTION> <OPTION style="COLOR: #ccff99" value=ccff99>SampleColor</OPTION> <OPTION style="COLOR: #ccff66" value=ccff66>SampleColor</OPTION> <OPTION style="COLOR: #ccff33" value=ccff33>SampleColor</OPTION> <OPTION style="COLOR: #ccff00" value=ccff00>SampleColor</OPTION> <OPTION style="COLOR: #ccccff" value=ccccff>SampleColor</OPTION> <OPTION style="COLOR: #cccccc" value=cccccc>SampleColor</OPTION> <OPTION style="COLOR: #cccc99" value=cccc99>SampleColor</OPTION> <OPTION style="COLOR: #cccc66" value=cccc66>SampleColor</OPTION> <OPTION style="COLOR: #cccc33" value=cccc33>SampleColor</OPTION> <OPTION style="COLOR: #cccc00" value=cccc00>SampleColor</OPTION> <OPTION style="COLOR: #cc99ff" value=cc99ff>SampleColor</OPTION> <OPTION style="COLOR: #cc99cc" value=cc99cc>SampleColor</OPTION> <OPTION style="COLOR: #cc9999" value=cc9999>SampleColor</OPTION> <OPTION style="COLOR: #cc9966" value=cc9966>SampleColor</OPTION> <OPTION style="COLOR: #cc9933" value=cc9933>SampleColor</OPTION> <OPTION style="COLOR: #cc9900" value=cc9900>SampleColor</OPTION> <OPTION style="COLOR: #cc66ff" value=cc66ff>SampleColor</OPTION> <OPTION style="COLOR: #cc66cc" value=cc66cc>SampleColor</OPTION> <OPTION style="COLOR: #cc6699" value=cc6699>SampleColor</OPTION> <OPTION style="COLOR: #cc6666" value=cc6666>SampleColor</OPTION> <OPTION style="COLOR: #cc6633" value=cc6633>SampleColor</OPTION> <OPTION style="COLOR: #cc6600" value=cc6600>SampleColor</OPTION> <OPTION style="COLOR: #cc33ff" value=cc33ff>SampleColor</OPTION> <OPTION style="COLOR: #cc33cc" value=cc33cc>SampleColor</OPTION> <OPTION style="COLOR: #cc3399" value=cc3399>SampleColor</OPTION> <OPTION style="COLOR: #cc3366" value=cc3366>SampleColor</OPTION> <OPTION style="COLOR: #cc3333" value=cc3333>SampleColor</OPTION> <OPTION style="COLOR: #cc3300" value=cc3300>SampleColor</OPTION> <OPTION style="COLOR: #cc00ff" value=cc00ff>SampleColor</OPTION> <OPTION style="COLOR: #cc00cc" value=cc00cc>SampleColor</OPTION> <OPTION style="COLOR: #cc0099" value=cc0099>SampleColor</OPTION> <OPTION style="COLOR: #cc0066" value=cc0066>SampleColor</OPTION> <OPTION style="COLOR: #cc0033" value=cc0033>SampleColor</OPTION> <OPTION style="COLOR: #cc0000" value=cc0000>SampleColor</OPTION> <OPTION style="COLOR: #99ffff" value=99ffff>SampleColor</OPTION> <OPTION style="COLOR: #99ffcc" value=99ffcc>SampleColor</OPTION> <OPTION style="COLOR: #99ff99" value=99ff99>SampleColor</OPTION> <OPTION style="COLOR: #99ff66" value=99ff66>SampleColor</OPTION> <OPTION style="COLOR: #99ff33" value=99ff33>SampleColor</OPTION> <OPTION style="COLOR: #99ff00" value=99ff00>SampleColor</OPTION> <OPTION style="COLOR: #99ccff" value=99ccff>SampleColor</OPTION> <OPTION style="COLOR: #99cccc" value=99cccc>SampleColor</OPTION> <OPTION style="COLOR: #99cc99" value=99cc99>SampleColor</OPTION> <OPTION style="COLOR: #99cc66" value=99cc66>SampleColor</OPTION> <OPTION style="COLOR: #99cc33" value=99cc33>SampleColor</OPTION> <OPTION style="COLOR: #99cc00" value=99cc00>SampleColor</OPTION> <OPTION style="COLOR: #9999ff" value=9999ff>SampleColor</OPTION> <OPTION style="COLOR: #9999cc" value=9999cc>SampleColor</OPTION> <OPTION style="COLOR: #999999" value=999999>SampleColor</OPTION> <OPTION style="COLOR: #999966" value=999966>SampleColor</OPTION> <OPTION style="COLOR: #999933" value=999933>SampleColor</OPTION> <OPTION style="COLOR: #999900" value=999900>SampleColor</OPTION> <OPTION style="COLOR: #9966ff" value=9966ff>SampleColor</OPTION> <OPTION style="COLOR: #9966cc" value=9966cc>SampleColor</OPTION> <OPTION style="COLOR: #996699" value=996699>SampleColor</OPTION> <OPTION style="COLOR: #996666" value=996666>SampleColor</OPTION> <OPTION style="COLOR: #996633" value=996633>SampleColor</OPTION> <OPTION style="COLOR: #996600" value=996600>SampleColor</OPTION> <OPTION style="COLOR: #9933ff" value=9933ff>SampleColor</OPTION> <OPTION style="COLOR: #9933cc" value=9933cc>SampleColor</OPTION> <OPTION style="COLOR: #993399" value=993399>SampleColor</OPTION> <OPTION style="COLOR: #993366" value=993366>SampleColor</OPTION> <OPTION style="COLOR: #993333" value=993333>SampleColor</OPTION> <OPTION style="COLOR: #993300" value=993300>SampleColor</OPTION> <OPTION style="COLOR: #9900ff" value=9900ff>SampleColor</OPTION> <OPTION style="COLOR: #9900cc" value=9900cc>SampleColor</OPTION> <OPTION style="COLOR: #990099" value=990099>SampleColor</OPTION> <OPTION style="COLOR: #990066" value=990066>SampleColor</OPTION> <OPTION style="COLOR: #990033" value=990033>SampleColor</OPTION> <OPTION style="COLOR: #990000" value=990000>SampleColor</OPTION> <OPTION style="COLOR: #66ffff" value=66ffff>SampleColor</OPTION> <OPTION style="COLOR: #66ffcc" value=66ffcc>SampleColor</OPTION> <OPTION style="COLOR: #66ff99" value=66ff99>SampleColor</OPTION> <OPTION style="COLOR: #66ff66" value=66ff66>SampleColor</OPTION> <OPTION style="COLOR: #66ff33" value=66ff33>SampleColor</OPTION> <OPTION style="COLOR: #66ff00" value=66ff00>SampleColor</OPTION> <OPTION style="COLOR: #66ccff" value=66ccff>SampleColor</OPTION> <OPTION style="COLOR: #66cccc" value=66cccc>SampleColor</OPTION> <OPTION style="COLOR: #66cc99" value=66cc99>SampleColor</OPTION> <OPTION style="COLOR: #66cc66" value=66cc66>SampleColor</OPTION> <OPTION style="COLOR: #66cc33" value=66cc33>SampleColor</OPTION> <OPTION style="COLOR: #66cc00" value=66cc00>SampleColor</OPTION> <OPTION style="COLOR: #6699ff" value=6699ff>SampleColor</OPTION> <OPTION style="COLOR: #6699cc" value=6699cc>SampleColor</OPTION> <OPTION style="COLOR: #669999" value=669999>SampleColor</OPTION> <OPTION style="COLOR: #669966" value=669966>SampleColor</OPTION> <OPTION style="COLOR: #669933" value=669933>SampleColor</OPTION> <OPTION style="COLOR: #669900" value=669900>SampleColor</OPTION> <OPTION style="COLOR: #6666ff" value=6666ff>SampleColor</OPTION> <OPTION style="COLOR: #6666cc" value=6666cc>SampleColor</OPTION> <OPTION style="COLOR: #666699" value=666699>SampleColor</OPTION> <OPTION style="COLOR: #666666" value=666666>SampleColor</OPTION> <OPTION style="COLOR: #666633" value=666633>SampleColor</OPTION> <OPTION style="COLOR: #666600" value=666600>SampleColor</OPTION> <OPTION style="COLOR: #6633ff" value=6633ff>SampleColor</OPTION> <OPTION style="COLOR: #6633cc" value=6633cc>SampleColor</OPTION> <OPTION style="COLOR: #663399" value=663399>SampleColor</OPTION> <OPTION style="COLOR: #663366" value=663366>SampleColor</OPTION> <OPTION style="COLOR: #663333" value=663333>SampleColor</OPTION> <OPTION style="COLOR: #663300" value=663300>SampleColor</OPTION> <OPTION style="COLOR: #6600ff" value=6600ff>SampleColor</OPTION> <OPTION style="COLOR: #6600cc" value=6600cc>SampleColor</OPTION> <OPTION style="COLOR: #660099" value=660099>SampleColor</OPTION> <OPTION style="COLOR: #660066" value=660066>SampleColor</OPTION> <OPTION style="COLOR: #660033" value=660033>SampleColor</OPTION> <OPTION style="COLOR: #660000" value=660000>SampleColor</OPTION> <OPTION style="COLOR: #33ffff" value=33ffff>SampleColor</OPTION> <OPTION style="COLOR: #33ffcc" value=33ffcc>SampleColor</OPTION> <OPTION style="COLOR: #33ff99" value=33ff99>SampleColor</OPTION> <OPTION style="COLOR: #33ff66" value=33ff66>SampleColor</OPTION> <OPTION style="COLOR: #33ff33" value=33ff33>SampleColor</OPTION> <OPTION style="COLOR: #33ff00" value=33ff00>SampleColor</OPTION> <OPTION style="COLOR: #33ccff" value=33ccff>SampleColor</OPTION> <OPTION style="COLOR: #33cccc" value=33cccc>SampleColor</OPTION> <OPTION style="COLOR: #33cc99" value=33cc99>SampleColor</OPTION> <OPTION style="COLOR: #33cc66" value=33cc66>SampleColor</OPTION> <OPTION style="COLOR: #33cc33" value=33cc33>SampleColor</OPTION> <OPTION style="COLOR: #33cc00" value=33cc00>SampleColor</OPTION> <OPTION style="COLOR: #3399ff" value=3399ff>SampleColor</OPTION> <OPTION style="COLOR: #3399cc" value=3399cc>SampleColor</OPTION> <OPTION style="COLOR: #339999" value=339999>SampleColor</OPTION> <OPTION style="COLOR: #339966" value=339966>SampleColor</OPTION> <OPTION style="COLOR: #339933" value=339933>SampleColor</OPTION> <OPTION style="COLOR: #339900" value=339900>SampleColor</OPTION> <OPTION style="COLOR: #3366ff" value=3366ff>SampleColor</OPTION> <OPTION style="COLOR: #3366cc" value=3366cc>SampleColor</OPTION> <OPTION style="COLOR: #336699" value=336699>SampleColor</OPTION> <OPTION style="COLOR: #336666" value=336666>SampleColor</OPTION> <OPTION style="COLOR: #336633" value=336633>SampleColor</OPTION> <OPTION style="COLOR: #336600" value=336600>SampleColor</OPTION> <OPTION style="COLOR: #3333ff" value=3333ff>SampleColor</OPTION> <OPTION style="COLOR: #3333cc" value=3333cc>SampleColor</OPTION> <OPTION style="COLOR: #333399" value=333399>SampleColor</OPTION> <OPTION style="COLOR: #333366" value=333366>SampleColor</OPTION> <OPTION style="COLOR: #333333" value=333333>SampleColor</OPTION> <OPTION style="COLOR: #333300" value=333300>SampleColor</OPTION> <OPTION style="COLOR: #3300ff" value=3300ff>SampleColor</OPTION> <OPTION style="COLOR: #3300cc" value=3300cc>SampleColor</OPTION> <OPTION style="COLOR: #330099" value=330099>SampleColor</OPTION> <OPTION style="COLOR: #330066" value=330066>SampleColor</OPTION> <OPTION style="COLOR: #330033" value=330033>SampleColor</OPTION> <OPTION style="COLOR: #330000" value=330000>SampleColor</OPTION> <OPTION style="COLOR: #00ffff" value=00ffff>SampleColor</OPTION> <OPTION style="COLOR: #00ffcc" value=00ffcc>SampleColor</OPTION> <OPTION style="COLOR: #00ff99" value=00ff99>SampleColor</OPTION> <OPTION style="COLOR: #00ff66" value=00ff66>SampleColor</OPTION> <OPTION style="COLOR: #00ff33" value=00ff33>SampleColor</OPTION> <OPTION style="COLOR: #00ff00" value=00ff00>SampleColor</OPTION> <OPTION style="COLOR: #00ccff" value=00ccff>SampleColor</OPTION> <OPTION style="COLOR: #00cccc" value=00cccc>SampleColor</OPTION> <OPTION style="COLOR: #00cc99" value=00cc99>SampleColor</OPTION> <OPTION style="COLOR: #00cc66" value=00cc66>SampleColor</OPTION> <OPTION style="COLOR: #00cc33" value=00cc33>SampleColor</OPTION> <OPTION style="COLOR: #00cc00" value=00cc00>SampleColor</OPTION> <OPTION style="COLOR: #0099ff" value=0099ff>SampleColor</OPTION> <OPTION style="COLOR: #0099cc" value=0099cc>SampleColor</OPTION> <OPTION style="COLOR: #009999" value=009999>SampleColor</OPTION> <OPTION style="COLOR: #009966" value=009966>SampleColor</OPTION> <OPTION style="COLOR: #009933" value=009933>SampleColor</OPTION> <OPTION style="COLOR: #009900" value=009900>SampleColor</OPTION> <OPTION style="COLOR: #0066ff" value=0066ff>SampleColor</OPTION> <OPTION style="COLOR: #0066cc" value=0066cc>SampleColor</OPTION> <OPTION style="COLOR: #006699" value=006699>SampleColor</OPTION> <OPTION style="COLOR: #006666" value=006666>SampleColor</OPTION> <OPTION style="COLOR: #006633" value=006633>SampleColor</OPTION> <OPTION style="COLOR: #006600" value=006600>SampleColor</OPTION> <OPTION style="COLOR: #0033ff" value=0033ff>SampleColor</OPTION> <OPTION style="COLOR: #0033cc" value=0033cc>SampleColor</OPTION> <OPTION style="COLOR: #003399" value=003399>SampleColor</OPTION> <OPTION style="COLOR: #003366" value=003366>SampleColor</OPTION> <OPTION style="COLOR: #003333" value=003333>SampleColor</OPTION> <OPTION style="COLOR: #003300" value=003300>SampleColor</OPTION> <OPTION style="COLOR: #0000ff" value=0000ff>SampleColor</OPTION> <OPTION style="COLOR: #0000cc" value=0000cc>SampleColor</OPTION> <OPTION style="COLOR: #000099" value=000099>SampleColor</OPTION> <OPTION style="COLOR: #000066" value=000066>SampleColor</OPTION> <OPTION style="COLOR: #000033" value=000033>SampleColor</OPTION> <OPTION style="COLOR: #000000" value=000000>SampleColor</OPTION></SELECT><br />
+<input type="submit" class="btn" name="setting01" value="修改" style="width:100px">
 <input type="hidden" name="setting01" value="1">
 </form>
-<h4>Logout</h4>
-<form action="<?=INDEX?>" method="post">
-<input type="submit" class="btn" name="logout" value="logout" style="width:100px">
+<h4>注销</h4>
+<form action="<?php print INDEX?>" method="post">
+<input type="submit" class="btn" name="logout" value="注销" style="width:100px">
 </form>
-<h4>變更隊伍名</h4>
+<h4>变更队伍名</h4>
 <form action="?setting" method="post">
-費用 : <?=MoneyFormat(NEW_NAME_COST)?><br />
-16個字符(全角=2文字)<br />
-新的名稱 : <input type="text" class="text" name="NewName" size="20">
-<input type="submit" class="btn" value="change" style="width:100px">
+費用 : <?php print MoneyFormat(NEW_NAME_COST)?><br />
+16个字符(全角=2字符)<br />
+新的名称 : <input type="text" class="text" name="NewName" size="20">
+<input type="submit" class="btn" value="变更" style="width:100px">
 </form>
-<h4>脱出口</h4>
-<div class="u">※データの削除</div>
+<h4>世界尽头</h4>
+<div class="u">※自杀用</div>
 <form action="?setting" method="post">
 PassWord : <input type="text" class="text" name="deletepass" size="20">
-<input type="submit" class="btn" name="delete" value="delete" style="width:100px">
+<input type="submit" class="btn" name="delete" value="我要自杀了..." style="width:100px">
 </form>
-</div><?
+</div>
+<?php 
 		return $Result;
 	}
 ////////// Show //////////////////////////////////////////////////////
@@ -3090,10 +3119,10 @@ PassWord : <input type="text" class="text" name="deletepass" size="20">
 		if( ($last - $start) < $term) {
 			?>
 	<div style="margin:5px 15px">
-	<a href="?tutorial">教程</a> - 戦闘の基本(登録後,1時間だけ表示されます)
+	<a href="?tutorial">教程</a> - 战斗的基本(登录后一个小时内显示)
 	</div>
 
-<?
+<?php 
 		}
 	}
 
@@ -3243,10 +3272,11 @@ HTML;
 				$this->islogin	= true;//ログイン状態
 				return true;
 			} else
-				return "Wrong password!";
+				return "密码错误。";
 		} else {
-			if($_POST["id"])
-				return "ID \"{$this->id}\" doesnt exists.";
+		    // 240112-错误修复: Warning: Undefined array key  https://stackoverflow.com/a/67549350
+			if($_POST["id"]??null)
+				return "ID \"{$this->id}\" 还没有被注册。";
 		}
 	}
 
@@ -3262,7 +3292,8 @@ HTML;
 //////////////////////////////////////////////////
 //	pass と id を設定する
 	function Set_ID_PASS() {
-		$id	= ($_POST["id"])?$_POST["id"]:$_GET["id"];
+	    // 240112-错误修复: Warning: Undefined array key  https://stackoverflow.com/a/67549350
+		$id	= ($_POST["id"]??null)?$_POST["id"]:($_GET["id"]??null);
 		//if($_POST["id"]) {
 		if($id) {
 				$this->id	= $id;//$_POST["id"];
@@ -3270,14 +3301,14 @@ HTML;
 			if (is_registered($_POST["id"])) {
 				$_SESSION["id"]	= $this->id;
 			}
-		} else if($_SESSION["id"])
-			$this->id	= $_SESSION["id"];
+		} else if($_SESSION["id"]??null)
+			$this->id = $_SESSION["id"];
 
-		$pass	= ($_POST["pass"])?$_POST["pass"]:$_GET["pass"];
+		$pass = ($_POST["pass"]??null)?$_POST["pass"]:($_GET["pass"]??null);
 		//if($_POST["pass"])
 		if($pass)
 			$this->pass	= $pass;//$_POST["pass"];
-		else if($_SESSION["pass"])
+		else if($_SESSION["pass"]??null)
 			$this->pass	= $_SESSION["pass"];
 
 		if($this->pass)
@@ -3306,6 +3337,8 @@ HTML;
 		setcookie("NO",$NewID,time()+COOKIE_EXPIRE);
 		$_COOKIE["NO"]=$NewID;
 
+        // 240112-错误修复: Warning: session_id(): Cannot change session id when session is active  https://zhuanlan.zhihu.com/p/553500970
+        session_write_close();
 		session_id($OldID);
 		session_start();
 
@@ -3317,6 +3350,8 @@ HTML;
 				unset($_SESSION["$key"]);
 		endif;
 
+        // 240112-错误修复: Warning: session_id(): Cannot change session id when session is active  https://zhuanlan.zhihu.com/p/553500970
+        session_write_close();
 		session_id($NewID);
 		session_start();
 		$_SESSION	= unserialize($temp);
@@ -3329,21 +3364,21 @@ HTML;
 	function MakeNewData() {
 		// 登録者数が限界の場合
 		if(MAX_USERS <= count(glob(USER."*")))
-			return array(false,"Maximum users.<br />登録者数が限界に達してしまった様です。");
+			return array(false,"Maximum users.<br />已达到最大用户数量。");
 		if(isset($_POST["Newid"]))
 			trim($_POST["Newid"]);
 		if(empty($_POST["Newid"]))
 			return array(false,"Enter ID.");
 
-		if(!ereg("[0-9a-zA-Z]{4,16}",$_POST["Newid"])||
-			ereg("[^0-9a-zA-Z]+",$_POST["Newid"]))//正規表現
+		if(!mb_ereg("[0-9a-zA-Z]{4,16}",$_POST["Newid"])||
+			mb_ereg("[^0-9a-zA-Z]+",$_POST["Newid"]))//正規表現
 			return array(false,"Bad ID");
 
 		if(strlen($_POST["Newid"]) < 4 || 16 < strlen($_POST["Newid"]))//文字制限
 			return array(false,"Bad ID");
 
 		if(is_registered($_POST["Newid"]))
-			return array(false,"This ID has been already used.");
+			return array(false,"您注册的ID已经被使用");
 
 		$file = USER.$_POST["Newid"]."/".DATA;
 		// PASS
@@ -3352,11 +3387,11 @@ HTML;
 		if(empty($_POST["pass1"]) || empty($_POST["pass2"]))
 			return array(false,"Enter both Password.");
 
-		if(!ereg("[0-9a-zA-Z]{4,16}",$_POST["pass1"]) || ereg("[^0-9a-zA-Z]+",$_POST["pass1"]))
+		if(!mb_ereg("[0-9a-zA-Z]{4,16}",$_POST["pass1"]) || mb_ereg("[^0-9a-zA-Z]+",$_POST["pass1"]))
 			return array(false,"Bad Password 1");
 		if(strlen($_POST["pass1"]) < 4 || 16 < strlen($_POST["pass1"]))//文字制限
 			return array(false,"Bad Password 1");
-		if(!ereg("[0-9a-zA-Z]{4,16}",$_POST["pass2"]) || ereg("[^0-9a-zA-Z]+",$_POST["pass2"]))
+		if(!mb_ereg("[0-9a-zA-Z]{4,16}",$_POST["pass2"]) || mb_ereg("[^0-9a-zA-Z]+",$_POST["pass2"]))
 			return array(false,"Bad Password 2");
 		if(strlen($_POST["pass2"]) < 4 || 16 < strlen($_POST["pass2"]))//文字制限
 			return array(false,"Bad Password 2");
@@ -3384,7 +3419,7 @@ HTML;
 			//print("ID:$_POST[Newid] success.<BR>");
 			$_SESSION["id"]=$_POST["Newid"];
 			setcookie("NO",session_id(),time()+COOKIE_EXPIRE);
-			$success	= "<div class=\"recover\">ID : $_POST[Newid] success. Try Login</div>";
+			$success	= "<div class=\"recover\">ID : $_POST[Newid] 注册成功. 请登录吧</div>";
 			return array(true,$success);//強引...
 		}
 	}
@@ -3397,99 +3432,95 @@ HTML;
 
 	<div style="margin:15px">
 	Maximum users.<br />
-	用戶數已達到最大。
-	</div><?
+	用户数已达到最大。
+	</div>
+<?php 
 			return false;
 		}
 		$idset=($_POST["Newid"]?" value=$_POST[Newid]":NULL);
 		?>
 	<div style="margin:15px">
-	<?=ShowError($error);?>
-	<h4>註冊!</h4>
-	<form action="<?=INDEX?>" method="post">
+	<?php print ShowError($error);?>
+	<h4>注册!</h4>
+	<form action="<?php print INDEX?>" method="post">
 
 	<table><tbody>
 	<tr><td colspan="2">ID & PASS must be 4 to 16 letters.<br />letters allowed a-z,A-Z,0-9<br />
-	ID と PASSは 4-16 文字以内で。半角英数字。</td></tr>
+	ID 和 PASS在 4-16 个字以内。半角英数字。</td></tr>
 	<tr><td><div style="text-align:right">ID:</div></td>
-	<td><input type="text" maxlength="16" class="text" name="Newid" style="width:240px"<?=$idset?>></td></tr>
-	<tr><td colspan="2"><br />Password,Re-enter.<br />PASS とその再入力です 確認用。</td></tr>
+	<td><input type="text" maxlength="16" class="text" name="Newid" style="width:240px"<?php print $idset?>></td></tr>
+	<tr><td colspan="2"><br />Password,Re-enter.<br />PASS 以及再输入 确认用。</td></tr>
 	<tr><td><div style="text-align:right">PASS:</div></td>
 	<td><input type="password" maxlength="16" class="text" name="pass1" style="width:240px"></td></tr>
 
 	<tr><td></td>
 	<td><input type="password" maxlength="16" class="text" name="pass2" style="width:240px">(verify)</td></tr>
 
-	<tr><td></td><td><input type="submit" class="btn" name="Make" value="Make" style="width:160px"></td></tr>
+	<tr><td></td><td><input type="submit" class="btn" name="Make" value="确定" style="width:160px"></td></tr>
 
 	</tbody></table>
 	</form>
 	</div>
-<?
+<?php 
 	}
-
-//////////////////////////////////////////////////
-//	ログイン用のフォーム
 	function LoginForm($message = NULL) {
 		?>
 <div style="width:730px;">
 <!-- ログイン -->
 <div style="width:350px;float:right">
-<h4 style="width:350px">Login</h4>
-<?=$message?>
-<form action="<?=INDEX?>" method="post" style="padding-left:20px">
+<h4 style="width:350px">登录</h4>
+<?php print $message?>
+<form action="<?php print INDEX?>" method="post" style="padding-left:20px">
 <table><tbody>
 <tr>
 <td><div style="text-align:right">ID:</div></td>
-<td><input type="text" maxlength="16" class="text" name="id" style="width:160px"<?=$_SESSION["id"]?" value=\"$_SESSION[id]\"":NULL?>></td>
+<td><input type="text" maxlength="16" class="text" name="id" style="width:160px"<?php print $_SESSION["id"]??''?" value=\"$_SESSION[id]\"":NULL?>></td>
 </tr>
 <tr>
 <td><div style="text-align:right">PASS:</div></td>
 <td><input type="password" maxlength="16" class="text" name="pass" style="width:160px"></td>
 </tr>
 <tr><td></td><td>
-<input type="submit" class="btn" name="Login" value="login" style="width:80px">&nbsp;
-<a href="?newgame">NewGame?</a>
+<input type="submit" class="btn" name="Login" value="登录" style="width:80px"> 
+<a href="?newgame">新玩家?</a>
 </td></tr>
 </tbody></table>
 </form>
 
-<h4 style="width:350px">Ranking</h4><?
+<h4 style="width:350px">排行榜</h4>
+<?php 
 	include_once(CLASS_RANKING);
 	$Rank	= new Ranking();
 	$Rank->ShowRanking(0,4);
 	?>
 </div>
 <!-- 飾 -->
-<div style="width:350px;padding:15px;float:left;">
+<div style="width:350px;padding:5px;float:left;">
 <div style="width:350px;text-align:center">
 <img src="./image/top01.gif" style="margin-bottom:20px" />
 </div>
 <div style="margin-left:20px">
-<div class="u">これってどんなゲーム?</div>
-<ul>
-<li>ゲームの目的はランキング1位になり、<br />1位を守る事です。</li>
-<li>冒険要素はないですが、<br />ちょっと深い戦闘システムが売りです。</li>
-</ul>
-<div class="u">戦闘はどんな感じ?</div>
-<ul>
-<li>5人のキャラクターでパーティーを編成。</li>
-<li>各キャラが行動パターンを持ち、<br />戦闘の状況に応じて技を使い分けます。</li>
-<li><a href="?log" class="a0">こちら</a>で戦闘ログが回覧できます。</li>
-</ul>
-</div>
-</div>
+<DIV class=u>这到底是什么游戏?</DIV>
+<UL>
+<LI>游戏的目的是得到第一、<BR>并且保持住第一的位置。 
+<LI>虽然没有冒险的要素、<BR>但有点深奥的战斗系统。 </LI></UL>
+<DIV class=u>战斗的感觉是什么?</DIV>
+<UL>
+<LI>5人的人物构成队伍 。 
+<LI>各人物各持不同模式、<BR>根据战斗的状况来使用技能。 
+<LI><A class=a0 href="?log">这边</A>可以回览战斗记录。 </LI></UL></DIV></DIV>
+
 <div class="c-both"></div>
 </div>
 
 <!-- -------------------------------------------------------- -->
 
 <div style="margin:15px">
-<h4>info.</h4>
-Users : <?=UserAmount()?> / <?=MAX_USERS?><br />
-<?
+<h4>提示</h4>
+用户数: <?php print UserAmount()?> / <?php print MAX_USERS?><br />
+<?php 
 	$Abandon	= ABANDONED;
-	print(floor($Abandon/(60*60*24))."日中數據沒變化的話數據將消失。");
+	print(floor($Abandon/(60*60*24))."日中数据没变化的话数据将消失。");
 print("</div>\n");
 	}
 
@@ -3500,43 +3531,43 @@ print("</div>\n");
 		if($this->name && $this->islogin) { // ログインしてる人用
 			print('<div id="menu">'."\n");
 			//print('<span class="divide"></span>');//区切り
-			print('<a href="'.INDEX.'">Top</a><span class="divide"></span>');
-			print('<a href="?hunt">Hunt</a><span class="divide"></span>');
-			print('<a href="?item">Item</a><span class="divide"></span>');
-			print('<a href="?town">Town</a><span class="divide"></span>');
-			print('<a href="?setting">Setting</a><span class="divide"></span>');
-			print('<a href="?log">Log</a><span class="divide"></span>');
+			print('<a href="'.INDEX.'">首页</a><span class="divide"></span>');
+			print('<a href="?hunt">狩猎</a><span class="divide"></span>');
+			print('<a href="?item">道具</a><span class="divide"></span>');
+			print('<a href="?town">城镇</a><span class="divide"></span>');
+			print('<a href="?setting">设置</a><span class="divide"></span>');
+			print('<a href="?log">记录</a><span class="divide"></span>');
 			if(BBS_OUT)
-				print('<a href="'.BBS_OUT.'">BBS</a><span class="divide"></span>'."\n");
+				print('<a href="'.BBS_OUT.'" target="_balnk">BBS</a><span class="divide"></span>'."\n");
 			print('</div><div id="menu2">'."\n");
 				?>
 	<div style="width:100%">
-	<div style="width:33%;float:left"><?=$this->name?></div>
-	<div style="width:67%;float:right">
-	<div style="width:50%;float:left"><span class="bold">Funds</span> : <?=MoneyFormat($this->money)?></div>
-	<div style="width:50%;float:right"><span class="bold">Time</span> : <?=floor($this->time)?>/<?=MAX_TIME?></div>
+	<div style="width:30%;float:left"><?php print $this->name?></div>
+	<div style="width:60%;float:right">
+	<div style="width:40%;float:left"><span class="bold">资金</span> : <?php print MoneyFormat($this->money)?></div>
+	<div style="width:40%;float:right"><span class="bold">体力</span> : <?php print floor($this->time)?>/<?php print MAX_TIME?></div>
 	</div>
 	<div class="c-both"></div>
-	</div><?
+	</div>
+<?php 
 			print('</div>');
-		} else if(!$this->name && $this->islogin) {// 初回ログインの人
+		} else if(!$this->name && $this->islogin) {// 初次登录用户
 			print('<div id="menu">');
-			print("First login. Thankyou for the entry.");
+			print("首次登录游戏，感谢您的加入！");
 			print('</div><div id="menu2">');
-			print("fill the blanks. 來吧，請填寫。");
+			print("现在让我们认识一下你吧：");
 			print('</div>');
-		} else { //// ログアウト状態の人、来客用の表示
+		} else { //// 注销后重新登录提示内容
 			print('<div id="menu">');
-			print('<a href="'.INDEX.'">トップ</a><span class="divide"></span>'."\n");
-			print('<a href="?newgame">新規</a><span class="divide"></span>'."\n");
-			print('<a href="?manual">ルールとマニュアル</a><span class="divide"></span>'."\n");
-			print('<a href="?gamedata=job">ゲームデータ</a><span class="divide"></span>'."\n");
-			print('<a href="?log">戦闘ログ</a><span class="divide"></span>'."\n");
+			print('<a href="'.INDEX.'">首页</a><span class="divide"></span>'."\n");
+			print('<a href="?newgame">新注册</a><span class="divide"></span>'."\n");
+			print('<a href="?manual">规则和手册</a><span class="divide"></span>'."\n");
+			print('<a href="?gamedata=job">游戏数据</a><span class="divide"></span>'."\n");
+			print('<a href="?log">战斗记录</a><span class="divide"></span>'."\n");
 			if(BBS_OUT)
-			print('<a href="'.BBS_OUT.'">総合BBS</a><span class="divide"></span>'."\n");
-			
+			print('<a href="'.BBS_OUT.'" target="_balnk">BBS</a><span class="divide"></span>'."\n");			
 			print('</div><div id="menu2">');
-			print("Welcome to [ ".TITLE." ]");
+			print("欢迎来到 [ ".TITLE." ]");
 			print('</div>');
 		}
 	}
@@ -3545,27 +3576,26 @@ print("</div>\n");
 //	HTML開始部分
 	function Head() {
 		?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
-<head><?$this->HtmlScript();?>
-<title><?=TITLE?></title>
+<head>
+<?php $this->HtmlScript();?>
+<title><?php print TITLE?></title>
 </head>
 <body><a name="top"></a>
 <div id="main_frame">
 <div id="title"><img src="./image/title03.gif"></div>
-<?$this->MyMenu();?><div id="contents">
-<?
+<?php $this->MyMenu();?><div id="contents">
+<?php 
 	}
 
 //////////////////////////////////////////////////
-//	スタイルシートとか。
+//	调用样式表
 	function HtmlScript() {
 		?>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" href="./basis.css" type="text/css">
 <link rel="stylesheet" href="./style.css" type="text/css">
-<script type="text/javascript" src="prototype.js"></script>
-<?
+<?php 
 	}
 
 //////////////////////////////////////////////////
@@ -3573,24 +3603,26 @@ print("</div>\n");
 	function Foot() {
 		?>
 </div>
+<div style="clear: both;"></div>
 <div id="foot">
-<a href="?update">UpDate</a> - <?
+<a href="?update">UpDate</a> - 
+<?php 
 	if(BBS_BOTTOM_TOGGLE)
-		print('<a href="?bbs">BBS</a> - '."\n");
+		print('<a href="'.BBS_OUT.'" target="_blank">BBS</a> - '."\n");
 		?>
-<a href="?manual">Manual</a> - 
-<a href="?tutorial">Tutorial</a> - 
-<a href="?gamedata=job">GameData</a> - 
+<a href="?manual">手册</a> - 
+<a href="?tutorial">教学</a> - 
+<a href="?gamedata=job">游戏数据</a> - 
 <a href="#top">Top</a><br>
-Copy Right <a href="http://tekito.kanichat.com/">Tekito</a> 2007-2008.<br>
 </div>
 </div>
 </body>
-</html><?
+</html>
+<?php 
 	}
 
 //////////////////////////////////////////////////
-//	初回ログイン用のフォーム
+//	手册登录表单
 	function FirstLogin() {
 		// 返値:設定済み=false / 非設定=true
 		if ($this->name)
@@ -3600,51 +3632,51 @@ Copy Right <a href="http://tekito.kanichat.com/">Tekito</a> 2007-2008.<br>
 			if (!$_POST["Done"])
 				break;
 			if(is_numeric(strpos($_POST["name"],"\t"))) {
-				$error	= 'error1';
+				$error	= '请不要在名字中输入特殊字符。';
 				break;
 			}
 			if(is_numeric(strpos($_POST["name"],"\n"))) {
-				$error	= 'error';
+				$error	= '请不要在名字中输入换行符号。';
 				break;
 			}
 			$_POST["name"]	= trim($_POST["name"]);
 			$_POST["name"]	= stripslashes($_POST["name"]);
 			if (!$_POST["name"]) {
-				$error	= 'Name is blank.';
+				$error	= '一定要输入您的名字。';
 				break;
 			}
 			$length	= strlen($_POST["name"]);
 			if ( 0 == $length || 16 < $length) {
-				$error	= '1 to 16 letters?';
+				$error	= '请输入1到16个字符，汉字算3个。';
 				break;
 			}
 			$userName	= userNameLoad();
 			if(in_array($_POST["name"],$userName)) {
-				$error	= '該名字已被使用。';
+				$error	= '该名字已被使用。';
 				break;
 			}
-			// 最初のキャラの名前
+			// 第一个角色的名字
 			$_POST["first_name"]	= trim($_POST["first_name"]);
 			$_POST["first_name"]	= stripslashes($_POST["first_name"]);
 			if(is_numeric(strpos($_POST["first_name"],"\t"))) {
-				$error	= 'error';
+				$error	= '请不要在名字中输入特殊字符。';
 				break;
 			}
 			if(is_numeric(strpos($_POST["first_name"],"\n"))) {
-				$error	= 'error';
+				$error	= '请不要在名字中输入换行符号。';
 				break;
 			}
 			if (!$_POST["first_name"]) {
-				$error	= 'Character name is blank.';
+				$error	= '一定要让我们知道你的角色叫什么。';
 				break;
 			}
 			$length	= strlen($_POST["first_name"]);
 			if ( 0 == $length || 16 < $length) {
-				$error	= '1 to 16 letters?';
+				$error	= '请输入1到16个字符，汉字算3个。';
 				break;
 			}
 			if(!$_POST["fjob"]) {
-				$error	= 'Select characters job.';
+				$error	= '请选择角色的职业：';
 				break;
 			}
 			$_POST["name"]	= htmlspecialchars($_POST["name"],ENT_QUOTES);
@@ -3681,37 +3713,38 @@ Copy Right <a href="http://tekito.kanichat.com/">Tekito</a> 2007-2008.<br>
 		$sor_female->SetCharData(array_merge(BaseCharStatus("2"),array("gender"=>"1")));
 
 		?>
-	<form action="<?=INDEX?>" method="post" style="margin:15px">
-	<?ShowError($error);?>
-	<h4>Name of Team</h4>
-	<p>Decide the Name of the team.<br />
-	It should be more than 1 and less than 16 letters.<br />
-	Japanese characters count as 2 letters.</p>
-	<p>1-16字符的隊伍名。<br />
-	日本語でもOK。<br />
-	日本語は 1文字 = 2 letter</p>
+	<form action="<?php print INDEX?>" method="post" style="margin:15px">
+<?php ShowError($error);?>
+	<h4>队伍名称</h4>
+	<p>现在来决定队伍叫什么：<br />
+	队伍的名称应该由1到16个字符组成，<br />
+	一个汉字要算成3个字符。</p>
+	<p>1-16字符的队伍名。<br /></p>
 	<div class="bold u">TeamName</div>
-	<input class="text" style="width:160px" maxlength="16" name="name"<?print($_POST["name"]?"value=\"$_POST[name]\"":"")?>>
-	<h4>First Character</h4>
-	<p>Decide the name of Your First Charactor.<br>
-	more than 1 and less than 16 letters.</p>
-	<p>第一個人物的名稱。</p>
+	<input class="text" style="width:160px" maxlength="16" name="name"
+<?php print($_POST["name"]?"value=\"$_POST[name]\"":"")?>>
+	<h4>第一个角色</h4>
+	<p>现在来想想您的第一个角色是什么样子的：<br>
+	角色的名字应该由1到16个字符组成，<br />
+	一个汉字要算成3个字符。</p></p>
+	<p>第一个角色的名称。</p>
 	<div class="bold u">CharacterName</div>
 	<input class="text" type="text" name="first_name" maxlength="16" style="width:160px;margin-bottom:10px">
 	<table cellspacing="0" style="width:400px"><tbody>
-	<tr><td class="td1" valign="bottom"><div style="text-align:center"><?=$war_male->ShowImage()?><br><input type="radio" name="fjob" value="1" style="margin:3px"></div></td>
-	<td class="td1" valign="bottom"><div style="text-align:center"><?=$war_female->ShowImage()?><br><input type="radio" name="fjob" value="2" style="margin:3px"></div></td>
-	<td class="td1" valign="bottom"><div style="text-align:center"><?=$sor_male->ShowImage()?><br><input type="radio" name="fjob" value="3" style="margin:3px"></div></td>
-	<td class="td1" valign="bottom"><div style="text-align:center"><?=$sor_female->ShowImage()?><br><input type="radio" name="fjob" value="4" style="margin:3px"></div></td></tr>
+	<tr><td class="td1" valign="bottom"><div style="text-align:center"><?php print $war_male->ShowImage()?><br><input type="radio" name="fjob" value="1" style="margin:3px"></div></td>
+	<td class="td1" valign="bottom"><div style="text-align:center"><?php print $war_female->ShowImage()?><br><input type="radio" name="fjob" value="2" style="margin:3px"></div></td>
+	<td class="td1" valign="bottom"><div style="text-align:center"><?php print $sor_male->ShowImage()?><br><input type="radio" name="fjob" value="3" style="margin:3px"></div></td>
+	<td class="td1" valign="bottom"><div style="text-align:center"><?php print $sor_female->ShowImage()?><br><input type="radio" name="fjob" value="4" style="margin:3px"></div></td></tr>
 	<tr><td class="td2"><div style="text-align:center">male</div></td><td class="td3"><div style="text-align:center">female</div></td>
 	<td class="td2"><div style="text-align:center">male</div></td><td class="td3"><div style="text-align:center">female</div></td></tr>
 	<tr><td colspan="2" class="td4"><div style="text-align:center">Warrior</div></td><td colspan="2" class="td4"><div style="text-align:center">Socerer</div></td></tr>
 	</tbody></table>
-	<p>Choose your first character's job &amp; Gender.</p>
-	<p>最初的人物性別與職業</p>
+	<p>想想您的第一个角色应该有什么样的职业与性别：</p>
+	<p>最初的人物性别与职业</p>
 	<input class="btn" style="width:160px" type="submit" value="Done" name="Done">
 	<input type="hidden" value="1" name="Done">
-	<input class="btn" style="width:160px" type="submit" value="logout" name="logout"></form><?
+	<input class="btn" style="width:160px" type="submit" value="logout" name="logout"></form>
+<?php 
 			return true;
 	}
 //////////////////////////////////////////////////
@@ -3723,12 +3756,12 @@ Copy Right <a href="http://tekito.kanichat.com/">Tekito</a> 2007-2008.<br>
 	?>
 <div style="margin:15px">
 <h4>one line bbs</h4>
-錯誤報告或意見，對這裡的開發建議
+错误报告或意见，对这里的开发建议
 <form action="?bbs" method="post">
 <input type="text" maxlength="60" name="message" class="text" style="width:300px"/>
 <input type="submit" value="post" class="btn" style="width:100px" />
 </form>
-<?
+<?php 
 		if(!file_exists($file))
 			return false;
 		$log	= file($file);
@@ -3736,7 +3769,7 @@ Copy Right <a href="http://tekito.kanichat.com/">Tekito</a> 2007-2008.<br>
 			$_POST["message"]	= htmlspecialchars($_POST["message"],ENT_QUOTES);
 			$_POST["message"]	= stripslashes($_POST["message"]);
 
-			$name	= ($this->name ? "<span class=\"bold\">{$this->name}</span>":"名無し");
+			$name	= ($this->name ? "<span class=\"bold\">{$this->name}</span>":"无名");
 			$message	= $name." > ".$_POST["message"];
 			if($this->UserColor)
 				$message	= "<span style=\"color:{$this->UserColor}\">".$message."</span>";

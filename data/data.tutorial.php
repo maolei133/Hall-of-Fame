@@ -1,34 +1,22 @@
 <div style="margin:15px">
-<h4>チュートリアル</h4>
-<p>戦闘の基本的な戦略(イメージ:下図)</p>
-<img src="./image/manual/t001.gif" alt="いめーじ" />
-<p>基本は <span class="bold">戦士</span>(Warrior) のような打たれ強いキャラを <span class="bold">前衛</span>(Front) に、<br />
-<span class="bold">魔法使い</span>(Sorecerer) のような打たれ弱いキャラを <span class="bold">後衛</span>(Back) に。</p>
-<p>前衛は後衛を守り、攻撃力の高い後衛が敵を倒し、<br />
-傷ついた前衛を後衛が治してあげる。という具合です。</p>
-<h4>とりあえず やてみろ！</h4>
-<p>戦士(Warrior), 魔法使い(Sorecerer) と 僧侶(Priest) が揃うように<br />
-メニューの <span class="bold">街(Town) → </span><a href="?recruit">人材斡旋所(Recruit)</a> から雇ってみましょ
-<span class="light">(リンクはログインしてる場合のみ有効)</span><br />
-雇った時点で、そこそこ戦えるように設定してあります。</p>
-<img src="<?=IMG_CHAR_REV?>mon_079.gif" alt="守る人" />
-<img src="<?=IMG_CHAR_REV?>mon_018.gif" alt="痛い攻撃する人" />
-<img src="<?=IMG_CHAR_REV?>mon_214.gif" alt="治す人" />
-<p>ではさっそく、戦闘です。<br />
-メニューの 狩り(Hunt) → <a href="?common=gb0">ゴブリンと遊ぶ</a><span class="light">(リンクはログインしてる場合のみ有効)</span><br />
-雇った人たちにチェックをつけたら、<br />
-Battle !</p>
-<p>ちゃんとできていれば、<br />戦闘結果が表示されると思います。</p>
-<h4>メニューの構成</h4>
-<img src="./image/manual/003.gif">
-<h4>うんぬん</h4>
-<div class="bold u">雇える初期キャラ</div>
-<p><ul>
-<li>戦士(Warrior) - 打たれ強い。</li>
-<li>魔法(Sorcerer) - 攻撃力は高いが、打たれ弱い。</li>
-<li>僧侶(Priest) - 回復役。</li>
-<li>弓使い(Hunter) - 相手の前衛を無視して後衛を攻撃できる等。</li>
-</ul></p>
-<h4>うんぬ2ん</h4>
-編集日(2008/01/28)
-</div>
+<h4>教程</h4><P>战斗基本攻略(下图)</P><IMG alt=图象 src="./image/manual/t001.gif"> 
+<P>基本上来说 ，应该把<SPAN class=bold>战士</SPAN>(Warrior)类的适合进攻的人物放在 <SPAN class=bold>前卫(Front)</SPAN>位置上 、<BR>使用<SPAN class=bold>魔法</SPAN>(Sorecerer) 的相对抗击打能力弱的人物放在 <SPAN class=bold>后卫(Back) </SPAN>位置上。</P>
+<P>前卫保护后卫、攻击力强的后卫又可以打到敌人、<BR>后卫也可以帮受伤的前卫疗伤。这样的布局是最好的。</P>
+<H4>暂且这样试试吧！</H4>
+<P>战士(Warrior), 法师(Sorecerer) 以及牧师(Priest)<BR>都可以从菜单的<SPAN class=bold>街道(Town) → </SPAN><A href="?recruit">人才介绍所(Recruit)</A>中雇佣 <BR>雇佣了以后，就可以对其进行战斗上的设定。</P>
+<img src="<?=IMG_CHAR_REV?>mon_079.gif" alt="守护的人" />
+<img src="<?=IMG_CHAR_REV?>mon_018.gif" alt="强力攻击的人" />
+<img src="<?=IMG_CHAR_REV?>mon_214.gif" alt="治疗的人" />
+<P>那么，赶快进入战斗吧。<BR>菜单中的狩猎(Hunt) → <A href="?common=gb0">哥布林</A><BR>对雇佣来的人进行测试、<BR>Battle !</P>
+<P>如果战斗的话、<BR>会显示战斗结果。</P>
+<H4>菜单的构成</H4><IMG src="./image/manual/003.gif"> 
+<H4>等等</H4>
+<DIV class="bold u">初期能雇佣的人物</DIV>
+<P>
+<UL>
+<LI>战士(Warrior) - 抗打。 
+<LI>法师(Sorcerer) - 攻击力强但是不抗击打。 
+<LI>牧师(Priest) - 治愈系。 
+<LI>猎人(Hunter) - 可以无视对手的前卫直接攻击后卫。 </LI></UL>
+<P></P>
+<h4>等</h4></div>

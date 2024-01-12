@@ -1,62 +1,62 @@
 <?php
-// game setting
-define("TITLE","Hall of Fame");//タイトル
-define("MAX_TIME",1000);//最大Time
-define("TIME_GAIN_DAY",6000);//1日に回復する総Time
-define("MAX_CHAR",10);//最大所持キャラ数
-define("MAX_USERS",500);//最大登録者人数
-define("ABANDONED",60*60*24*14);//ゲームを放棄されたとみなす期間
-define("CONTROL_PERIOD",60*60*12);//定期管理の周期
-define("RECORD_IP",1);//IPを記録するか？(0=NO 1=YES)
+// 游戏设置
+define("TITLE","荣誉圣殿中文版 （Hall of Fame）");//网页标题
+define("MAX_TIME",1000);//最大体力
+define("TIME_GAIN_DAY",500);//每日所获得的体力
+define("MAX_CHAR",5);//最大角色数量
+define("MAX_USERS",500);//最大用户数量
+define("ABANDONED",60*60*24*14);//删除用户周期
+define("CONTROL_PERIOD",60*60*12);//自动管理周期
+define("RECORD_IP",1);//IP记录(0=NO 1=YES)
 
-// other
+// 其他设置
 define("DEBUG",0);// 0=OFF
-define("CHAR_NO_IMAGE","NoImage.gif");// キャラ画像がない場合表示される画像
+define("CHAR_NO_IMAGE","NoImage.gif");// 无角色图片
 define("SESSION_SWITCH",1);// 0=OFF
-define("CHAR_ROW",5);// 1画面のキャラの列数
+define("CHAR_ROW",5);//角色队列数
 define("CRYPT_KEY",'$1$12345678$');//パス符号化キー(ゲーム設置後は変えるな)
-define("COOKIE_EXPIRE",60*60*24*3);//60*60*24*3
-define("UP_PASS","password");// 更新情報のみしか使用されない
+define("COOKIE_EXPIRE",60*60*24*3);//cookie时间 60*60*24*3
+define("UP_PASS","password");// 公告管理密码
 
-define("START_TIME",900);//ゲーム開始時に持ってるTime
-define("START_MONEY",50000);//初期所持金
-define("MAX_STATUS",250);//ステータス最大値
-define("GET_STATUS_POINT",5);//LVUPした時に得るステポの数値
-define("GET_SKILL_POINT",2);//LVUPした時に得る技ポの数値
-define("MAX_LEVEL",50);//最大レベル
-define("SELLING_PRICE",1/5);//売値が設定されていないアイテムの売値→(買値*SELLING_PRICE)
-define("REFINE_LIMIT",10);//精錬限界値
+define("START_TIME",900);//游戏初始体力
+define("START_MONEY",10000);//游戏初始资金
+define("MAX_STATUS",255);//最大属性点
+define("GET_STATUS_POINT",3);//升级获得属性点
+define("GET_SKILL_POINT",1);//升级获得技能点
+define("MAX_LEVEL",50);//最大等级
+define("SELLING_PRICE",1/5);//卖出物品比率（物品原价x比率）
+define("REFINE_LIMIT",10);//篮希嘎肠猛
 
-define("EXP_RATE",1);//経験値もらえる倍率
-define("MONEY_RATE",1);//お金もらえる倍率
+define("EXP_RATE",100);//经验倍数
+define("MONEY_RATE",100);//金钱倍数
 
-define("NEW_NAME_COST",300000);//新しい名前に変更するのに必要なお金
-define("BBS_OUT","");//外部BBSがあればそのアドレス、無ければ空欄→""
-define("BBS_BOTTOM_TOGGLE",0);// 下にあった一行掲示板(0=OFF)
-define("AUCTION_TOGGLE",0);// オークションを機能させるか(0=OFF 1=ON)
-define("AUCTION_EXHIBIT_TOGGLE",0);// オークションの出品を可能にするか(0=OFF 1=ON)
-define("JUDGE_LIST_AUTO_LOAD",0);//パターン判断のリストを 1=自動 0=手動追加(若干軽い)
-define("AUCTION_MAX",100);//オークション同時に出品できる品数。
+define("NEW_NAME_COST",100000);//改变队伍名称所需资金
+define("BBS_OUT","http://localhost/bbs/");//论坛链接地址
+define("BBS_BOTTOM_TOGGLE",0);//底部论坛链接按钮(0=OFF 1=ON)
+define("AUCTION_TOGGLE",1);//是否开启拍卖会所(0=OFF 1=ON)
+define("AUCTION_EXHIBIT_TOGGLE",0);////拍卖(0=暂停 1=开启)
+define("JUDGE_LIST_AUTO_LOAD",1);//条件判定列表自动取得 1=自动 0=手动操作
+define("AUCTION_MAX",100);//最大拍卖数
 
-// ranking
-define("RANK_TEAM_SET_TIME",60*60*48);//ランキングのチーム設定できる周期
-define("RANK_BATTLE_NEXT_LOSE",60*60*24);//ランキング戦 負けたとき次戦えるまで
-define("RANK_BATTLE_NEXT_WIN",60*1);//ランキング戦 勝ったとき次戦えるまで
+// 排名设置
+define("RANK_TEAM_SET_TIME",60*60*48);//排名队伍设定周期
+define("RANK_BATTLE_NEXT_LOSE",60*60*24);//失败后再挑战时间
+define("RANK_BATTLE_NEXT_WIN",60*1);//赢得排名站再战的时间
 
-// battle setting
-define("NORMAL_BATTLE_TIME",100);//通常のモンスターとの戦闘で消費する時間
-define("ENEMY_INCREASE",0);//敵の増員(ランダム)
-define("BATTLE_MAX_TURNS",100);//戦闘の最大行動回数(戦闘が数値以上長引くと終了させる)
+// 对战设置
+define("NORMAL_BATTLE_TIME",1);//默认战斗消耗体力
+define("ENEMY_INCREASE",0);//对手选择(随机)
+define("BATTLE_MAX_TURNS",100);//战斗最大回合数
 define("TURN_EXTENDS",20);// 決着がつきそうな場合延長するターン数。
 define("BATTLE_MAX_EXTENDS",100);//延長した場合の最大行動回数(延長の限界)
 define("BTL_IMG_TYPE",2);// (0=GD 1=CSS 2=反転済画像使用CSS)
-define("BTL_IMG","./image.php");// GD表示
-define("BATTLE_STAT_TURNS",10);// 戦闘の状況を表示する間隔
-define("DEAD_IMG","mon_145.gif");// HP=0 のキャラの画像
-define("MAX_BATTLE_LOG",100);// 戦闘ログを保存する件数
-define("MAX_BATTLE_LOG_UNION",100);// 戦闘ログを保存する件数
-define("MAX_BATTLE_LOG_RANK",100);// 戦闘ログを保存する件数
-define("MAX_STATUS_MAXIMUM",2500);// 初期値x値(%) 戦闘中の能力上昇で上がる数値の限界値(1000%=10倍が限界)
+define("BTL_IMG","./image.php");// GD文件
+define("BATTLE_STAT_TURNS",10);// 战斗统计回合
+define("DEAD_IMG","mon_145.gif");// HP=0时的角色图片
+define("MAX_BATTLE_LOG",100);// 战斗记录保存数(通常怪)
+define("MAX_BATTLE_LOG_UNION",50);// 战斗记录保存数(BOSS)
+define("MAX_BATTLE_LOG_RANK",50);// 战斗记录保存数(BOSS)
+define("MAX_STATUS_MAXIMUM",2500);// 最大战斗回合数(1000%=10)
 
 define("DELAY_TYPE",1);// 0=旧 1=新
 // DELAY_TYPE=0
@@ -65,8 +65,8 @@ define("DELAY",2.5);//ディレイ(2以上が目安。数値が低いとSPDが�
 define("DELAY_BASE",5);// 数値が高いと差がつかなくなる。
 
 // union
-define("UNION_BATTLE_TIME",10);//ユニオン戦で消費する時間
-define("UNION_BATTLE_NEXT",60*20);//Union次の戦闘までの間隔
+define("UNION_BATTLE_TIME",10);//BOSS战消耗体力
+define("UNION_BATTLE_NEXT",60*20);//BOSS战再挑战时间
 
 // files
 define("INDEX","index.php");

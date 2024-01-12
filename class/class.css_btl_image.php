@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /*
 	スタイルシートで画像?領域?反転可能だったのを思い出したので
 	それを用いて戦闘画面を作る。
@@ -71,7 +71,7 @@ class cssimage {
 //////////////////////////////////////////////////
 //	CSS( キャラ画像 ,x座標 ,y座標 )
 	function det($url,$x,$y) {
-		return "background-image:url({$url});background-repeat:no-repeat;background-position:{$x}px {$y}px;";
+		return "height:200px;background-image:url({$url});background-repeat:no-repeat;background-position:{$x}px {$y}px;";
 	}
 
 //////////////////////////////////////////////////

@@ -1,9 +1,9 @@
 <?php
-// 製作表
+// 制作表
 function CanCreate($user) {
 
 /*	// ※表示に時間かかる 
-	// アイテムデ一タにneedが設定されてるものを全て自動取得する
+	// 自动获取所有项目数据中被设定为need的项目
 	for($i=1000; $i<10000; $i++) {
 		$item	= LoadItemData($i);
 		if(!$item) continue;
@@ -12,13 +12,13 @@ function CanCreate($user) {
 	}
 	return $create;
 */
-	// 劍
+	// 剑
 	$create	= array(1000,1001,1002,1003,1004,1005,1006,1007,1008,1020,1022,1023);
-	// 雙手劍
+	// 双手剑
 	$create	= array_merge($create,
 	array(1100,1101,1102,1103,1104,1120)
 	);
-	// 短劍
+	// 短剑
 	$create	= array_merge($create,
 	array(1201,1202,1203,1204,1205,1220,)
 	);
@@ -26,7 +26,7 @@ function CanCreate($user) {
 	$create	= array_merge($create,
 	array(1700,1701,1702,1703,1704,1705,1706,)
 	);
-	// 雙手杖
+	// 双手杖
 	$create	= array_merge($create,
 	array(1800,1801,1802,1803,1810,1811,1812,)
 	);
@@ -46,7 +46,7 @@ function CanCreate($user) {
 	$create	= array_merge($create,
 	array(3101,3102,3103,3104,3105,)
 	);
-	// 鎧
+	// 铠
 	$create	= array_merge($create,
 	array(5000,5001,5002,5003,5004,5005,5007,5008,5009,)
 	);
@@ -60,11 +60,11 @@ function CanCreate($user) {
 	);
 	return $create;
 }
-// 判斷道具需求
+// 判断道具需求
 function HaveNeeds($item,$UserItem) {
-	// 沒有道具的情況
+	// 没有道具的情况
 	if(!$UserItem) return false;
-	// 對像到不不能做成情況下
+	// 对象到不不能做成情况下
 	if(!$item["need"]) return false;
 	foreach($item["need"] as $NeedNo => $Amount) {
 		if($UserItem[$NeedNo] < $Amount)
@@ -76,13 +76,13 @@ function HaveNeeds($item,$UserItem) {
 // 道具所返回的能力
 function ItemAbilityPossibility($type) {
 	switch($type) {
-		case "Sword":
-		case "TwoHandSword":
-		case "Dagger":
-		case "Wand":
-		case "Staff":
-		case "Bow":
-		case "Whip":
+		case "剑":
+		case "双手剑":
+		case "匕首":
+		case "魔杖":
+		case "杖":
+		case "弓":
+		case "鞭":
 			$low	= array(
 			// Atk+
 			100,101,102,103,104,
@@ -144,11 +144,11 @@ function ItemAbilityPossibility($type) {
 			L05,L06,L07,L08,L09,
 			);
 			break;
-		case "Shield":
-		case "Book":
-		case "Armor":
-		case "Cloth":
-		case "Robe":
+		case "盾":
+		case "书":
+		case "甲":
+		case "衣服":
+		case "长袍":
 			$low	= array(
 			// Def +
 			300,301,

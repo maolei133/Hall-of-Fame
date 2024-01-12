@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 class Ranking {
 
@@ -29,19 +29,16 @@ class Ranking {
 	...........
 
 */
-	function Ranking() {
+	function __construct() {
 		$file	= RANKING;
-
 		if(!file_exists($file)) return 0;
-
-		// ファイルから読んで配列にいれる
-
-		$this->fp	= FileLock($file);
+		$this->fp=FileLock($file);
 		$Place	= 0;
 		while($line = fgets($this->fp) ) {
 			$line	= trim($line);
 			if($line == "") continue;
-			if(count($this->Ranking[$Place]) === $this->SamePlaceAmount($Place))
+			// 240112-错误修复: Warning: count(): Parameter must be an array or an object that implements Countable  https://www.cnblogs.com/ytkah/p/10741960.html
+			if(count((array)$this->Ranking[$Place]) === $this->SamePlaceAmount($Place))
 				$Place++;
 			$this->Ranking[$Place][]	= $line;
 		}
@@ -58,12 +55,10 @@ class Ranking {
 				$this->Ranking["$Rank"]["$key"]["id"]	= $list["0"];
 			}
 		}
-		//$this->JoinRanking("yqyqqq","last");
-		//dump($this->Ranking);
 	}
 //////////////////////////////////////////////
 // ランキング戦する。戦う。
-	function Challenge(&$user) {
+	function Challenge($user) {
 		// ランキングが無いとき(1位になる)
 		if(!$this->Ranking) {
 			$this->JoinRanking($user->id);
@@ -77,7 +72,7 @@ class Ranking {
 
 		// 1位の場合。
 		if($MyRank["0"] === 0) {
-			SHowError("First place can't challenge.");
+			SHowError("第一名不可再挑战.");
 			//return array($message,true);
 			return false;
 		}
@@ -111,7 +106,7 @@ class Ranking {
 			*/
 
 			$Result	= $this->RankBattle($user,$Rival,$MyPlace,$RivalPlace);
-			$Return	= $this->ProcessByResult($Result,&$user,&$Rival,$DefendMatch);
+			$Return	= $this->ProcessByResult($Result,$user,$Rival,$DefendMatch);
 			
 			return $Return;
 			// 勝利なら順位交代
@@ -141,7 +136,7 @@ class Ranking {
 			//$MyID		= $id;
 			//list($message,$result)	= $this->RankBattle($MyID,$RivalID);
 			$Result	= $this->RankBattle($user,$Rival,$MyRank["0"],$RivalPlace);
-			$Return	= $this->ProcessByResult($Result,&$user,&$Rival,$DefendMatch);
+			$Return	= $this->ProcessByResult($Result,$user,$Rival,$DefendMatch);
 			
 			return $Return;
 			//if($message != "Battle")
@@ -161,7 +156,7 @@ class Ranking {
 
 //////////////////////////////////////////////
 // 戦わせる
-	function RankBattle(&$user,&$Rival,$UserPlace,$RivalPlace) {
+	function RankBattle($user,$Rival,$UserPlace,$RivalPlace) {
 
 		$UserPlace	= "[".($UserPlace+1)."位]";
 		$RivalPlace	= "[".($RivalPlace+1)."位]";
@@ -172,7 +167,7 @@ class Ranking {
 			本来出ないエラーかもしれない。
 		*/
 		if($Rival->is_exist() == false) {
-			ShowError("相手が既に存在していませんでした(不戦勝)");
+			ShowError("对手不存在(不战而胜)");
 			$this->DeleteRank($DefendID);
 			$this->SaveRanking();
 			//return array(true);
@@ -186,7 +181,7 @@ class Ranking {
 
 		// ランク用パーティーがありません！！！
 		if($Party_Challenger === false) {
-			ShowError("戦うメンバーがいません。");
+			ShowError("戦うメンバーがいません（？）。");
 			return "CHALLENGER_NO_PARTY";
 		}
 
@@ -194,8 +189,8 @@ class Ranking {
 		if($Party_Defender === false) {
 			//$defender->RankRecord(0,"DEFEND",$DefendMatch);
 			//$defender->SaveData();
-			ShowError($Rival->name." は対戦キャラが設定されていませんでした<br />(不戦勝)");
-			return "DEFENDER_NO_PARTY";//不戦勝とする
+			ShowError($Rival->name." 对战的人物还未决定<br />(不战而胜)");
+			return "DEFENDER_NO_PARTY";//不战而胜とする
 		}
 
 		//dump($Party_Challenger);
@@ -226,7 +221,7 @@ class Ranking {
 	}
 //////////////////////////////////////////////////
 //	結果によって処理を変える
-	function ProcessByResult($Result,&$user,&$Rival,$DefendMatch) {
+	function ProcessByResult($Result,$user,$Rival,$DefendMatch) {
 		switch($Result) {
 
 			// 受けた側のIDが存在しない
@@ -378,7 +373,7 @@ class Ranking {
 		$LastPlace	= count($this->Ranking) - 1;// 最下位
 
 		print("<table cellspacing=\"0\">\n");
-		print("<tr><td class=\"td6\" style=\"text-align:center\">順位</td><td  class=\"td6\" style=\"text-align:center\">チーム</td></tr>\n");
+		print("<tr><td class=\"td6\" style=\"text-align:center\">排位</td><td  class=\"td6\" style=\"text-align:center\">队伍</td></tr>\n");
 		for($Place=$from; $Place<$to + 1; $Place++) {
 			if(!$this->Ranking["$Place"])
 				break;
@@ -400,13 +395,14 @@ class Ranking {
 			print("</td><td class=\"td8\">\n");
 			foreach($this->Ranking["$Place"] as $SubRank => $data) {
 				list($Name,$R)	= $this->LoadUserName($data["id"],true);//成績も読み込む
-				$WinProb	= $R[all]?sprintf("%0.0f",($R[win]/$R[all])*100):"--";
-				$Record	= "(".($R[all]?$R[all]:"0")."戦 ".
-						($R[win]?$R[win]:"0")."勝 ".
-						($R[lose]?$R[lose]:"0")."敗 ".
-						($R[all]-$R[win]-$R[lose])."引 ".
-						($R[defend]?$R[defend]:"0")."防 ".
-						"勝率".$WinProb.'%'.
+				// 240112-错误修复: Warning: Use of undefined constant all  https://www.cnblogs.com/onlylove2015/p/5045100.html
+				$WinProb	= $R['all']?sprintf("%0.0f",($R['win']/$R['all'])*100):"--";
+				$Record	= "(".($R['all']?$R['all']:"0")."战 ".
+						($R['win']?$R['win']:"0")."胜".
+						($R['lose']?$R['lose']:"0")."败 ".
+						($R['all']-$R['win']-$R['lose'])."引 ".
+						($R['defend']?$R['defend']:"0")."防 ".
+						"胜率".$WinProb.'%'.
 						")";
 				if(isset($BoldRank) && $BoldRank["0"] == $Place && $BoldRank["1"] == $SubRank) {
 					print('<span class="bold u">'.$Name."</span> {$Record}");
@@ -434,7 +430,7 @@ class Ranking {
 
 			$Rank	= $this->SearchID($id);
 			if($Rank === false) {
-				print("ランキング不明");
+				print("排名未知");
 				return 0;
 			}
 			$Range	= floor($Amount/2);

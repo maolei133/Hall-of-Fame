@@ -1,6 +1,6 @@
 <?php
 function AddEnchantData(&$item, $opt) {
-//製作精煉的特殊效果
+//制作精炼的特殊效果
 
 /*
 	製作した防具に付与される追加効果。
@@ -546,12 +546,7 @@ function AddEnchantData(&$item, $opt) {
 			$item["P_LUK"]	+= 10;
 			$item["option"]	.= "LUK+10, ";
 			break;
-
-
-
-											// 特殊製作
-											// 日付や時間帯によっても効果かえれるよ date();
-    // 特殊前綴
+    // 特殊前缀
 		case X00:
 			if($item["type2"] == "WEAPON") {
 				$item["atk"]["0"]	+= 5;
@@ -560,7 +555,7 @@ function AddEnchantData(&$item, $opt) {
 			} else {
 				$item["def"]["0"]	+= 2;
 				$item["option"]	.= "Def+2, ";
-				$item["AddName"]	= "穩固";
+				$item["AddName"]	= "稳固";
 			}
 			break;
 		case X01:

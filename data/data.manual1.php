@@ -1,234 +1,132 @@
-<?
+﻿<?php 
 	if(!function_exists("LoadSkillData"))
 		include(DATA_SKILL);
 ?>
 <div style="margin:15px">
 <!-- ---------------------------------------------------------------- -->
 <a name="content"></a>
-<h4>目次</h4>
-<ul>
-<li><a href="#mj">行動の多重判定について</a></li>
-<li><a href="#twenty">約20%の確率を作る。</a></li>
-<li><a href="#def">防御力の数値について。</a></li>
-<li><a href="#res">弱点属性と状態異常が少ない理由。</a></li>
-</ul>
+<h4>目录</h4>
+<UL>
+<LI><A href="#mj">关于行动的多重判定</A></LI>
+<LI><A href="#twenty">约20%的概率。</A></LI>
+<LI><A href="#def">关于防御力的数值。</A></LI>
+<LI><A href="#res">弱点属性以及无状态异常的原因。</A></LI>
+</UL>
 <!-- ---------------------------------------------------------------- -->
-<a name="mj"></a>
-<h4>行動の多重判定について<a href="#content">↑</a></h4>
-<div style="margin:0 20px">
-<p>"* think over" というスキルを習得すると<br />
-条件による多重判定ができるようになります。</p>
-<p><img src="./image/char/mon_079.gif" class="vcent">戦士系の場合だと...<img src="./image/char/mon_080r.gif" class="vcent"></p>
-<table cellspacing="5">
-<tbody>
-<tr>
-<td>1</td>
-<td>
-<select>
-<option>必ず</option>
-<option selected>自分の HPが50%以下 の時 </option>
-<option>自分の SPが20%以上 の時</option>
-<option>自分の SPが30%以上 の時</option>
-<option>初回行動時</option>
-</select>
-</td>
-<td>
-<select>
-<option>Attack</option>
-<option>Bash</option>
-<option>RagingBlow</option>
-<option>Reinforce</option>
-<option>SelfRecovery</option>
-<option selected>* think over</option>
-</select>
-</td>
-<td><?ShowSkillDetail(LoadSkillData(9000))?></td>
+<A name=mj></A>
+<H4>关于行动的多重判定<A href="#content">↑</A></H4>
+<DIV style="MARGIN: 0px 20px">
+<P>学习"* think over" 技能的话<BR>
+可以够根据条件来进行多重判定。</P>
+<P><IMG class=vcent src="./image/char/mon_079.gif">如果是战士系的话...<IMG class=vcent src="./image/char/mon_080r.gif"></P>
+<TABLE cellSpacing=5>
+<TBODY>
+<TR>
+<TD>1</TD>
+<TD>
+<SELECT>
+<OPTION>必须</OPTION>
+<OPTION selected>自己的 HP在50%以下时</OPTION>
+<OPTION>自己的 SP在20%以上时</OPTION>
+<OPTION>自己的 SP在30%以上时</OPTION>
+<OPTION>初次行动时</OPTION>
+</SELECT>
+</TD>
+<TD>
+<SELECT>
+<OPTION>Attack</OPTION>
+<OPTION>Bash</OPTION>
+<OPTION>RagingBlow</OPTION>
+<OPTION>Reinforce</OPTION>
+<OPTION>SelfRecovery</OPTION>
+<OPTION selected>* think over</OPTION>
+</SELECT>
+</TD>
+<td><?php ShowSkillDetail(LoadSkillData(9000))?></td>
 </tr>
 <tr>
-<td>2</td>
-<td><select>
-<option>必ず</option>
-<option>自分の HPが50%以下 の時 </option>
-<option selected>自分の SPが20%以上 の時</option>
-<option>自分の SPが30%以上 の時</option>
-<option>初回行動時</option>
-</select></td>
-<td><select>
-<option>Attack</option>
-<option>Bash</option>
-<option>RagingBlow</option>
-<option>Reinforce</option>
-<option selected>SelfRecovery</option>
-<option>* think over</option>
-</select></td>
-<td><?ShowSkillDetail(LoadSkillData(3121))?></td>
+<TD>2</TD>
+<TD><SELECT>
+<OPTION>必须</OPTION>
+<OPTION>自己的 HP在50%以下时</OPTION>
+<OPTION selected>自己的 SP为20%以上时</OPTION>
+<OPTION>自己的 SP在30%以上时</OPTION>
+<OPTION>初次行动时</OPTION>
+</SELECT></TD>
+<TD><SELECT>
+<OPTION>Attack</OPTION>
+<OPTION>Bash</OPTION>
+<OPTION>RagingBlow</OPTION>
+<OPTION>Reinforce</OPTION>
+<OPTION selected>SelfRecovery</OPTION>
+<OPTION>* think over</OPTION>
+</SELECT></TD>
+<td><?php ShowSkillDetail(LoadSkillData(3121))?></td>
 </tr>
 <tr>
-<td>3</td>
-<td><select>
-<option>必ず</option>
-<option>自分の HPが50%以下 の時 </option>
-<option>自分の SPが20%以上 の時</option>
-<option>自分の SPが30%以上 の時</option>
-<option selected>初回行動時</option>
-</select></td>
-<td><select>
-<option>Attack</option>
-<option>Bash</option>
-<option>RagingBlow</option>
-<option selected>Reinforce</option>
-<option>SelfRecovery</option>
-<option>* think over</option>
-</select></td>
-<td><?ShowSkillDetail(LoadSkillData(3110))?></td>
+<TD>3</TD>
+<TD><SELECT>
+<OPTION>必须</OPTION>
+<OPTION>自己的 HP为50%以下时</OPTION> <OPTION>自己的 SP为20%以上时</OPTION> <OPTION>自己的 SP为30%以上时</OPTION> <OPTION selected>初次行动时</OPTION></SELECT></TD>
+<TD><SELECT> <OPTION>Attack</OPTION> <OPTION>Bash</OPTION> <OPTION>RagingBlow</OPTION> <OPTION selected>Reinforce</OPTION> <OPTION>SelfRecovery</OPTION> <OPTION>* think over</OPTION></SELECT></TD>
+<td><?php ShowSkillDetail(LoadSkillData(3110))?></td>
 </tr>
 <tr>
-<td>4</td>
-<td><select>
-<option>必ず</option>
-<option>自分の HPが50%以下 の時 </option>
-<option>自分の SPが20%以上 の時</option>
-<option selected>自分の SPが30%以上 の時</option>
-<option>初回行動時</option>
-</select></td>
-<td><select>
-<option>Attack</option>
-<option>Bash</option>
-<option selected>RagingBlow</option>
-<option>Reinforce</option>
-<option>SelfRecovery</option>
-<option>* think over</option>
-</select></td>
-<td><?ShowSkillDetail(LoadSkillData(1017))?></td>
+<TD>4</TD>
+<TD><SELECT> <OPTION>必须</OPTION> <OPTION>自己的 HP为50%以下时</OPTION> <OPTION>自己的 SP为20%以上时</OPTION> <OPTION selected>自己的SP为30%以上时</OPTION> <OPTION>初次行动时</OPTION></SELECT></TD>
+<TD><SELECT> <OPTION>Attack</OPTION> <OPTION>Bash</OPTION> <OPTION selected>RagingBlow</OPTION> <OPTION>Reinforce</OPTION> <OPTION>SelfRecovery</OPTION> <OPTION>* think over</OPTION></SELECT></TD>
+
+<td><?php ShowSkillDetail(LoadSkillData(1017))?></td>
 </tr>
 <tr>
-<td>5</td>
-<td><select>
-<option selected>必ず</option>
-<option>自分の HPが50%以下 の時 </option>
-<option>自分の SPが20%以上 の時</option>
-<option>自分の SPが30%以上 の時</option>
-<option>初回行動時</option>
-</select></td>
-<td><select>
-<option selected>Attack</option>
-<option>Bash</option>
-<option>RagingBlow</option>
-<option>Reinforce</option>
-<option>SelfRecovery</option>
-<option>* think over</option>
-</select></td>
-<td><?ShowSkillDetail(LoadSkillData(1000))?></td>
+<TD>5</TD>
+<TD><SELECT> <OPTION selected>必须</OPTION> <OPTION>自己的 HP为50%以下时</OPTION> <OPTION>自己的 SP为20%以上时</OPTION> <OPTION>自己的 SP为30%以上时</OPTION> <OPTION>初次行动时</OPTION></SELECT></TD>
+<TD><SELECT> <OPTION selected>Attack</OPTION> <OPTION>Bash</OPTION> <OPTION>RagingBlow</OPTION> <OPTION>Reinforce</OPTION> <OPTION>SelfRecovery</OPTION> <OPTION>* think over</OPTION></SELECT></TD>
+<td><?php ShowSkillDetail(LoadSkillData(1000))?></td>
 </tr>
 </tbody>
-</table>
-この場合、1 と 2 の
-<ul>
-<li>自分の HPが50%以下の 時</li>
-<li>自分の SPが20%以上の 時</li>
-</ul>
-<p>という判定が両方当てはまった場合のみ "SelfRecovery" を使用します。</p>
-<!-- ----------------------------------- -->
-<p>流れを説明すると...</p>
-<table cellspacing="5">
-<tbody>
-<tr>
-<td>1</td>
-<td>
-<select>
-<option selected>～ の時</option>
-</select>
-</td>
-<td>
-<select>
-<option>Skill 1</option>
-<option>Skill 2</option>
-<option>Skill 3</option>
-<option selected>* think over</option>
-</select>
-</td>
-<td>↓ 判定に当てはまらない場合 3へ</td>
-</tr>
-<tr>
-<td>2</td>
-<td><select>
-<option selected>～ の時</option>
-</select></td>
-<td><select>
-<option selected>Skill 1</option>
-<option>Skill 2</option>
-<option>Skill 3</option>
-<option>* think over</option>
-</select></td>
-<td>← 1+2 の判定に当てはまれば Skill 1 を使用</td>
-</tr>
-<tr>
-<td>3</td>
-<td><select>
-<option selected>～ の時</option>
-</select></td>
-<td><select>
-<option>Skill 1</option>
-<option>Skill 2</option>
-<option>Skill 3</option>
-<option selected>* think over</option>
-</select></td>
-<td>↓ 判定に当てはまらない場合 6へ</td>
-</tr>
-<tr>
-<td>4</td>
-<td><select>
-<option selected>～ の時</option>
-</select></td>
-<td><select>
-<option>Skill 1</option>
-<option>Skill 2</option>
-<option>Skill 3</option>
-<option selected>* think over</option>
-</select></td>
-<td>↓ 判定に当てはまらない場合 6へ</td>
-</tr>
-<tr>
-<td>5</td>
-<td><select>
-<option selected>～ の時</option>
-</select></td>
-<td><select>
-<option>Skill 1</option>
-<option selected>Skill 2</option>
-<option>Skill 3</option>
-<option>* think over</option>
-</select></td>
-<td>← 3+4+5 の判定に当てはまれば Skill 2 を使用</td>
-</tr>
-<tr>
-<td>6</td>
-<td><select>
-<option selected>～ の時</option>
-</select></td>
-<td><select>
-<option>Skill 1</option>
-<option>Skill 2</option>
-<option selected>Skill 3</option>
-<option>* think over</option>
-</select></td>
-<td>← 6 の判定に当てはまれば Skill 3 を使用</td>
-</tr>
-</tbody>
-</table>
-<p>です...?</p>
-</div>
-<!-- ---------------------------------------------------------------- -->
-<a name="twenty"></a>
-<h4>約20%の確率を作る。<a href="#content">↑</a></h4>
-<p>行動の多重判定の70%の確率,30%の確率を同時に組み合わせてください<br />
-0.7 * 0.3 = 0.21 = 21%</p>
-<!-- ---------------------------------------------------------------- -->
-<a name="def"></a>
-<h4>防御力の数値について。<a href="#content">↑</a></h4>
-<p>前は割る後ろは引く</p>
-<!-- ---------------------------------------------------------------- -->
-<a name="res"></a>
-<h4>弱点属性と状態異常が無い理由。<a href="#content">↑</a></h4>
-<p>戦闘中に対応できないから。</p>
-</div>
+</table>这种情况的话、1 和 2的 
+<UL>
+<LI>自己的 HP为50%以下时 
+<LI>自己的 SP为20%以上时 </LI></UL>
+<P>只在双方都适合的时候使用 "SelfRecovery" 。</P><!-- ----------------------------------- -->
+<P>说明流程...</P>
+<TABLE cellSpacing=5>
+<TBODY>
+<TR>
+<TD>1</TD>
+<TD><SELECT> <OPTION selected>的时候</OPTION></SELECT> </TD>
+<TD><SELECT> <OPTION>Skill 1</OPTION> <OPTION>Skill 2</OPTION> <OPTION>Skill 3</OPTION> <OPTION selected>* think over</OPTION></SELECT> </TD>
+<TD>↓ 不适合判断的时候 往3</TD></TR>
+<TR>
+<TD>2</TD>
+<TD><SELECT> <OPTION selected>的时候</OPTION></SELECT></TD>
+<TD><SELECT> <OPTION selected>Skill 1</OPTION> <OPTION>Skill 2</OPTION> <OPTION>Skill 3</OPTION> <OPTION>* think over</OPTION></SELECT></TD>
+<TD>← 如果适合1+2的判断 使用Skill 1 </TD></TR>
+<TR>
+<TD>3</TD>
+<TD><SELECT> <OPTION selected>的时候</OPTION></SELECT></TD>
+<TD><SELECT> <OPTION>Skill 1</OPTION> <OPTION>Skill 2</OPTION> <OPTION>Skill 3</OPTION> <OPTION selected>* think over</OPTION></SELECT></TD>
+<TD>↓ 不适合判断的时候 往6</TD></TR>
+<TR>
+<TD>4</TD>
+<TD><SELECT> <OPTION selected>的时候</OPTION></SELECT></TD>
+<TD><SELECT> <OPTION>Skill 1</OPTION> <OPTION>Skill 2</OPTION> <OPTION>Skill 3</OPTION> <OPTION selected>* think over</OPTION></SELECT></TD>
+<TD>↓ 不适合判断的时候 往6</TD></TR>
+<TR>
+<TD>5</TD>
+<TD><SELECT> <OPTION selected>的时候</OPTION></SELECT></TD>
+<TD><SELECT> <OPTION>Skill 1</OPTION> <OPTION selected>Skill 2</OPTION> <OPTION>Skill 3</OPTION> <OPTION>* think over</OPTION></SELECT></TD>
+<TD>← 如果适合3+4+5的判定的话 使用 Skill 2 </TD></TR>
+<TR>
+<TD>6</TD>
+<TD><SELECT> <OPTION selected>的时候</OPTION></SELECT></TD>
+<TD><SELECT> <OPTION>Skill 1</OPTION> <OPTION>Skill 2</OPTION> <OPTION selected>Skill 3</OPTION> <OPTION>* think over</OPTION></SELECT></TD>
+<TD>← 适合6的判定的话 使用 Skill 3 </TD></TR></TBODY></TABLE>
+<P>...?</P></DIV><!-- ---------------------------------------------------------------- --><A name=twenty></A>
+<H4>约20%的概率。<A href="#content">↑</A></H4>
+<P>同时组合行动多重判定的70%概率,30%概率（？）<BR>0.7 * 0.3 = 0.21 = 21%</P><!-- ---------------------------------------------------------------- --><A name=def></A>
+<H4>关于防御力的数值。<A href="#content">↑</A></H4>
+<P>前面是减伤的百分比后面是直接扣去的值</P><!-- ---------------------------------------------------------------- --><A name=res></A>
+<H4>弱点属性以及无状态异常的原因。<A href="#content">↑</A></H4>
+<P>战斗中没有对应。</P></DIV>

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // 鍛冶屋
 class Item {
 	var $item;
@@ -96,11 +96,11 @@ class Item {
 		if($this->RefineProb($this->refine)) {
 			print("+".$this->refine." -> ");
 			$this->refine++;
-			print("+".$this->refine." <span class=\"recover\">Success</span>&nbsp;!<br />\n");
+			print("+".$this->refine." <span class=\"recover\">成功</span> !<br />\n");
 			return true;
 		} else {
 			print("+".$this->refine." -> ");
-			print("+".($this->refine + 1)." <span class=\"dmg\">Failed</span>.<br />\n");
+			print("+".($this->refine + 1)." <span class=\"dmg\">失败</span>.<br />\n");
 			return false;
 		}
 	}

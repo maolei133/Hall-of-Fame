@@ -76,12 +76,12 @@ class Auction {
 				$this->UserGetItem($Article["bidder"],$Article["item"],$Article["amount"]);
 				$this->UserGetMoney($Article["exhibitor"],$Article["price"]);
 				// 結果をログに残せ
-				$this->AddLog("No.{$Article[No]} <img src=\"".IMG_ICON.$item["img"]."\"><span class=\"bold\">{$item[name]} x{$Article[amount]}</span>個 を ".$this->UserGetNameFromTemp($Article["bidder"])." が ".MoneyFormat($Article["price"])." で<span class=\"recover\">落札しました。</span>");
+				$this->AddLog("No.{$Article[No]} <img src=\"".IMG_ICON.$item["img"]."\"><span class=\"bold\">{$item[name]} x{$Article[amount]}</span>个 ".$this->UserGetNameFromTemp($Article["bidder"])."".MoneyFormat($Article["price"])." <span class=\"recover\">中标。</span>");
 			} else {
 				// 入札が無かった場合、出品者に返却。
 				$this->UserGetItem($Article["exhibitor"],$Article["item"],$Article["amount"]);
 				// 結果をログに残せ
-				$this->AddLog("No.{$Article[No]} <img src=\"".IMG_ICON.$item["img"]."\"><span class=\"bold\">{$item[name]} x{$Article[amount]}</span>個 は<span class=\"dmg\">入札者無しで流れました。</span>");
+				$this->AddLog("No.{$Article[No]} <img src=\"".IMG_ICON.$item["img"]."\"><span class=\"bold\">{$item[name]} x{$Article[amount]}</span>个<span class=\"dmg\">流标。</span>");
 			}
 			// 最後に消す
 			unset($this->Article["$no"]);
@@ -124,7 +124,7 @@ class Auction {
 //	オークションでキャラクター獲得
 //	(動作確認無し)
 	function UserGetChar($UserID,$char) {
-		$this->TempUser["$UserID"]["char"][]	= $char;//
+		$this->TempUser["$UserID"]["char"][]	= $char;
 		$this->TempUser["$UserID"]["CharAdd"]	= true;//キャラクターが追加されたことを記録
 	}
 //////////////////////////////////////////////
@@ -235,20 +235,19 @@ class Auction {
 		$this->Article["$ArticleNo"]["bidder"]	= $Bidder;
 		$this->DataChange	= true;
 		$item	= LoadItemData($Article["item"]);
-		//$this->AddLog("No.".$Article["No"]." <span class=\"bold\">{$item[name]} x{$Article[amount]}</span>個に ".MoneyFormat($BidPrice)." で ".$this->LoadUserName($Bidder)." が<span class=\"support\">入札しました。</span>");
-		$this->AddLog("No.".$Article["No"]." <span class=\"bold\">{$item[name]} x{$Article[amount]}</span>個に ".MoneyFormat($BidPrice)." で ".$BidderName." が<span class=\"support\">入札しました。</span>");
+		$this->AddLog("No.".$Article["No"]." <span class=\"bold\">{$item[name]} x{$Article[amount]}</span>个 ".MoneyFormat($BidPrice)."  ".$BidderName." <span class=\"support\">出价。</span>");
 		return true;
 	}
 //////////////////////////////////////////////
 //	出品物一覧を表示する(その1) 表示の並びが違うだけ
 	function ItemShowArticle($bidding=false) {
 		if(count($this->Article) == 0) {
-			print("競売物無し(No auction)<br />\n");
+			print("无拍卖物(No auction)<br />\n");
 			return false;
 		} else {
 			$Now	= time();
-			$exp	= '<tr><td class="td9">番号</td><td class="td9">価格</td><td class="td9">入札者</td><td class="td9">入札数</td><td class="td9">残り</td>'.
-					'<td class="td9">出品者</td><td class="td9">コメント</td></tr>'."\n";
+			$exp	= '<tr><td class="td9">编号</td><td class="td9">价格</td><td class="td9">投标人</td><td class="td9">出价数</td><td class="td9">其余</td>'.
+					'<td class="td9">参展者</td><td class="td9"> 描述 </td></tr>'."\n";
 			print('<table style="width:725px;text-align:center" cellpadding="0" cellspacing="0" border="0">'."{$exp}\n");
 			foreach($this->Article as $Article) {
 
@@ -285,10 +284,10 @@ class Auction {
 				print('<form action="?menu=auction" method="post">');
 				// 入札フォーム
 				if($bidding) {
-					print('<a href="#" onClick="Element.toggle(\'Bid'.$Article["No"].'\';return false;)">入札</a>');
+					print('<a href="#" onClick="Element.toggle(\'Bid'.$Article["No"].'\';return false;)">招投标</a>');
 					print('<span style="display:none" id="Bid'.$Article["No"].'">');
-					print('&nbsp;<input type="text" name="BidPrice" style="width:80px" class="text" value="'.BottomPrice($Article["price"]).'">');
-					print('<input type="submit" value="Bid" class="btn">');
+					print(' <input type="text" name="BidPrice" style="width:80px" class="text" value="'.BottomPrice($Article["price"]).'">');
+					print('<input type="submit" value="出价" class="btn">');
 					print('<input type="hidden" name="ArticleNo" value="'.$Article["No"].'">');
 					print('</span>');
 				}
@@ -304,7 +303,7 @@ class Auction {
 //	出品物一覧を表示する(その2) 表示の並びが違うだけ
 	function ItemShowArticle2($bidding=false) {
 		if(count($this->Article) == 0) {
-			print("競売物無し(No auction)<br />\n");
+			print("无拍卖物(No auction)<br />\n");
 			return false;
 		} else {
 			$Now	= time();
@@ -312,42 +311,40 @@ class Auction {
 			if($this->sort)
 				${"Style_".$this->sort}	= ' class="a0"';
 			$exp	= '<tr><td class="td9"><a href="?menu='.$this->QUERY.'&sort=no"'.$Style_no.'>No</a></td>'.
-					'<td class="td9"><a href="?menu='.$this->QUERY.'&sort=time"'.$Style_time.'>残り</td>'.
-					'<td class="td9"><a href="?menu='.$this->QUERY.'&sort=price"'.$Style_price.'>価格</a>'.
-					'<br /><a href="?menu='.$this->QUERY.'&sort=rprice"'.$Style_rprice.'>(昇)</a></td>'.
+					'<td class="td9"><a href="?menu='.$this->QUERY.'&sort=time"'.$Style_time.'>其余</td>'.
+					'<td class="td9"><a href="?menu='.$this->QUERY.'&sort=price"'.$Style_price.'>价格</a>'.
+					'<br /><a href="?menu='.$this->QUERY.'&sort=rprice"'.$Style_rprice.'>（登）</a></td>'.
 					'<td class="td9">Item</td>'.
 					'<td class="td9"><a href="?menu='.$this->QUERY.'&sort=bid"'.$Style_bid.'>Bids</a></td>'.
-					'<td class="td9">入札者</td><td class="td9">出品者</td></tr>'."\n";
-
-			print("総出品数:".$this->ItemAmount()."\n");
+					'<td class="td9">投标人</td><td class="td9">参展人</td></tr>'."\n";
+			print("所列项目总数:".$this->ItemAmount()."\n");
 			print('<table style="width:725px;text-align:center" cellpadding="0" cellspacing="0" border="0">'."\n");
 			print($exp);
 			foreach($this->Article as $Article) {
-
 				// 競売番号
 				print("<tr><td rowspan=\"2\" class=\"td7\">");
 				print($Article["No"]);
 				// 終了時刻
 				print("</td><td class=\"td7\">");
 				print(AuctionLeftTime($Now,$Article["end"]));
-				// 現在入札価格
+				// 現在竞标价格
 				print("</td><td class=\"td7\">");
 				print(MoneyFormat($Article["price"]));
 				// アイテム
 				print('</td><td class="td7" style="text-align:left">');
 				$item	= LoadItemData($Article["item"]);
 				print(ShowItemDetail($item,$Article["amount"],1));
-				// 合計入札数
+				// 合計竞标数
 				print("</td><td class=\"td7\">");
 				print($Article["TotalBid"]);
-				// 入札者
+				// 投标人
 				print("</td><td class=\"td7\">");
 				if(!$Article["bidder"])
 					$bidder	= "-";
 				else
 					$bidder	= $this->LoadUserName($Article["bidder"]);
 				print($bidder);
-				// 出品者
+				// 参展人
 				print("</td><td class=\"td8\">");
 				$exhibitor	= $this->LoadUserName($Article["exhibitor"]);
 				print($exhibitor);
@@ -355,19 +352,18 @@ class Auction {
 				print("</td></tr><tr>");
 				print("<td colspan=\"6\" class=\"td8\" style=\"text-align:left\">");
 				print('<form action="?menu=auction" method="post">');
-				// 入札フォーム
+				// 竞标フォーム
 				if($bidding) {
-					print('<a style="margin:0 10px" href="#" onClick="Element.toggle(\'Bid'.$Article["No"].'\');return false;">入札</a>');
+					print('<a style="margin:0 10px" href="#" onClick="Element.toggle(\'Bid'.$Article["No"].'\');return false;">竞标</a>');
 					print('<span style="display:none" id="Bid'.$Article["No"].'">');
-					print('&nbsp;<input type="text" name="BidPrice" style="width:80px" class="text" value="'.BottomPrice($Article["price"]).'">');
-					print('<input type="submit" value="Bid" class="btn">');
+					print(' <input type="text" name="BidPrice" style="width:80px" class="text" value="'.BottomPrice($Article["price"]).'">');
+					print('<input type="submit" value="出价" class="btn">');
 					print('<input type="hidden" name="ArticleNo" value="'.$Article["No"].'">');
 					print('</span>');
 				}
-				print($Article["comment"]?$Article["comment"]:"&nbsp;");
+				print($Article["comment"]?$Article["comment"]:" ");
 				print("</form>");
 				print("</td></tr>\n");
-				
 				print("</td></tr>\n");
 			}
 			print($exp);
@@ -390,7 +386,7 @@ class Auction {
 		// 終了時刻の計算
 		$Now	= time();
 		$end	= $Now + round($now + (60 * 60 * $time));
-		// 開始価格のあれ
+		// 開始价格のあれ
 		if(ereg("^[0-9]",$StartPrice)) {
 			$price	= (int)$StartPrice;
 		} else {
@@ -409,19 +405,19 @@ class Auction {
 			"No"		=> $this->ArticleNo,
 			// 終了時刻
 			"end"		=> $end,
-			// 今の入札価格
+			// 今の竞标价格
 			"price"		=> (int)$price,
-			// 出品者id
+			// 参展人id
 			"exhibitor"	=> $id,
 			// アイテム
 			"item"		=> $item,
 			// 個数
 			"amount"	=> (int)$amount,
-			// 合計入札数
+			// 合計竞标数
 			"TotalBid"	=> 0,
-			// 最終入札者id
+			// 最終投标人id
 			"bidder"	=> NULL,
-			// 最終入札時間(使ってない！？使いたければ使ってください)
+			// 最終竞标時間(使ってない！？使いたければ使ってください)
 			"latest"	=> NULL,
 			// コメント
 			"comment"	=> $comment,
@@ -430,7 +426,7 @@ class Auction {
 			);
 		array_unshift($this->Article,$New);
 		$itemData	= LoadItemData($item);
-		$this->AddLog("No.".$this->ArticleNo." に <img src=\"".IMG_ICON.$itemData["img"]."\"><span class=\"bold\">{$itemData[name]} x{$amount}</span>個が<span class=\"charge\">出品されました。</span>");
+		$this->AddLog("No.".$this->ArticleNo."  <img src=\"".IMG_ICON.$itemData["img"]."\"><span class=\"bold\">{$itemData[name]} x{$amount}</span>个<span class=\"charge\"> 加入拍卖。</span>");
 		$this->DataChange	= true;
 	}
 //////////////////////////////////////////////
@@ -469,7 +465,6 @@ class Auction {
 		$this->SaveLog();
 	}
 //////////////////////////////////////////////
-//	
 	function ItemSortBy($type) {
 		switch($type) {
 			case "no":
@@ -518,13 +513,13 @@ class Auction {
 				$this->Article[$article["0"]]	= array(
 				"No"		=> $article["0"],// 競売番号
 				"end"		=> $article["1"],// 終了時刻
-				"price"		=> $article["2"],// 今の入札価格
-				"exhibitor"	=> $article["3"],// 出品者id
+				"price"		=> $article["2"],// 今の竞标价格
+				"exhibitor"	=> $article["3"],// 参展人id
 				"item"		=> $article["4"],// アイテム
 				"amount"	=> $article["5"],// 個数
-				"TotalBid"	=> $article["6"],// 合計入札数
-				"bidder"	=> $article["7"],// 最終入札者id
-				"latest"	=> $article["8"],// 最終入札時間
+				"TotalBid"	=> $article["6"],// 合計竞标数
+				"bidder"	=> $article["7"],// 最終投标人id
+				"latest"	=> $article["8"],// 最終竞标時間
 				"comment"	=> trim($article["9"]),// コメント
 				"IP"	=> trim($article["10"]),// IP
 				);
@@ -604,35 +599,35 @@ class Auction {
 		return ($a["No"] > $b["No"]) ? 1:-1;
 	}
 //////////////////////////////////////////////////
-//	アイテムを残り時間順に並び変える
+//	アイテムを其余時間順に並び変える
 	function ItemArticleSortByTime($a,$b) {
 		if($a["end"] == $b["end"])
 			return 0;
 		return ($a["end"] > $b["end"]) ? 1:-1;
 	}
 //////////////////////////////////////////////////
-//	アイテムを価格順に並び替える
+//	アイテムを价格順に並び替える
 	function ItemArticleSortByPrice($a,$b) {
 		if($a["price"] == $b["price"])
 			return 0;
 		return ($a["price"] > $b["price"]) ? -1:1;
 	}
 //////////////////////////////////////////////////
-//	アイテムを価格順に並び替える(ぎゃく)
+//	アイテムを价格順に並び替える(ぎゃく)
 	function ItemArticleSortByRPrice($a,$b) {
 		if($a["price"] == $b["price"])
 			return 0;
 		return ($a["price"] > $b["price"]) ? 1:-1;
 	}
 //////////////////////////////////////////////////
-//	アイテムを入札数順に並び替える
+//	アイテムを竞标数順に並び替える
 	function ItemArticleSortByTotalBid($a,$b) {
 		if($a["TotalBid"] == $b["TotalBid"])
 			return 0;
 		return ($a["TotalBid"] > $b["TotalBid"]) ? -1:1;
 	}
 //////////////////////////////////////////////////
-//	残り時間を返す
+//	其余時間を返す
 	function AuctionLeftTime($now,$end,$int=false) {
 		$left	= $end - $now;
 		// $int=true なら差分だけ返す
@@ -649,7 +644,7 @@ class Auction {
 		} else {
 			$hour	= floor($left/3600);
 			$minutes	= floor(($left%3600)/60);
-			return "{$hour}時間{$minutes}分";
+			return "{$hour}小时$minutes}分";
 		}
 	}
 //////////////////////////////////////////////////

@@ -1,5 +1,5 @@
-<?php
-// Javascriptで種類を切り替えて表示。
+﻿<?php
+// Javascript中切换种类进行显示道具。
 
 // サンプル
 /*
@@ -16,7 +16,7 @@ foreach($ShopList as $no) {
 	print($list0->ShowSelect());
 ------------------ ↓も必要
 <form action="?" method="post">
-<div id="list"><?=$list0->ShowDefault()?></div>
+<div id="list"><?php print $list0->ShowDefault()?></div>
 <input type="submit" class="btn" name="shop_buy" value="Buy">
 </form>
 -----------------------
@@ -67,39 +67,26 @@ class JS_ItemList {
 		$this->NoJS	= true;
 	}
 
-	// アイテムの追加
+	// 添加道具类目
 	function AddItem($item,$string) {
 		switch($item["type"]) {
-			// 劍
-			case "Sword":
-			// 雙手劍
-			case "TwoHandSword":
-			// 匕首
-			case "Dagger":
-			// 魔杖
-			case "Wand":
-			// 杖
-			case "Staff":
-			// 弓
-			case "Bow":
-			// 鞭
-			case "Whip":
+			case "剑":
+			case "双手剑":
+			case "匕首":
+			case "魔杖":
+			case "杖":
+			case "弓":
+			case "鞭":
 				array_push($this->weapon,$string);
 				break;
-			// 盾
-			case "Shield":
-			// 書
-			case "Book":
-			// 甲
-			case "Armor":
-			// 衣服
-			case "Cloth":
-			// 長袍
-			case "Robe":
+			case "盾":
+			case "书":
+			case "甲":
+			case "衣服":
+			case "长袍":
 				array_push($this->armor,$string);
 				break;
-			// 道具
-			case "Item":
+			case "道具":
 				array_push($this->item,$string);
 				break;
 			default:
@@ -150,7 +137,7 @@ if($this->Table) {
 	$Table0	= "html = '".$this->Table."' + insert + html;";
 	$Table1	= "html += insert + '</table>';";
 } else {
-	$None	= 'html = (html?"":"None.") + html;';
+	$None	= 'html = (html?"":"没有找到适合的道具。") + html;';
 }
 $js = <<< _JS_
 <script type="text/javascript"><!--

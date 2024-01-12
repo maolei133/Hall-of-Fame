@@ -1,4 +1,4 @@
-<?
+﻿<?php 
 class user {
 
 	// ファイルポインタ
@@ -33,7 +33,8 @@ class user {
 
 //////////////////////////////////////////////////
 //	対象のIDのユーザークラスを作成
-	function user($id,$noExit=false) {
+    // 240112-错误修复: Deprecated: Methods with the same name as their class will not be constructors  https://www.php.cn/faq/592546.html
+	function __construct($id,$noExit=false) {
 		if($id)
 		{
 			$this->id	= $id;

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 include_once("class.char.php");
 class union extends char{
 
@@ -37,8 +37,8 @@ class union extends char{
 		if($this->STATE !== 2) return false;
 
 		$poison	= $this->PoisonDamageFormula($multiply);
-		print("<span class=\"spdmg\">".$this->Name(bold)." got ");
-		print("<span class=\"bold\">$poison</span> damage by poison.\n");
+		print("<span class=\"spdmg\">".$this->Name(bold)." 由于中毒受到 ");
+		print("<span class=\"bold\">$poison</span> 伤害.\n");
 		$this->HpDamage2($poison);
 		print("</span><br />\n");
 	}
@@ -70,7 +70,7 @@ class union extends char{
 		}
 		if($this->STATE === POISON) {//毒状態
 			if($mes)
-				print($this->Name(bold)."'s <span class=\"spdmg\">poison</span> has cured.<br />\n");
+				print($this->Name(bold)." 的<span class=\"spdmg\">毒</span> 被治愈.<br />\n");
 			$this->STATE = 0;
 			return true;
 		}
@@ -81,7 +81,7 @@ class union extends char{
 		if(DELAY_TYPE === 0) {
 			if($Show) {
 				print("(".sprintf("%0.1f",$this->delay));
-				print('<span style="font-size:80%"> &gt;&gt;&gt; </span>');
+				print('<span style="font-size:80%"> >>> </span>');
 			}
 			$Delay	= ($BaseDelay - $this->SPD) * ($No/100);//遅らせる間隔
 			$this->delay	-= $Delay;
@@ -91,7 +91,7 @@ class union extends char{
 		} else if(DELAY_TYPE === 1) {
 			if($Show) {
 				print("(".sprintf("%0.0f",$this->delay));
-				print('<span style="font-size:80%"> &gt;&gt;&gt; </span>');
+				print('<span style="font-size:80%"> >>> </span>');
 			}
 			$Delay	= round($No/3);//遅らせる間隔
 			$this->delay	-= $Delay;
@@ -126,9 +126,11 @@ class union extends char{
 	}
 //////////////////////////////////////////////////
 //	値の変化を表示する(ダメージ受けた時とか)
+/*
 	function ShowValueChange() {
-		print("(??? &gt; ???)");
+		print("(??? > ???)");
 	}
+*/
 //////////////////////////////////////////////////
 //	番号で呼び出す
 	function UnionNumber($no) {
@@ -165,10 +167,10 @@ class union extends char{
 	// <div class="land_<*=$this->UnionLand*>">
 		?>
 	<div class="carpet_frame">
-	<div class="land" style="background-image : url(<?=IMG_OTHER."land_".$this->UnionLand.".gif"?>);">
-	<a href="?union=<?=$this->UnionNo?>"><?$this->ShowImage();?></a></div>
-	<div class="bold dmg"><?=$this->UnionName?></div>LvLimit:<?=$this->LevelLimit?>
-	</div><?
+	<div class="land" style="background-image : url(<?php print IMG_OTHER."land_".$this->UnionLand.".gif"?>);">
+	<a href="?union=<?php print $this->UnionNo?>"><?php $this->ShowImage();?></a></div>
+	<div class="bold dmg"><?php print $this->UnionName?></div>限制级别:<?php print $this->LevelLimit?>级
+	</div><?php 
 	}
 //////////////////////////////////////////////////
 	function UpMAXHP($no) {
@@ -228,7 +230,7 @@ class union extends char{
 	}
 //////////////////////////////////////////////////
 //	キャラの変数をセットする。
-	function SetCharData(&$data) {
+	function SetCharData($data) {
 		$this->MonsterNumber	= $data["MonsterNumber"];
 		$this->LastDefeated		= $data["LastDefeated"];
 
@@ -327,7 +329,7 @@ class union extends char{
 	}
 //////////////////////////////////////////////////
 //	キャラデータの保存
-	function SaveCharData() {
+	function SaveCharData($id="") {
 		if(!file_exists($this->file))
 			return false;
 		$string	 = "MonsterNumber=".$this->MonsterNumber."\n";

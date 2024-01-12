@@ -1,4 +1,4 @@
-<?
+<?php 
 
 include(DATA_JOB);
 
@@ -121,14 +121,14 @@ class char{
 		// HP回復
 		if($this->SPECIAL["HpRegen"]) {
 			$Regen	= round($this->MAXHP * $this->SPECIAL["HpRegen"]/100);
-			print('<span class="recover">* </span>'.$this->Name(bold)."<span class=\"recover\"> 自動回復 <span class=\"bold\">".$Regen." HP</span></span> ");
+			print('<span class="recover">* </span>'.$this->Name(bold)."<span class=\"recover\"> 自动回复 <span class=\"bold\">".$Regen." HP</span></span> ");
 			$this->HpRecover($Regen);
 			print("<br />\n");
 		}
 		// SP回復
 		if($this->SPECIAL["SpRegen"]) {
 			$Regen	= round($this->MAXSP * $this->SPECIAL["SpRegen"]/100);
-			print('<span class="support">* </span>'.$this->Name(bold)."<span class=\"support\"> 自動回復 <span class=\"bold\">".$Regen." SP</span></span> ");
+			print('<span class="support">* </span>'.$this->Name(bold)."<span class=\"support\"> 自动回复 <span class=\"bold\">".$Regen." SP</span></span> ");
 			$this->SpRecover($Regen);
 			print("<br />\n");
 		}
@@ -140,31 +140,31 @@ class char{
 		$P_MAXSP	= round($this->maxsp * $this->M_MAXSP/100) + $this->P_MAXSP;
 		?>
 <table>
-<tr><td valign="top" style="width:180px"><?$this->ShowCharLink();?>
+<tr><td valign="top" style="width:180px"><?php $this->ShowCharLink();?>
 </td><td valign="top" style="padding-right:20px">
 <table border="0" cellpadding="0" cellspacing="0">
-<tr><td style="text-align:right">Exp :&nbsp;</td><td><?=$this->exp?>/<?=$this->CalcExpNeed()?></td></tr>
-<tr><td style="text-align:right">HP :&nbsp;</td><td><?=$this->maxhp?><?if($P_MAXHP) print(" + {$P_MAXHP}");?></td></tr>
-<tr><td style="text-align:right">SP :&nbsp;</td><td><?=$this->maxsp?><?if($P_MAXSP) print(" + {$P_MAXSP}");?></td></tr>
-<tr><td style="text-align:right">STR :&nbsp;</td><td><?=$this->str?><?if($this->P_STR) print(" + {$this->P_STR}");?></td></tr>
-<tr><td style="text-align:right">INT :&nbsp;</td><td><?=$this->int?><?if($this->P_INT) print(" + {$this->P_INT}");?></td></tr>
-<tr><td style="text-align:right">DEX :&nbsp;</td><td><?=$this->dex?><?if($this->P_DEX) print(" + {$this->P_DEX}");?></td></tr>
-<tr><td style="text-align:right">SPD :&nbsp;</td><td><?=$this->spd?><?if($this->P_SPD) print(" + {$this->P_SPD}");?></td></tr>
-<tr><td style="text-align:right">LUK :&nbsp;</td><td><?=$this->luk?><?if($this->P_LUK) print(" + {$this->P_LUK}");?></td></tr>
+<tr><td style="text-align:right">经验 : </td><td><?php print $this->exp?>/<?php print $this->CalcExpNeed()?></td></tr>
+<tr><td style="text-align:right">生命 : </td><td><?php print $this->maxhp?><?php if($P_MAXHP) print(" + {$P_MAXHP}");?></td></tr>
+<tr><td style="text-align:right">魔力 : </td><td><?php print $this->maxsp?><?php if($P_MAXSP) print(" + {$P_MAXSP}");?></td></tr>
+<tr><td style="text-align:right">力量 : </td><td><?php print $this->str?><?php if($this->P_STR) print(" + {$this->P_STR}");?></td></tr>
+<tr><td style="text-align:right">智慧 : </td><td><?php print $this->int?><?php if($this->P_INT) print(" + {$this->P_INT}");?></td></tr>
+<tr><td style="text-align:right">敏捷 : </td><td><?php print $this->dex?><?php if($this->P_DEX) print(" + {$this->P_DEX}");?></td></tr>
+<tr><td style="text-align:right">速度 : </td><td><?php print $this->spd?><?php if($this->P_SPD) print(" + {$this->P_SPD}");?></td></tr>
+<tr><td style="text-align:right">幸运 : </td><td><?php print $this->luk?><?php if($this->P_LUK) print(" + {$this->P_LUK}");?></td></tr>
 </table>
 </td><td valign="top">
-<?
+<?php 
 	if($this->SPECIAL["PoisonResist"])
 		print("毒抵抗 +".$this->SPECIAL["PoisonResist"]."%<br />\n");
 	if($this->SPECIAL["Pierce"]["0"])
-		print("無視物理防禦傷害 +".$this->SPECIAL["Pierce"]["0"]."<br />\n");
+		print("无视物理防御伤害 +".$this->SPECIAL["Pierce"]["0"]."<br />\n");
 	if($this->SPECIAL["Pierce"]["1"])
-		print("無視魔法防禦傷害 +".$this->SPECIAL["Pierce"]["1"]."<br />\n");
+		print("无视魔法防御伤害 +".$this->SPECIAL["Pierce"]["1"]."<br />\n");
 	if($this->SPECIAL["Summon"])
 		print("召喚力 +".$this->SPECIAL["Summon"]."%<br />\n");
 ?>
 </td></tr></table>
-<?
+<?php 
 	}
 //////////////////////////////////////////////////
 //	誰のキャラか設定する
@@ -191,7 +191,7 @@ class char{
 			if($this->POSITION != "front")
 				return false;
 			$this->POSITION = "back";
-			print($this->Name(bold)." 移到後排.<br />\n");
+			print($this->Name(bold)." 移到后排.<br />\n");
 		}
 	}
 
@@ -216,9 +216,9 @@ class char{
 //	行動を近づかせる。
 	function Delay($no) {
 		// 死亡中は増えないようにする
-		if($this->STATE === DEAD)
+		if($this->STATE === DEAD){
 			return false;
-
+    }
 		if(DELAY_TYPE === 0) {
 			$this->delay	+= $no;
 		} else if(DELAY_TYPE === 1) {
@@ -237,7 +237,7 @@ class char{
 		if(DELAY_TYPE === 0) {
 			if($Show) {
 				print("(".sprintf("%0.1f",$this->delay));
-				print('<span style="font-size:80%"> &gt;&gt;&gt; </span>');
+				print('<span style="font-size:80%"> >>> </span>');
 			}
 			$Delay	= ($BaseDelay - $this->SPD) * ($No/100);//遅らせる間隔
 			$this->delay	-= $Delay;
@@ -247,7 +247,7 @@ class char{
 		} else if(DELAY_TYPE === 1) {
 			if($Show) {
 				print("(".sprintf("%0.0f",$this->delay));
-				print('<span style="font-size:80%"> &gt;&gt;&gt; </span>');
+				print('<span style="font-size:80%"> >>> </span>');
 			}
 			$Delay	= $No;//遅らせる間隔
 			$this->delay	-= $Delay;
@@ -263,7 +263,7 @@ class char{
 			$Delay	= ($BaseDelay - $this->delay) * ($No/100);//早まらせる間隔
 			if($Show) {
 				print("(".sprintf("%0.1f",$this->delay));
-				print('<span style="font-size:80%"> &gt;&gt;&gt; </span>');
+				print('<span style="font-size:80%"> >>> </span>');
 			}
 			$this->delay	+= $Delay;
 			if($Show) {
@@ -273,7 +273,7 @@ class char{
 			$Delay	= (100 - $this->delay) * ($No/100);//早まらせる間隔
 			if($Show) {
 				print("(".sprintf("%0.1f",$this->delay));
-				print('<span style="font-size:80%"> &gt;&gt;&gt; </span>');
+				print('<span style="font-size:80%"> >>> </span>');
 			}
 			$this->delay	+= $Delay;
 			if($Show) {
@@ -370,7 +370,7 @@ class char{
 	function KnockBack($no=1) {
 		if($this->POSITION == "front") {
 			$this->POSITION = "back";
-			print($this->Name(bold)."敲到後排!<br />\n");
+			print($this->Name(bold)."敲到后排!<br />\n");
 		}
 	}
 //////////////////////////////////////////////////
@@ -563,8 +563,8 @@ class char{
 		if($this->STATE !== 2) return false;
 
 		$poison	= $this->PoisonDamageFormula($multiply);
-		print("<span class=\"spdmg\">".$this->Name(bold)." 由於中毒受到 ");
-		print("<span class=\"bold\">$poison</span> 傷害.\n");
+		print("<span class=\"spdmg\">".$this->Name(bold)." 由于中毒受到 ");
+		print("<span class=\"bold\">$poison</span> 伤害.\n");
 		$this->HpDamage2($poison);
 		print("</span><br />\n");
 	}
@@ -688,32 +688,19 @@ class char{
 		$return	= array();//はずした装備。
 
 		switch($item["type"]) {//種類別
-			// 劍
-			case "Sword"://片手武器
-			// 匕首
-			case "Dagger":
-			// 矛
-			case "Pike":
-			// 短柄斧
-			case "Hatchet":
-			// 魔杖
-			case "Wand":
-			// 錘
-			case "Mace":
-			// 雙手劍
-			case "TwoHandSword"://両手武器
-			// 槍
-			case "Spear":
-			// 斧
-			case "Axe":
-			// 杖
-			case "Staff":
-			// 弓
-			case "Bow":
-			// 十字弓
-			case "CrossBow":
-			// 鞭
-			case "Whip":
+			case "剑"://片手武器
+			case "匕首":
+			case "矛":
+			case "短柄斧":
+			case "魔杖":
+			case "锤":
+			case "双手剑"://両手武器
+			case "枪":
+			case "斧":
+			case "杖":
+			case "弓":
+			case "十字弓":
+			case "鞭":
 				// 既に装備してある武器ははずす。
 				if($this->weapon)
 					$return[]	= $this->weapon;
@@ -724,10 +711,9 @@ class char{
 				}
 				$this->weapon	= $item["no"];
 				break;
-			case "Shield"://盾
+			case "盾"://盾
 			case "MainGauche":
-			// 書
-			case "Book":
+			case "书":
 				if($this->weapon) {//両手武器ならそれははずす
 					$weapon	= LoadItemData($this->weapon);
 					if($weapon["dh"]) {
@@ -739,17 +725,14 @@ class char{
 					$return[]	= $this->shield;
 				$this->shield	= $item["no"];
 				break;
-			case "Armor"://鎧
-			// 衣服
-			case "Cloth":
-			// 長袍
-			case "Robe":
+			case "甲"://鎧
+			case "衣服":
+			case "长袍":
 				if($this->armor)
 					$return[]	= $this->armor;
 				$this->armor	= $item["no"];
 				break;
-			// 道具
-			case "Item":
+			case "道具":
 				if($this->item)
 					$return[]	= $this->item;
 				$this->item	= $item["no"];
@@ -791,13 +774,13 @@ class char{
 			return true;
 		if($this->STATE === DEAD) {//死亡状態
 			if($mes)
-				print($this->Name(bold).' <span class="recover">復活</span>!<br />'."\n");
+				print($this->Name(bold).' <span class="recover">复活</span>!<br />'."\n");
 			$this->STATE = 0;
 			return true;
 		}
 		if($this->STATE === POISON) {//毒状態
 			if($mes)
-				print($this->Name(bold)."的 <span class=\"spdmg\">中毒</span> 被治癒.<br />\n");
+				print($this->Name(bold)."的 <span class=\"spdmg\">中毒</span> 被治愈.<br />\n");
 			$this->STATE = 0;
 			return true;
 		}
@@ -816,19 +799,23 @@ class char{
 		if($this->expect_type === 0)
 			print('<span class="charge">(蓄力)</span>'."\n");
 		else if($this->expect_type === 1)
-			print('<span class="charge">(詠唱)</span>'."\n");
+			print('<span class="charge">(咏唱)</span>'."\n");
 		// HP,SP
 		print("<div class=\"hpsp\">\n");
 		$sub	= $this->STATE === 1 ? "dmg":"recover";
-		print("<span class=\"{$sub}\">HP : {$this->HP}/{$this->MAXHP}</span><br />\n");//HP
+		print("<span class=\"{$sub}\">生命：{$this->HP}/{$this->MAXHP}</span><br />\n");//HP
 		$sub	= $this->STATE === 1 ? "dmg":"support";
-		print("<span class=\"{$sub}\">SP : {$this->SP}/{$this->MAXSP}</span>\n");
+		print("<span class=\"{$sub}\">魔力：{$this->SP}/{$this->MAXSP}</span>\n");
 		print("</div>\n");//SP
 	}
 //////////////////////////////////////////////////
 //	値の変化を表示する(ダメージ受けた時とか)
 	function ShowValueChange($from,$to) {
-		print("({$from} &gt; {$to})");
+		if(empty($from) && empty($to)){
+			print("(??? > ???)");
+		}else{
+			print("({$from} > {$to})");
+		}
 	}
 //////////////////////////////////////////////////
 //	HPへのダメージ
@@ -1001,11 +988,11 @@ class char{
 	function ShowCharWithLand($land) {
 		?>
 	<div class="carpet_frame">
-	<div class="land" style="background-image : url(<?=IMG_OTHER."land_".$land.".gif"?>);">
-	<?$this->ShowImage()?>
+	<div class="land" style="background-image : url(<?php print IMG_OTHER."land_".$land.".gif"?>);">
+	<?php $this->ShowImage()?>
 	</div>
-	<?=$this->name?><br>Lv.<?=$this->level?>
-	</div><?
+	<?php print $this->name?><br>Lv.<?php print $this->level?>
+	</div><?php 
 	}
 
 //////////////////////////////////////////////////
@@ -1071,9 +1058,9 @@ class char{
 			$flag++;
 		?>
 <div class="carpet_frame">
-<div class="carpet<?=$flag%2?>"><?$this->ShowImage();?></div>
-<?=$this->name?><br>Lv.<?=$this->level?>&nbsp;<?=$this->job_name?>
-</div><?
+<div class="carpet<?php print $flag%2?>"><?php $this->ShowImage();?></div>
+<?php print $this->name?><br>Lv.<?php print $this->level?> <?php print $this->job_name?>
+</div><?php 
 	}
 
 //////////////////////////////////////////////////
@@ -1085,10 +1072,10 @@ class char{
 			$flag++;
 		?>
 <div class="carpet_frame">
-<div class="carpet<?=$flag%2?>">
-<a href="?char=<?=$this->Number?>"><?$this->ShowImage();?></a></div>
-<?=$this->name?><?if($this->statuspoint)print('<span class="bold charge">*</span>');?><br>Lv.<?=$this->level?>&nbsp;<?=$this->job_name?>
-</div><?
+<div class="carpet<?php print $flag%2?>">
+<a href="?char=<?php print $this->Number?>"><?php $this->ShowImage();?></a></div>
+<?php print $this->name?><?php if($this->statuspoint)print('<span class="bold charge">*</span>');?><br>Lv.<?php print $this->level?> <?php print $this->job_name?>
+</div><?php 
 	}
 
 //////////////////////////////////////////////////
@@ -1104,19 +1091,19 @@ class char{
 
 		?>
 <div class="carpet_frame">
-<div class="carpet<?=$flag%2?>">
-<a href="?char=<?=$this->birth?>"><?$this->ShowImage();?></a>
+<div class="carpet<?php print $flag%2?>">
+<a href="?char=<?php print $this->birth?>"><?php $this->ShowImage();?></a>
 </div>
 
-<div onClick="toggleCheckBox('<?=$flag?>')" id="text<?=$flag?>" <?print($checked?null:' class="unselect"');?>>
-<?=$this->name?>
-<?if($this->statuspoint)print('<span class="bold charge">*</span>');?><br />
-Lv.<?=$this->level?>&nbsp;<?=$this->job_name?>
+<div onClick="toggleCheckBox('<?php print $flag?>')" id="text<?php print $flag?>" <?php print($checked?null:' class="unselect"');?>>
+<?php print $this->name?>
+<?php if($this->statuspoint)print('<span class="bold charge">*</span>');?><br />
+Lv.<?php print $this->level?> <?php print $this->job_name?>
 
 </div>
-<input type="checkbox" onclick="Element.toggleClassName('text<?=$flag?>','unselect')" id="box<?=$flag?>" name="char_<?=$birth?>" value="1"<?=$checked?>>
+<input type="checkbox" onclick="Element.toggleClassName('text<?php print $flag?>','unselect')" id="box<?php print $flag?>" name="char_<?php print $birth?>" value="1"<?php print $checked?>>
 
-</div><?
+</div><?php 
 	}
 //////////////////////////////////////////////////
 //	戦闘時のチームを設定(あんまり使ってない)
@@ -1181,17 +1168,17 @@ Lv.<?=$this->level?>&nbsp;<?=$this->job_name?>
 
 		//習得可能技に覚えようとしてるヤツなけりゃ終了
 		if(!in_array($_POST["newskill"],$tree))
-			return array(false,"スキルツリーに無い");
+			return array(false,"没有技能树");
 		$skill	= LoadSKillData($no);
 		//もし習得済みなら?
 		if(in_array($no,$this->skill))
-			return array(false,"{$skill[name]} 已經習得.");
+			return array(false,"{$skill[name]} 已经习得.");
 		if($this->UseSkillPoint($skill["learn"])) {
 			$this->GetNewSkill($skill["no"]);
 			//$this->SaveCharData();
-			return array(true,$this->Name()."  {$skill[name]} 已經習得。");
+			return array(true,$this->Name()."  {$skill[name]} 已经习得。");
 		} else
-			return array(false,"技能點數不足");
+			return array(false,"技能点数不足");
 	}
 //////////////////////////////////////////////////
 //	新ワザを追加する。
@@ -1282,7 +1269,7 @@ Lv.<?=$this->level?>&nbsp;<?=$this->job_name?>
 	}
 //////////////////////////////////////////////////
 //	キャラの変数をセットする。
-	function SetCharData(&$data) {
+	function SetCharData($data) {
 		$this->name	= $data["name"];
 		$this->gender	= $data["gender"];
 		$this->birth	= $data["birth"];

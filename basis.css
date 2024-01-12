@@ -2,7 +2,8 @@
   padding	: 0;
   margin	: 0;
   line-height	: 140%;
-  font-family	: Osaka,Verdana,"ＭＳ Ｐゴシック";
+  font-family	: 微软雅黑;
+  font-size:14px;
   overflow:inherit;
 }
 img{

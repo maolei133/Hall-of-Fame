@@ -1,4 +1,4 @@
-<?
+﻿<?php 
 class Ranking {
 /*
 処理手順(ランキング戦)
@@ -68,14 +68,14 @@ class Ranking {
 		if(!$this->Ranking) {
 			$this->JoinRanking($id);
 			$this->SaveRanking();
-			$message	= "Rank starts."; 
+			$message	= "排名开始."; 
 			return array($message,true);
 		}
 
 		$MyRank	= $this->SearchID($id);//自分の順位
 		// 1位の場合。
 		if($MyRank === 0) {
-			$message	= "First place can't challenge.";
+			$message	= "第一名不可再挑战.";
 			return array($message,true);
 		}
 
@@ -131,7 +131,7 @@ class Ranking {
 		$Party_Challenger	= $challenger->RankParty();
 		$Party_Defender		= $defender->RankParty();
 		if($Party_Defender == "NOID") {//ユーザ自体が既に存在しない場合
-			$message	= "No USER...<br />(win a game by default)";
+			$message	= "没有用户...<br />(自动胜利)";
 			$this->DeleteRank($DefendID);
 			$this->SaveRanking();
 			return array($message,true);
@@ -142,14 +142,14 @@ class Ranking {
 
 		// ランク用パーティーがありません！！！
 		if($Party_Challenger === false) {
-			$message	= "Set Team for Battle!<br />(Your Rank will be removed if challenged by someone)";
+			$message	= "设置战斗队伍!<br />(如果被挑下马的话排名也就没了)";
 			return array($message,true);
 		}
 		// ランク用パーティーがありません！！！
 		if($Party_Defender === false) {
 			$this->DeleteRank($DefendID);
 			$this->SaveRanking();
-			$message	= "{$defender->name} has no Teams for Rank<br />(win a game by default)";
+			$message	= "{$defender->name} 没有排名战队伍<br />(自动胜利)";
 			return array($message,true);
 		}
 
@@ -242,7 +242,7 @@ class Ranking {
 		$last	= count($this->Ranking) - 1;
 		// ランキングが存在しない時
 		if(count($this->Ranking) < 1) {
-			print("<div class=\"bold\">No Ranking.</div>\n");
+			print("<div class=\"bold\">没有排名.</div>\n");
 		// 表示する数を指定された時
 		} else if(is_numeric($from) && is_numeric($to)) {
 			for($from; $from<$to; $from++) {

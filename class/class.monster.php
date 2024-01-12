@@ -1,4 +1,4 @@
-<?
+﻿<?php 
 include_once("class.char.php");
 class monster extends char{
 
@@ -16,7 +16,7 @@ class monster extends char{
 	}
 //////////////////////////////////////////////////
 //	キャラデータの保存
-	function SaveCharData() {
+	function SaveCharData($id="") {
 		// モンスターは保存しない。
 		return false;
 	}

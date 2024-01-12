@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Monster List</title>
 <link rel="stylesheet" href="../basis.css" type="text/css">
 <link rel="stylesheet" href="../style.css" type="text/css">
@@ -40,19 +40,19 @@ include("../data/data.enchant.php");
 include("../class/global.php");
 define("IMG_ICON","../image/icon/");
 
-$det	= '<tr><td class="a">No</td>
-<td class="a">Name</td>
+$det	= '<tr><td class="a">ID</td>
+<td class="a">名称</td>
 <td class="a">Lv</td>
-<td class="a">IMG</td>
-<td class="a">exp</td>
-<td class="a">money</td>
+<td class="a">图</td>
+<td class="a">经验值</td>
+<td class="a">钱</td>
 <td class="a">hp</td>
 <td class="a">sp</td>
 <td class="a">atk</td>
 <td class="a">def</td>
 <td class="a">str / int / dex / spd / luk</td>
-<td class="a">pos</td>
-<td class="a">guard</td>'."\n";
+<td class="a">位置</td>
+<td class="a">保护</td>'."\n";
 $img_f	= "../image/char/";
 
 print('<table border="0" cellspacing="1"><tbody>');
@@ -68,7 +68,7 @@ for($no=1000; $no<5999; $no++) {
 	print("<td>{$no}</td>");//no
 	print("<td>{$m[name]}</td>");//name
 	print("<td>{$m[level]}</td>");//name
-	print("<td><img src=\"$img_f{$m[img]}\"></td>");//img
+	print("<td><img src=\"$img_f{$m[img]}\">$img_f{$m[img]}</td>");//img
 	print("<td>{$m[exphold]}</td>");//exp
 	print("<td>{$m[moneyhold]}</td>");//money
 	print("<td>{$m[hp]}/{$m[maxhp]}</td>");//hp

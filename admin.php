@@ -10,6 +10,6 @@
 */
 	include("setting.php");
 	define("ADMIN_DIR","./admin/");//管理用のファイル場所
-	define("ADMIN_PASSWORD","password");//パスワード
+	define("ADMIN_PASSWORD","adminadmin");//パスワード
 	include(ADMIN_DIR."admin.php");
 ?>

@@ -1,19 +1,10 @@
-<?
+﻿<?php 
 include(CLASS_SKILL_EFFECT);
 class battle extends ClassSkillEffect{
 /*
  * $battle	= new battle($MyParty,$EnemyParty);
  * $battle->SetTeamName($this->name,$party["name"]);
  * $battle->Process();//戦闘開始
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
  */
 	// teams
 	var $team0, $team1;
@@ -147,7 +138,7 @@ class battle extends ClassSkillEffect{
 		if($notice) {
 print <<< HTML
 	<tr><td colspan="2" class="break break-top bold" style="text-align:center;padding:20px 0;">
-	battle turns extended.
+	超出战斗回合数.
 	</td></tr>
 HTML;
 		}
@@ -224,9 +215,9 @@ HTML;
 
 			// 行動キャラ
 			if(DELAY_TYPE === 0)
-				$char	= &$this->NextActer();
+				$char	= $this->NextActer();
 			else if(DELAY_TYPE === 1)
-				$char	= &$this->NextActerNew();
+				$char	= $this->NextActerNew();
 
 			$this->Action($char);//行動
 			$result	= $this->BattleResult();//↑の行動で戦闘が終了したかどうかの判定
@@ -304,10 +295,10 @@ HTML;
 	
 				$team0Alive	= CountAliveChars($this->team0);
 				$team1Alive	= CountAliveChars($this->team1);
-				if($team1Alive < $team0Alive) {// team0 won
+				if($team1存活 < $team0Alive) {// team0 won
 					$this->result	= TEAM_0;
 					return "team0";
-				} else if($team0Alive < $team1Alive) {// team1 won
+				} else if($team0存活 < $team1Alive) {// team1 won
 					$this->result	= TEAM_1;
 					return "team1";
 				} else {
@@ -316,12 +307,12 @@ HTML;
 				}
 			} else {
 				$this->result	= DRAW;
-				print("error321708.<br />おかしいので報告してください。");
+				print("error321708.<br />请报告出错了...（？）。");
 				return "draw";// エラー回避。
 			}
 
 			$this->result	= DRAW;
-			print("error321709.<br />おかしいので報告してください。");
+			print("error321709.<br />请报告出错了...（？）。");
 			return "draw";// エラー回避。
 		}
 	}
@@ -352,18 +343,18 @@ HTML;
 		if($this->NoResult) {
 			print('<tr><td colspan="2" style="text-align:center;padding:10px 0px" class="break break-top">');
 			//print("<a name=\"s{$this->Scroll}\"></a>");// スクロールの最後
-			print("模擬戦終了");
+			print("模拟战结束");
 			print("</td></tr>\n");
 			print('<tr><td class="teams break">'."\n");
 			// 左側チーム
-			print("HP remain : {$TotalHp2}/{$TotalMaxHp2}<br />\n");
-			print("Alive : {$TotalAlive2}/".count($this->team1)."<br />\n");
-			print("TotalDamage : {$this->team1_dmg}<br />\n");
+			print("残留HP : {$TotalHp2}/{$TotalMaxHp2}<br />\n");
+			print("存活 : {$TotalAlive2}/".count($this->team1)."<br />\n");
+			print("总伤害 : {$this->team1_dmg}<br />\n");
 			// 右側チーム
 			print('</td><td class="teams break">'."\n");
-			print("HP remain : {$TotalHp1}/{$TotalMaxHp1}<br />\n");
-			print("Alive : {$TotalAlive1}/".count($this->team0)."<br />\n");
-			print("TotalDamage : {$this->team0_dmg}<br />\n");
+			print("残留HP : {$TotalHp1}/{$TotalMaxHp1}<br />\n");
+			print("存活 : {$TotalAlive1}/".count($this->team0)."<br />\n");
+			print("总伤害 : {$this->team0_dmg}<br />\n");
 			print("</td></tr>\n");
 			return false;
 		}
@@ -375,34 +366,34 @@ HTML;
 		//print($this->actions."%".BATTLE_STAT_TURNS."<br>");
 		print("<a name=\"s{$this->Scroll}\"></a>\n");// スクロールの最後
 		if($result == "draw") {
-			print("<span style=\"font-size:150%\">Draw Game</span><br />\n");
+			print("<span style=\"font-size:150%\">平局</span><br />\n");
 		} else {
-			$Team	= &$this->{$result};
+			$Team	= $this->{$result};
 			$TeamName	= $this->{$result."_name"};
-			print("<span style=\"font-size:200%\">{$TeamName} Wins!</span><br />\n");
+			print("<span style=\"font-size:200%\">{$TeamName} 胜利!</span><br />\n");
 		}
 
 		print('<tr><td class="teams">'."\n");
 		// Unionとそうでないのでわける
-		print("HP remain : ");
+		print("残留HP : ");
 		print($this->UnionBattle?"????/????":"{$TotalHp2}/{$TotalMaxHp2}");
 		print("<br />\n");
 /*
 		if($this->UnionBattle) {
-			print("HP remain : ????/????<br />\n");
+			print("残留HP : ????/????<br />\n");
 		} else {
-			print("HP remain : {$TotalHp2}/{$TotalMaxHp2}<br />\n");
+			print("残留HP : {$TotalHp2}/{$TotalMaxHp2}<br />\n");
 		}
 */
 		// 左側チーム
-		print("Alive : {$TotalAlive2}/".count($this->team1)."<br />\n");
-		print("TotalDamage : {$this->team1_dmg}<br />\n");
+		print("存活 : {$TotalAlive2}/".count($this->team1)."<br />\n");
+		print("总伤害 : {$this->team1_dmg}<br />\n");
 		if($this->team1_exp)//得た経験値
-			print("TotalExp : ".$this->team1_exp."<br />\n");
+			print("总经验值 : ".$this->team1_exp."<br />\n");
 		if($this->team1_money)//得たお金
-			print("Funds : ".MoneyFormat($this->team1_money)."<br />\n");
+			print("金钱 : ".MoneyFormat($this->team1_money)."<br />\n");
 		if($this->team1_item) {//得たアイテム
-			print("<div class=\"bold\">Items</div>\n");
+			print("<div class=\"bold\">道具</div>\n");
 			foreach($this->team0_item as $itemno => $amount) {
 				$item	= LoadItemData($itemno);
 				print("<img src=\"".IMG_ICON.$item["img"]."\" class=\"vcent\">");
@@ -412,15 +403,15 @@ HTML;
 
 		// 右側チーム
 		print('</td><td class="teams">');
-		print("HP remain : {$TotalHp1}/{$TotalMaxHp1}<br />\n");
-		print("Alive : {$TotalAlive1}/".count($this->team0)."<br />\n");
-		print("TotalDamage : {$this->team0_dmg}<br />\n");
+		print("残留HP : {$TotalHp1}/{$TotalMaxHp1}<br />\n");
+		print("存活 : {$TotalAlive1}/".count($this->team0)."<br />\n");
+		print("总伤害 : {$this->team0_dmg}<br />\n");
 		if($this->team0_exp)//得た経験値
-			print("TotalExp : ".$this->team0_exp."<br />\n");
+			print("总经验值 : ".$this->team0_exp."<br />\n");
 		if($this->team0_money)//得たお金
-			print("Funds : ".MoneyFormat($this->team0_money)."<br />\n");
+			print("金钱 : ".MoneyFormat($this->team0_money)."<br />\n");
 		if($this->team0_item) {//得たアイテム
-			print("<div class=\"bold\">Items</div>\n");
+			print("<div class=\"bold\">获得战利品：</div>\n");
 			foreach($this->team0_item as $itemno => $amount) {
 				$item	= LoadItemData($itemno);
 				print("<img src=\"".IMG_ICON.$item["img"]."\" class=\"vcent\">");
@@ -433,7 +424,7 @@ HTML;
 
 //////////////////////////////////////////////////
 //	キャラの行動
-	function Action(&$char) {
+	function Action($char) {
 		// $char->judge が設定されてなければ飛ばす
 		if($char->judge === array()) {
 			$char->delay	= $char->SPD;
@@ -448,21 +439,21 @@ HTML;
 		// 自分のチームはどちらか?
 		foreach($this->team0 as $val) {
 			if($val === $char) {
-				$MyTeam	= &$this->team0;
-				$EnemyTeam	= &$this->team1;
+				$MyTeam	= $this->team0;
+				$EnemyTeam	= $this->team1;
 				break;
 			}
 		}
 		//チーム0でないならチーム1
 		if(!$MyTeam) {
-			$MyTeam	= &$this->team1;
-			$EnemyTeam	= &$this->team0;
+			$MyTeam	= $this->team1;
+			$EnemyTeam	= $this->team0;
 		}
 
 		//行動の判定(使用する技の判定)
 		if($char->expect) {// 詠唱,貯め 完了
 			$skill	= $char->expect;
-			$return	= &$char->target_expect;
+			$return	= $char->target_expect;
 		} else {//待機→判定→スキル
 			$JudgeKey	= -1;
 
@@ -512,7 +503,7 @@ HTML;
 			$this->UseSkill($skill,$return,$char,$MyTeam,$EnemyTeam);
 		// 行動できなかった場合の処理
 		} else {
-			print($char->Name(bold)." sunk in thought and couldn't act.<br />(No more patterns)<br />\n");
+			print($char->Name(bold)." 陷入沉思结果忘了行动.<br />(无更多行动模式)<br />\n");
 			$char->DelayReset();
 		}
 
@@ -523,7 +514,7 @@ HTML;
 		//echo $char->name." ".$skill."<br>";//確認用
 		//セルの終わり
 		if($char->team === TEAM_1)
-			print("</td><td class=\"ttd1\">&nbsp;\n");
+			print("</td><td class=\"ttd1\"> \n");
 		print("</td></tr>\n");
 	}
 //////////////////////////////////////////////////
@@ -538,18 +529,19 @@ HTML;
 
 //////////////////////////////////////////////////
 //
-	function UseSkill($skill_no,&$JudgedTarget,&$My,&$MyTeam,&$Enemy) {
+	function UseSkill($skill_no,$JudgedTarget,$My,$MyTeam,$Enemy) {
 		$skill	= LoadSkillData($skill_no);//技データ読む
 
 		// 武器タイプ不一致
 		if($skill["limit"] && !$My->monster) {
 			if(!$skill["limit"][$My->WEAPON]) {
 				print('<span class="u">'.$My->Name(bold));
-				print('<span class="dmg"> Failed </span>to ');
+				print('<span class="dmg"> 失败</span> 因为 ');
+				print($skill["limit"][$My->WEAPON]);
 				print("<img src=\"".IMG_ICON.$skill["img"]."\" class=\"vcent\"/>");
 				print($skill[name]."</span><br />\n");
 				//print($My->Name(bold)." Failed to use ".$skill["name"]."<br />\n");
-				print("(Weapon type doesnt match)<br />\n");
+				print("(武器类型不符)<br />\n");
 				$My->DelayReset();// 行動順をリセット
 				return true;
 			}
@@ -557,7 +549,7 @@ HTML;
 
 		// SP不足
 		if($My->SP < $skill["sp"]) {
-			print($My->Name(bold)." failed to ".$skill["name"]."(SP shortage)");
+			print($My->Name(bold).$skill["name"]."失败(SP不足)");
 			if($My->expect) {//もし詠唱や貯め途中でSPが不足した場合
 				$My->ResetExpect();
 			}
@@ -570,10 +562,10 @@ HTML;
 			// こちらは貯めと詠唱を開始する場合 /////////////////////
 			// 物理か魔法によって文を変える
 			if($skill["type"] == 0) {//物理
-				print('<span class="charge">'.$My->Name(bold).' start charging.</span>');
+				print('<span class="charge">'.$My->Name(bold).' 开始蓄力.</span>');
 				$My->expect_type	= CHARGE;
 			} else {//魔法
-				print('<span class="charge">'.$My->Name(bold).' start casting.</span>');
+				print('<span class="charge">'.$My->Name(bold).' 开始咏唱.</span>');
 				$My->expect_type	= CAST;
 			}
 			$My->expect	= $skill_no;//詠唱・貯め完了と同時に使用する技
@@ -602,10 +594,10 @@ HTML;
 			if($skill["MagicCircleDeleteTeam"])
 			{
 				if($this->MagicCircleDelete($My->team,$skill["MagicCircleDeleteTeam"])) {
-					print($My->Name(bold).'<span class="charge"> use MagicCircle x'.$skill["MagicCircleDeleteTeam"].'</span><br />'."\n");
+					print($My->Name(bold).'<span class="charge"> 使用魔法阵 x'.$skill["MagicCircleDeleteTeam"].'</span><br />'."\n");
 				// 魔法陣消費失敗
 				} else {
-					print('<span class="dmg">failed!(MagicCircle isn\'t enough)</span><br />'."\n");
+					print('<span class="dmg">失败!(魔法阵不足)</span><br />'."\n");
 					$My->DelayReset();// 行動順をリセット
 					return true;
 				}
@@ -626,23 +618,23 @@ HTML;
 
 		// ターゲットを選ぶ(候補)
 		if($skill["target"]["0"] == "friend"):
-			$candidate	= &$MyTeam;
+			$candidate	= $MyTeam;
 		elseif($skill["target"]["0"] == "enemy"):
-			$candidate	= &$Enemy;
+			$candidate	= $Enemy;
 		elseif($skill["target"]["0"] == "self"):
-			$candidate[]	= &$My;
+			$candidate[]	= $My;
 		elseif($skill["target"]["0"] == "all"):
 			//$candidate	= $MyTeam + $Enemy;//???
-			$candidate	= array_merge_recursive(&$MyTeam,&$Enemy);//結合の後,並びをランダムにした方がいい??
+			$candidate	= array_merge_recursive($MyTeam,$Enemy);//結合の後,並びをランダムにした方がいい??
 		endif;
 
 		// 候補から使用する対象を選ぶ → (スキル使用)
 
 		// 単体に使用
 		if($skill["target"]["1"] == "individual") {
-			$target	=& $this->SelectTarget($candidate,$skill);//対象を選択
-			if($defender =& $this->Defending($target,$candidate,$skill) )//守りに入るキャラ
-				$target	= &$defender;
+			$target	= $this->SelectTarget($candidate,$skill);//対象を選択
+			if($defender = $this->Defending($target,$candidate,$skill) )//守りに入るキャラ
+				$target	= $defender;
 			for($i=0; $i<$skill["target"]["2"]; $i++) {//単体に複数回実行
 				$dmg	= $this->SkillEffect($skill,$skill_no,$My,$target);
 				$this->AddTotalDamage($MyTeam,$dmg);
@@ -651,9 +643,9 @@ HTML;
 		// 複数に使用
 		} else if($skill["target"]["1"] == "multi") {
 			for($i=0; $i<$skill["target"]["2"]; $i++) {
-				$target	=& $this->SelectTarget($candidate,$skill);//対象を選択
-				if($defender =& $this->Defending($target,$candidate,$skill) )//守りに入るキャラ
-					$target	= &$defender;
+				$target	= $this->SelectTarget($candidate,$skill);//対象を選択
+				if($defender = $this->Defending($target,$candidate,$skill) )//守りに入るキャラ
+					$target	= $defender;
 				$dmg	= $this->SkillEffect($skill,$skill_no,$My,$target);
 				$this->AddTotalDamage($MyTeam,$dmg);
 			}
@@ -661,9 +653,9 @@ HTML;
 		// 全体に使用
 		} else if($skill["target"]["1"] == "all") {
 			foreach($candidate as $key => $char) {
-				$target	= &$candidate[$key];
+				$target	= $candidate[$key];
 				//if($char->STATE === DEAD) continue;//死亡者はパス。
-				if($skill["priority"] != "Dead") {//一時的に。
+				if($skill["priority"] != "死亡") {//一時的に。
 					if($char->STATE === DEAD) continue;//死亡者はパス。
 				}
 				// 全体攻撃は守りに入れない(とする)
@@ -680,7 +672,7 @@ HTML;
 
 		// 攻撃対象になったキャラ達がどうなったか確かめる(とりあえずHP=0になったかどうか)。
 		if($skill["sacrifice"]) { // Sacri系の技を使った場合。
-			$Sacrier[]	= &$My;
+			$Sacrier[]	= $My;
 			$this->JudgeTargetsDead($Sacrier);
 		}
 		list($exp,$money,$itemdrop)	= $this->JudgeTargetsDead($candidate);//又、取得する経験値を得る
@@ -696,7 +688,7 @@ HTML;
 		// 行動後の硬直(があれば設定する)
 		if($skill["charge"]["1"]) {
 			$My->DelayReset();
-			print($My->Name(bold)." Delayed");
+			print($My->Name(bold)." 行动推迟了");
 			$My->DelayByRate($skill["charge"]["1"],$this->delay,1);
 			print("<br />\n");
 			return false;
@@ -707,7 +699,7 @@ HTML;
 	}
 //////////////////////////////////////////////////
 //	経験値を得る
-function GetExp($exp,&$team) {
+function GetExp($exp,$team) {
 	if(!$exp) return false;
 
 	$exp	= round(EXP_RATE * $exp);
@@ -719,13 +711,13 @@ function GetExp($exp,&$team) {
 	}
 
 	$Alive	= CountAliveChars($team);
-	if($Alive === 0) return false;
+	if($Alive=== 0) return false;
 	$ExpGet	= ceil($exp/$Alive);//生存者にだけ経験値を分ける。
-	print("Alives get {$ExpGet}exps.<br />\n");
+	print("存活者获得 {$ExpGet} 经验.<br />\n");
 	foreach($team as $key => $char) {
 		if($char->STATE === 1) continue;//死亡者にはEXPあげない
 		if($team[$key]->GetExp($ExpGet))//LvUpしたならtrueが返る
-			print("<span class=\"levelup\">".$char->Name()." LevelUp!</span><br />\n");
+			print("<span class=\"levelup\">".$char->Name()." 升级!</span><br />\n");
 	}
 }
 //////////////////////////////////////////////////
@@ -745,7 +737,7 @@ function GetExp($exp,&$team) {
 
 //////////////////////////////////////////////////
 //	後衛を守りに入るキャラを選ぶ。
-	function &Defending(&$target,&$candidate,$skill) {
+	function Defending($target,$candidate,$skill) {
 		if($target === false) return false;
 
 		if($skill["invalid"])//防御無視できる技。
@@ -759,7 +751,7 @@ function GetExp($exp,&$team) {
 		foreach($candidate as $key => $char) {
 			//print("{$char->POSTION}:{$char->STATE}<br>");
 			if($char->POSITION == "front" && $char->STATE !== 1 && 1 < $char->HP )
-				$fore[]	= &$candidate["$key"];
+				$fore[]	= $candidate["$key"];
 		}
 		if(count($fore) == 0)//前衛がいなけりゃ守れない。終わる
 			return false;
@@ -783,30 +775,30 @@ function GetExp($exp,&$team) {
 				case "never":
 					continue;
 				case "life25":// HP(%)が25%以上なら
-					if(25 < $HpRate) $defender	= &$fore["$key"]; break;
+					if(25 < $HpRate) $defender	= $fore["$key"]; break;
 				case "life50":// 〃50%〃
-					if(50 < $HpRate) $defender	= &$fore["$key"]; break;
+					if(50 < $HpRate) $defender	= $fore["$key"]; break;
 				case "life75":// 〃70%〃
-					if(75 < $HpRate) $defender	= &$fore["$key"]; break;
+					if(75 < $HpRate) $defender	= $fore["$key"]; break;
 				case "prob25":// 25%の確率で
-					if($prob < 25) $defender	= &$fore["$key"]; break;
+					if($prob < 25) $defender	= $fore["$key"]; break;
 				case "prob50":// 50% 〃
-					if($prob < 50) $defender	= &$fore["$key"]; break;
+					if($prob < 50) $defender	= $fore["$key"]; break;
 				case "prob75":// 75% 〃
-					if($prob < 75) $defender	= &$fore["$key"]; break;
+					if($prob < 75) $defender	= $fore["$key"]; break;
 				default:
-					$defender	= &$fore["$key"];
+					$defender	= $fore["$key"];
 			}
 			// 誰かが後衛を守りに入ったのでそれを表示する
 			if($defender) {
-				print('<span class="bold">'.$defender->name.'</span> protected <span class="bold">'.$target->name.'</span>!<br />'."\n");
+				print('<span class="bold">'.$defender->name.'</span> 保护<span class="bold">'.$target->name.'</span>!<br />'."\n");
 				return $defender;
 			}
 		}
 	}
 //////////////////////////////////////////////////
 //	スキル使用後に対象者(候補)がしぼーしたかどうかを確かめる
-	function JudgeTargetsDead(&$target) {
+	function JudgeTargetsDead($target) {
 		foreach($target as $key => $char) {
 			// 与えたダメージの差分で経験値を取得するモンスターの場合。
 			if(method_exists($target[$key],'HpDifferenceEXP')) {
@@ -814,7 +806,7 @@ function GetExp($exp,&$team) {
 			}
 			if($target[$key]->CharJudgeDead()) {//死んだかどうか
 				// 死亡メッセージ
-				print("<span class=\"dmg\">".$target[$key]->Name(bold)." down.</span><br />\n");
+				print("<span class=\"dmg\">".$target[$key]->Name(bold)." 被打倒.</span><br />\n");
 
 				//経験値の取得
 				$exp	+= $target[$key]->DropExp();
@@ -826,7 +818,7 @@ function GetExp($exp,&$team) {
 				if($item = $target[$key]->DropItem()) {
 					$itemdrop["$item"]++;
 					$item	= LoadItemData($item);
-					print($char->Name("bold")." dropped");
+					print($char->Name("bold")." 掉落了");
 					print("<img src=\"".IMG_ICON.$item["img"]."\" class=\"vcent\"/>\n");
 					print("<span class=\"bold u\">{$item[name]}</span>.<br />\n");
 				}
@@ -844,7 +836,7 @@ function GetExp($exp,&$team) {
 	}
 //////////////////////////////////////////////////
 //	優先順位に従って候補から一人返す
-	function &SelectTarget(&$target_list,$skill) {
+	function SelectTarget($target_list,$skill) {
 
 		/*
 		* 優先はするが、当てはまらなくても最終的にターゲットは要る。
@@ -854,13 +846,13 @@ function GetExp($exp,&$team) {
 
 		//残りHP(%)が少ない人をターゲットにする
 		if($skill["priority"] == "LowHpRate") {
-			$hp = 2;//一応1より大きい数字に・・・
+			$hp = 2;//一応1より大きい数字に???
 			foreach($target_list as $key => $char) {
 				if($char->STATE == DEAD) continue;//しぼー者は対象にならない。
 				$HpRate	= $char->HP / $char->MAXHP;//HP(%)
 				if($HpRate < $hp) {
 					$hp	= $HpRate;//現状の最もHP(%)が低い人
-					$target	= &$target_list[$key];
+					$target	= $target_list[$key];
 				}
 			}
 			return $target;//最もHPが低い人
@@ -870,7 +862,7 @@ function GetExp($exp,&$team) {
 			foreach($target_list as $key => $char) {
 				if($char->STATE == DEAD) continue;//しぼー者は対象にならない。
 				if($char->POSITION != FRONT)//後衛なら
-				$target[]	= &$target_list[$key];//候補にいれる
+				$target[]	= $target_list[$key];//候補にいれる
 			}
 			if($target)
 				return $target[array_rand($target)];//リストの中からランダムで
@@ -884,7 +876,7 @@ function GetExp($exp,&$team) {
 		} else if($skill["priority"] == "Dead") {
 			foreach($target_list as $key => $char) {
 				if($char->STATE == DEAD)//しぼーなら
-				$target[]	= &$target_list[$key];//しぼー者リスト
+				$target[]	= $target_list[$key];//しぼー者リスト
 			}
 			if($target)
 				return $target[array_rand($target)];//しぼー者リストの中からランダムで
@@ -895,7 +887,7 @@ function GetExp($exp,&$team) {
 		} else if($skill["priority"] == "Summon") {
 			foreach($target_list as $key => $char) {
 				if($char->summon)//召喚キャラなら
-					$target[]	= &$target_list[$key];//召喚キャラリスト
+					$target[]	= $target_list[$key];//召喚キャラリスト
 			}
 			if($target)
 				return $target[array_rand($target)];//召喚キャラの中からランダムで
@@ -906,7 +898,7 @@ function GetExp($exp,&$team) {
 		} else if($skill["priority"] == "Charge") {
 			foreach($target_list as $key => $char) {
 				if($char->expect)
-					$target[]	= &$target_list[$key];
+					$target[]	= $target_list[$key];
 			}
 			if($target)
 				return $target[array_rand($target)];
@@ -918,7 +910,7 @@ function GetExp($exp,&$team) {
 		//それ以外(ランダム)
 		foreach($target_list as $key => $char) {
 			if($char->STATE != DEAD)//しぼー以外なら
-				$target[]	= &$target_list[$key];//しぼー者リスト
+				$target[]	= $target_list[$key];//しぼー者リスト
 		}
 		return $target[array_rand($target)];//ランダムに誰か一人
 	}
@@ -932,7 +924,7 @@ function GetExp($exp,&$team) {
 			// 最初は誰でもいいのでとりあえず最初の人とする。
 			if(!isset($delay)) {
 				$delay	= $char->delay;
-				$NextChar	= &$this->team0["$key"];
+				$NextChar	= $this->team0["$key"];
 				continue;
 			}
 			// キャラが今のディレイより多ければ交代
@@ -943,7 +935,7 @@ function GetExp($exp,&$team) {
 						continue;
 				}
 				$delay	= $char->delay;
-				$NextChar	= &$this->team0["$key"];
+				$NextChar	= $this->team0["$key"];
 			}
 		}
 		// ↑と同じ。
@@ -955,7 +947,7 @@ function GetExp($exp,&$team) {
 						continue;
 				}
 				$delay	= $char->delay;
-				$NextChar	= &$this->team1["$key"];
+				$NextChar	= $this->team1["$key"];
 			}
 		}
 		// 全員ディレイ減少
@@ -989,10 +981,10 @@ function GetExp($exp,&$team) {
 			if($char->STATE === DEAD) continue;
 			$charDis	= $this->team0[$key]->nextDis();
 			if($charDis == $nextDis) {
-				$NextChar[]	= &$this->team0["$key"];
+				$NextChar[]	= $this->team0["$key"];
 			} else if($charDis <= $nextDis) {
 				$nextDis	= $charDis;
-				$NextChar	= array(&$this->team0["$key"]);
+				$NextChar	= array($this->team0["$key"]);
 			}
 		}
 
@@ -1001,10 +993,10 @@ function GetExp($exp,&$team) {
 			if($char->STATE === DEAD) continue;
 			$charDis	= $this->team1[$key]->nextDis();
 			if($charDis == $nextDis) {
-				$NextChar[]	= &$this->team1["$key"];
+				$NextChar[]	= $this->team1["$key"];
 			} else if($charDis <= $nextDis) {
 				$nextDis	= $charDis;
-				$NextChar	= array(&$this->team1["$key"]);
+				$NextChar	= array($this->team1["$key"]);
 			}
 		}
 
@@ -1121,15 +1113,15 @@ function GetExp($exp,&$team) {
 		}
 		?>
 <table style="width:100%;" cellspacing="0"><tbody>
-<tr><td class="teams"><div class="bold"><?=$this->team1_name?></div>
-Total Lv : <?=$team1_total_lv?><br>
-Average Lv : <?=$team1_avelv?><br>
-Total HP : <?=$team1_total_hp?>/<?=$team1_total_maxhp?>
-</td><td class="teams ttd1"><div class="bold"><?=$this->team0_name?></div>
-Total Lv : <?=$team0_total_lv?><br>
-Average Lv : <?=$team0_avelv?><br>
-Total HP : <?=$team0_total_hp?>/<?=$team0_total_maxhp?>
-</td></tr><?
+<tr><td class="teams"><div class="bold"><?php print $this->team1_name?></div>
+总级别 : <?php print $team1_total_lv?><br>
+平均级别 : <?php print $team1_avelv?><br>
+总HP : <?php print $team1_total_hp?>/<?php print $team1_total_maxhp?>
+</td><td class="teams ttd1"><div class="bold"><?php print $this->team0_name?></div>
+总级别 : <?php print $team0_total_lv?><br>
+平均级别 : <?php print $team0_avelv?><br>
+总HP : <?php print $team0_total_hp?>/<?php print $team0_total_maxhp?>
+</td></tr><?php 
 	}
 //////////////////////////////////////////////////
 //	戦闘終了時に表示
@@ -1139,7 +1131,7 @@ Total HP : <?=$team0_total_hp?>/<?=$team0_total_maxhp?>
 		print("</td></tr>");*/
 		?>
 </tbody></table>
-<?
+<?php 
 	}
 //////////////////////////////////////////////////
 //	戦闘画像・各キャラの残りHP残りSP等を表示
@@ -1156,10 +1148,10 @@ Total HP : <?=$team0_total_hp?>/<?=$team0_total_maxhp?>
 		print("<div style=\"width:100%;hight:100%;position:relative;\">\n");
 		print('<div style="position:absolute;bottom:0px;right:0px;">'."\n");
 		if($this->Scroll)
-			print("<a href=\"#s".($this->Scroll - 1)."\">&lt;&lt;</a>\n");
+			print("<a href=\"#s".($this->Scroll - 1)."\"><<</a>\n");
 		else
-			print("&lt;&lt;" );
-		print("<a href=\"#s".(++$this->Scroll)."\">&gt;&gt;</a>\n");
+			print("<<" );
+		print("<a href=\"#s".(++$this->Scroll)."\">>></a>\n");
 		print('</div>');
 
 		switch(BTL_IMG_TYPE) {
@@ -1288,10 +1280,10 @@ Total HP : <?=$team0_total_hp?>/<?=$team0_total_maxhp?>
 		if(!$money) return false;
 		$money	= ceil($money * MONEY_RATE);
 		if($team === $this->team0) {
-			print("{$this->team0_name} Get ".MoneyFormat($money).".<br />\n");
+			print("{$this->team0_name} 获得 ".MoneyFormat($money).".<br />\n");
 			$this->team0_money	+= $money;
 		} else if($team === $this->team1) {
-			print("{$this->team1_name} Get ".MoneyFormat($money).".<br />\n");
+			print("{$this->team1_name} 获得 ".MoneyFormat($money).".<br />\n");
 			$this->team1_money	+= $money;
 		}
 	}
