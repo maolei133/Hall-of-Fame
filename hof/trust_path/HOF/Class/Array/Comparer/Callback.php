@@ -28,7 +28,7 @@ class HOF_Class_Array_Comparer_Callback
 	/**
 	 * @return self
 	 */
-	function newInstance($argv)
+	function newInstance($argv = null)
 	{
 		if (is_array($argv))
 		{

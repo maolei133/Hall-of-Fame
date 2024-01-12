@@ -3,7 +3,7 @@
 //define('BASE_URL_ROOT', '/'.trim(dirname($_SERVER['PHP_SELF']), '/').'/');
 //$rootPath = trim(dirname($_SERVER['PHP_SELF']), '/');
 $rootPath = trim(dirname($_SERVER['PATH_INFO']), '/');
-if (($rootPath == '\\') || ($rootPath == '')) {
+if (($rootPath == '/') || ($rootPath == '')) {
     define('BASE_URL_ROOT', '/');
 } else {
     define('BASE_URL_ROOT', '/'.$rootPath.'/');
@@ -72,7 +72,7 @@ define('RANK_BATTLE_NEXT_LOSE', 60 * 60 * 24); //ランキング戦 負けたと
 define('RANK_BATTLE_NEXT_WIN', 60 * 1); //ランキング戦 勝ったとき次戦えるまで
 
 // battle setting
-define('NORMAL_BATTLE_TIME', 100); //通常のモンスターとの戦闘で消費する時間
+define('NORMAL_BATTLE_TIME', 1); //通常のモンスターとの戦闘で消費する時間
 define('ENEMY_INCREASE', 1); //敵の増員(ランダム)
 define('BATTLE_MAX_TURNS', 100); //戦闘の最大行動回数(戦闘が数値以上長引くと終了させる)
 define('TURN_EXTENDS', 20); // 決着がつきそうな場合延長するターン数。

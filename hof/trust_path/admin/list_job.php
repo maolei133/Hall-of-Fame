@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link rel="stylesheet" href="../static/style/basis.css" type="text/css">
+<link rel="stylesheet" href="/static/style/basis.css" type="text/css">
 <title>JOB List</title>
 <style type="text/css">
 <!--
@@ -32,6 +32,15 @@ td{
 </style></head>
 <body>
 <?php
+set_include_path(get_include_path() . PATH_SEPARATOR . realpath('../includes/'));
+require_once 'Scorpio/bootstrap.php';
+require_once realpath('../config/setting.dist.php');
+
+Sco_Loader_Autoloader::getInstance()
+	->pushAutoloader(BASE_TRUST_PATH, 'HOF_', true)
+;
+
+HOF::getInstance();
 
 $det = '<tr><td class="a">No</td>
 <td class="a">Name</td>
@@ -47,7 +56,7 @@ $det = '<tr><td class="a">No</td>
 <td class="a">priority</td>
 <td class="a">charge</td>
 <td class="a">exp</td></tr>' . "\n";
-$img_f = "../static/image/char/";
+$img_f = "/static/image/char/";
 
 print ('<table border="0" cellspacing="1"><tbody>');
 //print($det);
@@ -62,21 +71,21 @@ for ($no = 100; $no < 999; $no++)
 
 	print ("<tr>");
 	print ("<td>{$no}</td>"); //no
-	print ("<td>{$j[name_male]}</td>"); //name
-	print ("<td>{$j[coe][0]} : {$j[coe][1]}</td>"); //name
-	print ("<td><img src=\"{$img_f}{$j[img_male]}\"><img src=\"{$img_f}{$j[img_female]}\"></td>"); //no
+	print ("<td>{$j['job_name']}</td>"); //name
+	print ("<td>{$j['coe']['maxhp']} : {$j['coe']['maxsp']}</td>"); //name
+	print ("<td><img src=\"" . $img_f . $j['gender'][1]['img'] . ".png\"><img src=\"" . $img_f . $j['gender'][2]['img'] . ".png\"></td>"); //no
 	print ("</tr>\n");
 	print ("<tr>");
 	print ("<td colspan=\"4\">");
-	foreach ($j[equip] as $i) print ("$i, ");
+	foreach ((array)$j['equip'] as $i) print ("$i, ");
 	print ("</td>");
 	print ("</tr>\n");
 	// 習得技
-	if ($j[learn])
+	if ($j['learn'])
 	{
 		print ("<tr><td colspan=\"4\">");
 		print ('<table><tbody>');
-		foreach ($j[learn] as $skill)
+		foreach ($j['learn'] as $skill)
 		{
 			print ("<tr><td class=\"b\">");
 			$skill = HOF_Model_Data::getSkill($skill);
@@ -96,9 +105,9 @@ print ("</tbody></table>");
 </html>
 <?php
 
-define("IMG_ICON", "../static/image/icon/");
+define("IMG_ICON", "/static/image/icon/");
 
-override_function('HOF_Class_Skill::ShowSkillDetail', '$skill, $radio = false', 'HOF_Class_Skill_ShowSkillDetail($skill, $radio);');
+override_function('HOF_Class_Skill::ShowSkillDetail', '$skill, $radio = false', 'HOF_Class_Skill_ShowSkillDetail($skill, $radio)');
 //	技の詳細を表示
 function HOF_Class_Skill_ShowSkillDetail($skill, $radio = false)
 {

@@ -119,7 +119,7 @@ class HOF_Class_Skill extends HOF_Class_Base_ObjectAttr
 	/**
 	 * 技の詳細を表示
 	 */
-	function ShowSkillDetail($skill, $radio = false, $text = false)
+	static function ShowSkillDetail($skill, $radio = false, $text = false)
 	{
 		if (!$skill) return false;
 

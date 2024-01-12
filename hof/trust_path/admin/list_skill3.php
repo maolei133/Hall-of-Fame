@@ -2,8 +2,8 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link rel="stylesheet" href="../static/style/basis.css" type="text/css">
-<link rel="stylesheet" href="../static/style/style.css" type="text/css">
+<link rel="stylesheet" href="/static/style/basis.css" type="text/css">
+<link rel="stylesheet" href="/static/style/style.css" type="text/css">
 <title>skl_list3</title>
 <style type="text/css">
 <!--
@@ -32,6 +32,15 @@ td{
 </style></head>
 <body>
 <?php
+set_include_path(get_include_path() . PATH_SEPARATOR . realpath('../includes/'));
+require_once 'Scorpio/bootstrap.php';
+require_once realpath('../config/setting.dist.php');
+
+Sco_Loader_Autoloader::getInstance()
+	->pushAutoloader(BASE_TRUST_PATH, 'HOF_', true)
+;
+
+HOF::getInstance();
 
 define("IMG_ICON", "../static/image/icon/");
 
@@ -43,7 +52,7 @@ for ($no = 1000; $no < 9999; $no++)
 	if (!$skill) continue;
 	print ("$no:");
 	print ('<span class="bold">' . $skill["learn"] . '</span>pt');
-	ShowSkilldetail($skill);
+	HOF_Class_Skill::ShowSkillDetail($skill);
 	print ("<br />\n");
 }
 print ("</div>\n");

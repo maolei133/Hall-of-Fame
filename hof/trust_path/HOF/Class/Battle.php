@@ -159,7 +159,7 @@ class HOF_Class_Battle extends HOF_Class_Base_Extend_Root
 	{
 		$amount *= ($del ? -1 : 1);
 
-		$team_mc = &$this->teams[$team]['mc'];
+		$team_mc = $this->teams[$team]['mc'];
 
 		if ($del)
 		{
@@ -190,7 +190,7 @@ class HOF_Class_Battle extends HOF_Class_Base_Extend_Root
 	{
 		$count = 0;
 
-		foreach ($this->teams as &$data)
+		foreach ($this->teams as $data)
 		{
 			$count += $data['team']->CountDead();
 		}
@@ -275,7 +275,7 @@ class HOF_Class_Battle extends HOF_Class_Base_Extend_Root
 	/**
 	 * キャラの行動
 	 */
-	function Action(&$char)
+	function Action($char)
 	{
 		// $char->judge が設定されてなければ飛ばす
 		if (empty($char->behavior['pattern']))
@@ -298,15 +298,15 @@ class HOF_Class_Battle extends HOF_Class_Base_Extend_Root
 
 		list($_my, $_enemy) = $this->teamToggle($char->team);
 
-		$MyTeam = &$this->teams[$_my]['team'];
-		$EnemyTeam = &$this->teams[$_enemy]['team'];
+		$MyTeam = $this->teams[$_my]['team'];
+		$EnemyTeam = $this->teams[$_enemy]['team'];
 
 		//行動の判定(使用する技の判定)
 		if ($char->expect)
 		{
 			// 詠唱,貯め 完了
 			$skill = $char->expect;
-			$return = &$char->target_expect;
+			$return = $char->target_expect;
 		}
 		else
 		{ //待機→判定→スキル
@@ -553,11 +553,11 @@ class HOF_Class_Battle extends HOF_Class_Base_Extend_Root
 			// 行動キャラ
 			if (DELAY_TYPE === 0)
 			{
-				$char = &$this->NextActer();
+				$char = $this->NextActer();
 			}
 			elseif (DELAY_TYPE === 1)
 			{
-				$char = &$this->NextActerNew();
+				$char = $this->NextActerNew();
 			}
 
 			$this->Action($char); //行動
@@ -581,7 +581,7 @@ class HOF_Class_Battle extends HOF_Class_Base_Extend_Root
 	 * 次の行動は誰か(又、詠唱中の魔法が発動するのは誰か)
 	 * リファレンスを返す
 	 */
-	function &NextActerNew()
+	function NextActerNew()
 	{
 
 		/**
@@ -619,9 +619,9 @@ class HOF_Class_Battle extends HOF_Class_Base_Extend_Root
 			/**
 			 * 全員ディレイ減少
 			 */
-			foreach ($this->teams as $idx => &$data)
+			foreach ($this->teams as $idx => $data)
 			{
-				foreach ($data['team'] as &$char)
+				foreach ($data['team'] as $char)
 				{
 					$char->Delay($nextDis);
 				}
@@ -699,7 +699,7 @@ HTML;
 	//	戦闘中獲得したアイテムを返す。
 	function ReturnItemGet($team)
 	{
-		if (count($this->teams[$team]['item']) != 0)
+		if (count((array)$this->teams[$team]['item']) != 0)
 		{
 			return $this->teams[$team]['item'];
 		}
@@ -722,9 +722,9 @@ HTML;
 	 */
 	function SaveCharacters()
 	{
-		foreach ($this->teams as $idx => &$data)
+		foreach ($this->teams as $idx => $data)
 		{
-			foreach ($data['team'] as &$char)
+			foreach ($data['team'] as $char)
 			{
 				$char->saveCharData();
 			}
@@ -787,7 +787,7 @@ HTML;
 	/**
 	 * 後衛を守りに入るキャラを選ぶ。
 	 */
-	function &Defending(&$target, &$candidate, $skill)
+	function Defending($target, $candidate, $skill)
 	{
 		if ($target === false) return false;
 
@@ -804,25 +804,25 @@ HTML;
 		 * "前衛で尚且つ生存者"を配列に詰める↓
 		 * 前衛 + 生存者 + HP1以上 に変更 ( 多段系攻撃で死にながら守るので [2007/9/20] )
 		 */
-		foreach ($candidate as &$char)
+		foreach ($candidate as $char)
 		{
-			if ($char->POSITION == POSITION_FRONT && $char->STATE !== STATE_DEAD && 1 < $char->HP) $fore[] = &$char;
+			if ($char->POSITION == POSITION_FRONT && $char->STATE !== STATE_DEAD && 1 < $char->HP) $fore[] = $char;
 		}
 
 		// 前衛がいなけりゃ守れない。終わる
-		if (count($fore) == 0) return false;
+		if (count((array)$fore) == 0) return false;
 
 		// 一人づつ守りに入るか入らないかを判定する。
 
 		// 配列の並びを混ぜる
 		shuffle($fore);
-		foreach ($fore as &$char)
+		foreach ($fore as $char)
 		{
 			// 判定に使う変数を計算したりする。
 			switch ($char->behavior['guard'])
 			{
 				case 'always':
-					$defender = &$char;
+					$defender = $char;
 					break;
 				case 'life25':
 				case 'life50':
@@ -830,7 +830,7 @@ HTML;
 					$HpRate = ($char->HP / $char->MAXHP) * 100;
 
 					sscanf($char->behavior['guard'], 'life%2d', $n);
-					if ($n < $HpRate) $defender = &$char;
+					if ($n < $HpRate) $defender = $char;
 
 					break;
 				case 'prob25':
@@ -839,12 +839,11 @@ HTML;
 					$prob = mt_rand(1, 100);
 
 					sscanf($char->behavior['guard'], 'prob%2d', $n);
-					if ($prob < $n) $defender = &$char;
+					if ($prob < $n) $defender = $char;
 
 					break;
 				case 'never':
 				default:
-					continue;
 					break;
 
 			}
@@ -862,7 +861,7 @@ HTML;
 	/**
 	 * スキル使用後に対象者(候補)がしぼーしたかどうかを確かめる
 	 */
-	function JudgeTargetsDead(&$target)
+	function JudgeTargetsDead($target)
 	{
 		foreach ($target as $key => $char)
 		{
@@ -900,7 +899,7 @@ HTML;
 					$item = HOF_Model_Data::getItemData($item);
 					echo ($char->Name("bold") . " dropped");
 					echo ("<img src=\"" . HOF_Class_Icon::getImageUrl($item["img"], HOF_Class_Icon::IMG_ITEM) . "\" class=\"vcent\"/>\n");
-					echo ("<span class=\"bold u\">{$item[name]}</span>.<br />\n");
+					echo ("<span class=\"bold u\">{$item['name']}</span>.<br />\n");
 				}
 
 				/**
@@ -930,7 +929,7 @@ HTML;
 	/**
 	 * 優先順位に従って候補から一人返す
 	 */
-	function &SelectTarget(&$target_list, $skill)
+	function SelectTarget($target_list, $skill)
 	{
 
 		/**
@@ -944,14 +943,14 @@ HTML;
 
 			// 一応1より大きい数字に・・・
 			$hp = 2;
-			foreach ($target_list as $key => &$char)
+			foreach ($target_list as $key => $char)
 			{
 				if ($char->STATE == STATE_DEAD) continue; //しぼー者は対象にならない。
 				$HpRate = $char->HP / $char->MAXHP; //HP(%)
 				if ($HpRate < $hp)
 				{
 					$hp = $HpRate; //現状の最もHP(%)が低い人
-					$target = &$char;
+					$target = $char;
 				}
 			}
 			return $target; //最もHPが低い人
@@ -961,11 +960,11 @@ HTML;
 		elseif ($skill["priority"] == "Back")
 		{
 			// 後衛を優先する
-			foreach ($target_list as $key => &$char)
+			foreach ($target_list as $key => $char)
 			{
 				if ($char->STATE == STATE_DEAD) continue; //しぼー者は対象にならない。
 				if ($char->POSITION != POSITION_FRONT) //後衛なら
- 						$target[] = &$char; //候補にいれる
+ 						$target[] = $char; //候補にいれる
 			}
 			if ($target) return $target[array_rand($target)]; //リストの中からランダムで
 
@@ -977,10 +976,10 @@ HTML;
 		elseif ($skill["priority"] == "Dead")
 		{
 			// しぼー者の中からランダムで返す。
-			foreach ($target_list as $key => &$char)
+			foreach ($target_list as $key => $char)
 			{
 				if ($char->STATE == STATE_DEAD) //しぼーなら
- 						$target[] = &$char; //しぼー者リスト
+ 						$target[] = $char; //しぼー者リスト
 			}
 			if ($target) return $target[array_rand($target)]; //しぼー者リストの中からランダムで
 			else  return false; //誰もいなけりゃfalse返すしかない...(→スキル使用失敗)
@@ -988,10 +987,10 @@ HTML;
 		elseif ($skill["priority"] == "Summon")
 		{
 			// 召喚キャラを優先する。
-			foreach ($target_list as $key => &$char)
+			foreach ($target_list as $key => $char)
 			{
 				if ($char->isSummon()) //召喚キャラなら
- 						$target[] = &$char; //召喚キャラリスト
+ 						$target[] = $char; //召喚キャラリスト
 			}
 			if ($target) return $target[array_rand($target)]; //召喚キャラの中からランダムで
 			else  return false; //誰もいなけりゃfalse返すしかない...(→スキル使用失敗)
@@ -999,9 +998,9 @@ HTML;
 		elseif ($skill["priority"] == "Charge")
 		{
 			// チャージ中のキャラ
-			foreach ($target_list as $key => &$char)
+			foreach ($target_list as $key => $char)
 			{
-				if ($char->expect) $target[] = &$char;
+				if ($char->expect) $target[] = $char;
 			}
 			if ($target) return $target[array_rand($target)];
 			else  return false; //誰もいなけりゃfalse返すしかない...(→スキル使用失敗)
@@ -1009,10 +1008,10 @@ HTML;
 		}
 
 		// それ以外(ランダム)
-		foreach ($target_list as $key => &$char)
+		foreach ($target_list as $key => $char)
 		{
 			if ($char->STATE != STATE_DEAD) //しぼー以外なら
- 					$target[] = &$char; //しぼー者リスト
+ 					$target[] = $char; //しぼー者リスト
 		}
 
 		return $target[array_rand($target)]; //ランダムに誰か一人
@@ -1022,12 +1021,12 @@ HTML;
 	 * 次の行動は誰か(又、詠唱中の魔法が発動するのは誰か)
 	 * リファレンスを返す
 	 */
-	function &NextActer()
+	function NextActer()
 	{
 
-		foreach ($this->teams as $idx => &$data)
+		foreach ($this->teams as $idx => $data)
 		{
-			foreach ($data['team'] as &$char)
+			foreach ($data['team'] as $char)
 			{
 				if ($char->STATE === STATE_DEAD) continue;
 
@@ -1035,7 +1034,7 @@ HTML;
 				if (!isset($delay))
 				{
 					$delay = $char->delay;
-					$NextChar = &$char;
+					$NextChar = $char;
 					continue;
 				}
 
@@ -1049,7 +1048,7 @@ HTML;
 						if (mt_rand(0, 1)) continue;
 					}
 					$delay = $char->delay;
-					$NextChar = &$char;
+					$NextChar = $char;
 				}
 			}
 		}
@@ -1059,9 +1058,9 @@ HTML;
 
 		if ($dif >= 0)
 		{
-			foreach ($this->teams as $idx => &$data)
+			foreach ($this->teams as $idx => $data)
 			{
-				foreach ($data['team'] as &$char)
+				foreach ($data['team'] as $char)
 				{
 					$char->Delay($dif);
 				}
@@ -1079,9 +1078,9 @@ HTML;
 
 		if (DELAY_TYPE === 0 || DELAY_TYPE === 1)
 		{
-			foreach ($this->teams as $idx => &$data)
+			foreach ($this->teams as $idx => $data)
 			{
-				foreach ($data['team'] as &$char)
+				foreach ($data['team'] as $char)
 				{
 					$char->DelayReset();
 				}
@@ -1101,9 +1100,9 @@ HTML;
 			/**
 			 * SPDの最大値と合計を求める
 			 */
-			foreach ($this->teams as $idx => &$data)
+			foreach ($this->teams as $idx => $data)
 			{
-				foreach ($data['team'] as &$char)
+				foreach ($data['team'] as $char)
 				{
 					$TotalSPD += $char->SPD;
 					if ($MaxSPD < $char->SPD) $MaxSPD = $char->SPD;

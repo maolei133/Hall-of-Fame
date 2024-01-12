@@ -99,7 +99,7 @@ class HOF_Class_Battle_Team extends HOF_Class_Array_Prop
 
 	public function update()
 	{
-		foreach ($this as $k => &$v)
+		foreach ($this as $k => $v)
 		{
 			$this[$k] = $v;
 		}
@@ -151,7 +151,7 @@ class HOF_Class_Battle_Team extends HOF_Class_Array_Prop
 
 		$char->team($this);
 
-		self::$char_list['all'][$char->uniqid()] = &$char;
+		self::$char_list['all'][$char->uniqid()] = $char;
 
 		if (self::$cache['fixCharName'])
 		{
@@ -187,7 +187,7 @@ class HOF_Class_Battle_Team extends HOF_Class_Array_Prop
 
 		foreach ($this as $char)
 		{
-			self::$char_list['all'][$char->uniqid()] = &$char;
+			self::$char_list['all'][$char->uniqid()] = $char;
 			(int)self::$cache['name_list'][$char->Name()]++;
 		}
 
@@ -209,7 +209,7 @@ class HOF_Class_Battle_Team extends HOF_Class_Array_Prop
 		self::$cache['fixCharName'] = true;
 	}
 
-	function _callback_fixCharName(&$entry, $key = null, $over = false, $pre = '', $append = '')
+	function _callback_fixCharName($entry, $key = null, $over = false, $pre = '', $append = '')
 	{
 		if (is_array($over))
 		{

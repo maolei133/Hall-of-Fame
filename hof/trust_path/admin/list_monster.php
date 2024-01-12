@@ -3,8 +3,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>Monster List</title>
-<link rel="stylesheet" href="../static/style/basis.css" type="text/css">
-<link rel="stylesheet" href="../static/style/style.css" type="text/css">
+<link rel="stylesheet" href="/static/style/basis.css" type="text/css">
+<link rel="stylesheet" href="/static/style/style.css" type="text/css">
 <style type="text/css">
 <!--
 *{
@@ -32,8 +32,17 @@ td{
 </style></head>
 <body>
 <?php
+set_include_path(get_include_path() . PATH_SEPARATOR . realpath('../includes/'));
+require_once 'Scorpio/bootstrap.php';
+require_once realpath('../config/setting.dist.php');
 
-define("IMG_ICON", "../static/image/icon/");
+Sco_Loader_Autoloader::getInstance()
+	->pushAutoloader(BASE_TRUST_PATH, 'HOF_', true)
+;
+
+HOF::getInstance();
+
+define("IMG_ICON", "/static/image/icon/");
 
 $det = '<tr><td class="a">No</td>
 <td class="a">Name</td>
@@ -48,13 +57,14 @@ $det = '<tr><td class="a">No</td>
 <td class="a">str / int / dex / spd / luk</td>
 <td class="a">pos</td>
 <td class="a">guard</td>' . "\n";
-$img_f = "../static/image/char/";
+$img_f = "/static/image/char/";
 
 print ('<table border="0" cellspacing="1"><tbody>');
 $detcount = 0;
 for ($no = 1000; $no < 5999; $no++)
 {
-	$m = HOF_Model_Char::getBaseMonster($no);
+ 	$m = HOF_Model_Char::getBaseMonster($no);
+
 	if (!$m) continue;
 
 	//if($detcount%3==0)
@@ -62,19 +72,19 @@ for ($no = 1000; $no < 5999; $no++)
 	print ($det);
 	print ("<tr>");
 	print ("<td>{$no}</td>"); //no
-	print ("<td>{$m[name]}</td>"); //name
-	print ("<td>{$m[level]}</td>"); //name
-	print ("<td><img src=\"$img_f{$m[img]}\"></td>"); //img
-	print ("<td>{$m[exphold]}</td>"); //exp
-	print ("<td>{$m[moneyhold]}</td>"); //money
-	print ("<td>{$m[hp]}/{$m[maxhp]}</td>"); //hp
-	print ("<td>{$m[sp]}/{$m[maxsp]}</td>"); //sp
-	print ("<td>{$m[atk][0]}<br />{$m[atk][1]}</td>"); //atk
-	print ("<td>{$m[def][0]}+{$m[def][1]}<br />{$m[def][2]}+{$m[def][3]}</td>"); //def
-	print ("<td>{$m[str]} / {$m[int]} / {$m[dex]} / {$m[spd]} / {$m[luk]}</td>"); //status
+	print ("<td>{$m['name']}</td>"); //name
+	print ("<td>{$m['level']}</td>"); //name
+	print ("<td><img src=\"" . $img_f . $m['img'] . ".png\"></td>"); //img
+	print ("<td>{$m['exphold']}</td>"); //exp
+	print ("<td>{$m['moneyhold']}</td>"); //money
+	print ("<td>{$m['hp']}/{$m['maxhp']}</td>"); //hp
+	print ("<td>{$m['sp']}/{$m['maxsp']}</td>"); //sp
+	print ("<td>{$m['atk'][0]}<br />{$m['atk'][1]}</td>"); //atk
+	print ("<td>{$m['def'][0]}+{$m['def'][1]}<br />{$m['def'][2]}+{$m['def'][3]}</td>"); //def
+	print ("<td>{$m['str']} / {$m['int']} / {$m['dex']} / {$m['spd']} / {$m['luk']}</td>"); //status
 	if ($m["posed"]) print ("<td>-</td>"); //position
-	else  print ("<td>{$m[position]}</td>"); //position
-	print ("<td>{$m[guard]}</td>"); //guard
+	else  print ("<td>{$m['position']}</td>"); //position
+	print ("<td>{$m['guard']}</td>"); //guard
 	// 行動手順
 	print ("</tr>\n");
 	print ("<tr><td colspan=\"13\" style=\"text-align:left\">");
@@ -85,7 +95,7 @@ for ($no = 1000; $no < 5999; $no++)
 	$m["quantity"]	= explode("<>",$Pattern[1]);
 	$m["action"]	= explode("<>",$Pattern[2]);
 	*/
-	foreach ($m["judge"] as $key => $val)
+	foreach ((array)$m["judge"] as $key => $val)
 	{
 		print ("<tr><td>");
 		$judge = HOF_Model_Data::getJudgeData($val);
@@ -99,12 +109,12 @@ for ($no = 1000; $no < 5999; $no++)
 		print ("</td></tr>");
 	}
 	// 落とすアイテム
-	if ($m[itemtable])
+	if ($m["itemtable"])
 	{
 		print ('<tr><td colspan="3">');
 		print ("<table><tbody>");
 		$dif = 0;
-		foreach ($m[itemtable] as $itemno => $prob)
+		foreach ($m["itemtable"] as $itemno => $prob)
 		{
 			print ("<tr><td>");
 			print (($prob / 100) . "%");
@@ -133,7 +143,7 @@ print ("</tbody></table>");
 //
 function ShowItemDetail2($item, $amount = false)
 {
-	$file = "../static/image/icon/";
+	$file = "/static/image/icon/";
 	if (!$item) return false;
 
 	print ("\n");
@@ -160,7 +170,7 @@ function ShowItemDetail2($item, $amount = false)
 //	技の詳細を表示
 function ShowSkillDetail2($skill, $radio = false)
 {
-	$file = "../static/image/icon/";
+	$file = "/static/image/icon/";
 	if (!$skill) return false;
 
 	if ($radio) print ('<input type="radio" name="newskill" value="' . $skill["no"] . '" class="vcent">');

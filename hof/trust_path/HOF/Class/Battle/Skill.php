@@ -12,18 +12,18 @@ class HOF_Class_Battle_Skill
 	/**
 	 * @param HOF_Class_Battle $battle
 	 */
-	function __construct(&$battle)
+	function __construct($battle)
 	{
-		$this->battle = &$battle;
+		$this->battle = $battle;
 	}
 
-	//function UseSkill($skill_no, &$JudgedTarget, &$My, &$MyTeam, &$Enemy)
-	function UseSkill($skill_no, &$JudgedTarget, &$My)
+	//function UseSkill($skill_no, $JudgedTarget, $My, $MyTeam, $Enemy)
+	function UseSkill($skill_no, $JudgedTarget, $My)
 	{
 		list($_MyTeam, $_EnemyTeam) = $this->battle->teamToggle($My->team);
 
-		$MyTeam = &$this->battle->teams[$_MyTeam]['team'];
-		$Enemy = &$this->battle->teams[$_EnemyTeam]['team'];
+		$MyTeam = $this->battle->teams[$_MyTeam]['team'];
+		$Enemy = $this->battle->teams[$_EnemyTeam]['team'];
 
 		/**
 		 * 技データ読む
@@ -110,7 +110,7 @@ class HOF_Class_Battle_Skill
 			// 行動内容の表示(行動する)
 			echo ('<div class="u">' . $My->Name('bold'));
 			echo ("<img src=\"" . HOF_Class_Icon::getImageUrl($skill["img"], HOF_Class_Icon::IMG_SKILL) . "\" class=\"vcent\"/>");
-			echo ($skill[name] . "</div>\n");
+			echo ($skill['name'] . "</div>\n");
 
 			// 魔法陣を消費(味方)
 			if ($skill["MagicCircleDeleteTeam"])
@@ -140,11 +140,11 @@ class HOF_Class_Battle_Skill
 
 		// ターゲットを選ぶ(候補)
 		if ($skill["target"]["0"] == "friend"):
-			$candidate = &$MyTeam;
+			$candidate = $MyTeam;
 		elseif ($skill["target"]["0"] == "enemy"):
-			$candidate = &$Enemy;
+			$candidate = $Enemy;
 		elseif ($skill["target"]["0"] == "self"):
-			$candidate[] = &$My;
+			$candidate[] = $My;
 		elseif ($skill["target"]["0"] == "all"):
 			//$candidate	= $MyTeam + $Enemy;//???
 			$candidate = array_merge_recursive($MyTeam, $Enemy); //結合の後,並びをランダムにした方がいい??
@@ -155,9 +155,9 @@ class HOF_Class_Battle_Skill
 		// 単体に使用
 		if ($skill["target"]["1"] == "individual")
 		{
-			$target = &$this->battle->SelectTarget($candidate, $skill); //対象を選択
-			if ($defender = &$this->battle->Defending($target, $candidate, $skill)) //守りに入るキャラ
- 					$target = &$defender;
+			$target = $this->battle->SelectTarget($candidate, $skill); //対象を選択
+			if ($defender = $this->battle->Defending($target, $candidate, $skill)) //守りに入るキャラ
+ 					$target = $defender;
 			for ($i = 0; $i < $skill["target"]["2"]; $i++)
 			{ //単体に複数回実行
 				$dmg = $this->battle->SkillEffect($skill, $skill_no, $My, $target);
@@ -170,9 +170,9 @@ class HOF_Class_Battle_Skill
 		{
 			for ($i = 0; $i < $skill["target"]["2"]; $i++)
 			{
-				$target = &$this->battle->SelectTarget($candidate, $skill); //対象を選択
-				if ($defender = &$this->battle->Defending($target, $candidate, $skill)) //守りに入るキャラ
- 						$target = &$defender;
+				$target = $this->battle->SelectTarget($candidate, $skill); //対象を選択
+				if ($defender = $this->battle->Defending($target, $candidate, $skill)) //守りに入るキャラ
+ 						$target = $defender;
 				$dmg = $this->battle->SkillEffect($skill, $skill_no, $My, $target);
 				$this->battle->AddTotalDamage($My->team, $dmg);
 			}
@@ -183,7 +183,7 @@ class HOF_Class_Battle_Skill
 		{
 			foreach ($candidate as $key => $char)
 			{
-				$target = &$candidate[$key];
+				$target = $candidate[$key];
 				//if($char->STATE === STATE_DEAD) continue;//死亡者はパス。
 				if ($skill["priority"] != "Dead")
 				{ //一時的に。
@@ -204,7 +204,7 @@ class HOF_Class_Battle_Skill
 		// 攻撃対象になったキャラ達がどうなったか確かめる(とりあえずHP=0になったかどうか)。
 		if ($skill["sacrifice"])
 		{ // Sacri系の技を使った場合。
-			$Sacrier[] = &$My;
+			$Sacrier[] = $My;
 			$this->battle->JudgeTargetsDead($Sacrier);
 		}
 

@@ -91,7 +91,7 @@ class HOF_Class_Base_Extend_Root implements HOF_Class_Base_Extend_RootInterface
 
 		if (is_object($extend))
 		{
-			$this->_extends_[$idx]['obj'] = &$extend;
+			$this->_extends_[$idx]['obj'] = $extend;
 		}
 		else
 		{
@@ -128,7 +128,7 @@ class HOF_Class_Base_Extend_Root implements HOF_Class_Base_Extend_RootInterface
 					$this->_extends_[$idx]['obj'] = new $class($this);
 				}
 
-				$this->_extends_[$idx]['callback'][$func] = array(&$this->_extends_[$idx]['obj'], $func);
+				$this->_extends_[$idx]['callback'][$func] = array($this->_extends_[$idx]['obj'], $func);
 			}
 
 			$this->_call_work = true;

@@ -25,11 +25,15 @@ input{background-color:#dddddd;
 </head>
 <body>
 <?php
-override_function('HOF_Helper_Global::UserAmount', '', 'return 1;');
-/*function HOF_Helper_Global::UserAmount()
-{
-	return 1;
-}*/
+set_include_path(get_include_path() . PATH_SEPARATOR . realpath('../includes/'));
+require_once 'Scorpio/bootstrap.php';
+require_once realpath('../config/setting.dist.php');
+
+Sco_Loader_Autoloader::getInstance()
+	->pushAutoloader(BASE_TRUST_PATH, 'HOF_', true)
+;
+
+HOF::getInstance();
 
 // 行数
 define("ROWS", $_POST["patternNum"] ? $_POST["patternNum"] : 5);
@@ -126,7 +130,7 @@ for ($i = 1000; $i < 10000; $i++)
 {
 	$skill = HOF_Model_Data::getSkill($i);
 	if (!$skill) continue;
-	$skillList["$i"] = $i . " - " . $skill["name"] . "(sp:{$skill[sp]})";
+	$skillList["$i"] = $i . " - " . $skill["name"] . "(sp:{$skill['sp']})";
 }
 
 print ('<form method="post" action="?">' . "\n");

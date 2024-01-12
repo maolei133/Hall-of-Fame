@@ -30,9 +30,19 @@ td{
 </style></head>
 <body>
 <?php
+set_include_path(get_include_path() . PATH_SEPARATOR . realpath('../includes/'));
+require_once 'Scorpio/bootstrap.php';
+require_once realpath('../config/setting.dist.php');
+
+Sco_Loader_Autoloader::getInstance()
+	->pushAutoloader(BASE_TRUST_PATH, 'HOF_', true)
+;
+
+HOF::getInstance();
+
+$img_f = "/static/image/icon/item/";
 
 print ("<table cellspacing=\"1\"><tbody>");
-$img_f = "../static/image/icon/";
 $des = '<tr><td class="a">no</td>
 <td class="a">img</td>
 <td class="a">name</td>
@@ -54,11 +64,11 @@ for ($i = 1000; $i < 10000; $i++)
 	print ("<tr><td>\n");
 	print ($i);
 	print ("</td><td>");
-	print ("<img src=\"" . $img_f . $item[img] . "\">");
+	print ("<img src=\"" . $img_f . $item['img'] . ".png\">");
 	print ("</td><td>\n");
-	print ($item[name]);
+	print ($item["name"]);
 	print ("</td><td>\n");
-	print ($item[type]);
+	print ($item["type"]);
 	print ("</td><td>\n");
 	print ($item["atk"][0] . "<br />" . $item["atk"][1]);
 	print ("</td><td>\n");
@@ -77,7 +87,7 @@ for ($i = 1000; $i < 10000; $i++)
 		{
 			$M = HOF_Model_Data::getItemData($M_item);
 			print ("$M[name]");
-			print ("<img src=\"" . $img_f . $M[img] . "\">");
+			print ("<img src=\"" . $img_f . $M['img'] . ".png\">");
 			print ("x" . $M_amount . " / \n");
 		}
 		print ("</td></tr>\n");

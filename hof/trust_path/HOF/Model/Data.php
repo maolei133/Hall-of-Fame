@@ -74,7 +74,7 @@ class HOF_Model_Data extends HOF_Class_Data
 	 * 3900 - テストに便利な技
 	 * 5000 - 5999 EnemySkills
 	 */
-	function getSkill($no)
+	static function getSkill($no)
 	{
 		/**
 		 * "name"	=> "名前",
@@ -557,7 +557,7 @@ class HOF_Model_Data extends HOF_Class_Data
 	 * 相手の状態
 	 * 単純な確率
 	 */
-	function getJudgeData($no)
+	static function getJudgeData($no)
 	{
 		$_cache_key_ = 'judge';
 
@@ -675,7 +675,7 @@ class HOF_Model_Data extends HOF_Class_Data
 	 * 8000			地図,カギ
 	 * 9000			その他
 	 */
-	function getItemData($no, $source = false)
+	static function getItemData($no, $source = false)
 	{
 		if (!$no)
 		{
@@ -740,6 +740,10 @@ class HOF_Model_Data extends HOF_Class_Data
 		$base = substr($no, 0, 4);
 
 		$data = self::getInstance()->_load('item', $base);
+
+		if (!$data) {
+		    return false;
+		}
 
 		$data["id"] = $no;
 
@@ -858,7 +862,7 @@ class HOF_Model_Data extends HOF_Class_Data
 	 * "coe"	=> array(HP係数 ,SP係数),
 	 * "change"	=> array(転職可能な職),
 	 */
-	function getJobData($no)
+	static function getJobData($no)
 	{
 		$_cache_key_ = 'job';
 

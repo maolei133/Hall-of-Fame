@@ -8,11 +8,11 @@
 
 $arrayComponentYaml = array(
 'Yaml.php','Parser.php', 'Dumper.php', 'Inline.php', 'Escaper.php', 'Unescaper.php', 
-'Exception\ExceptionInterface.php', 'Exception\DumpException.php', 'Exception\ParseException.php');
+'Exception/ExceptionInterface.php', 'Exception/DumpException.php', 'Exception/ParseException.php');
 
-$pathComponentYaml = dirname(dirname(__file__) .'\..\..\includes\Symfony\Component\Yaml\Yaml.php');
-foreach ($arrayComponentYaml as &$value) {
-    include_once $pathComponentYaml . "\\". $value;
+$pathComponentYaml = dirname(dirname(__file__) .'/../../includes/Symfony/Component/Yaml/Yaml.php');
+foreach ($arrayComponentYaml as $value) {
+    include_once $pathComponentYaml . "/". $value;
 }
 
 
@@ -60,7 +60,7 @@ class HOF_Class_Yaml extends Yaml
 		return $yaml;
 	}
 
-	public static function save(&$file, $data, $inline = HOF_Class_Yaml::INLINE)
+	public static function save($file, $data, $inline = HOF_Class_Yaml::INLINE)
 	{
 		if (self::$auto_addslashes)
 		{

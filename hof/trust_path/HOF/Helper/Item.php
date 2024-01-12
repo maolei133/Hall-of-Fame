@@ -14,7 +14,7 @@ class HOF_Helper_Item extends HOF_Class_Data
 	return $price;
 }
 
-	function parseItemData($data, $no)
+	static function parseItemData($data, $no)
 	{
 		//アイテムの種類
 		$base = substr($no, 0, 4);
@@ -80,7 +80,7 @@ class HOF_Helper_Item extends HOF_Class_Data
 	/**
 	 * 製作した防具に付与される追加効果。
 	 */
-	function addEnchantData(&$item, $opt)
+	static function addEnchantData(&$item, $opt)
 	{
 		switch ($opt)
 		{
@@ -334,307 +334,307 @@ class HOF_Helper_Item extends HOF_Class_Data
 				break;
 
 			// HP +
-			case H00:
+			case 'H00':
 				$item["P_MAXHP"] += 10;
 				$item["option"] .= "MAXHP+10, ";
 				break;
-			case H01:
+			case 'H01':
 				$item["P_MAXHP"] += 20;
 				$item["option"] .= "MAXHP+20, ";
 				break;
-			case H02:
+			case 'H02':
 				$item["P_MAXHP"] += 30;
 				$item["option"] .= "MAXHP+30, ";
 				break;
-			case H03:
+			case 'H03':
 				$item["P_MAXHP"] += 40;
 				$item["option"] .= "MAXHP+40, ";
 				break;
-			case H04:
+			case 'H04':
 				$item["P_MAXHP"] += 50;
 				$item["option"] .= "MAXHP+50, ";
 				break;
-			case H05:
+			case 'H05':
 				$item["P_MAXHP"] += 60;
 				$item["option"] .= "MAXHP+60, ";
 				break;
 
 			// HP *
-			case HM0:
+			case 'HM0':
 				$item["M_MAXHP"] += 1;
 				$item["option"] .= "MAXHP+1%, ";
 				break;
-			case HM1:
+			case 'HM1':
 				$item["M_MAXHP"] += 2;
 				$item["option"] .= "MAXHP+2%, ";
 				break;
-			case HM2:
+			case 'HM2':
 				$item["M_MAXHP"] += 3;
 				$item["option"] .= "MAXHP+3%, ";
 				break;
-			case HM3:
+			case 'HM3':
 				$item["M_MAXHP"] += 4;
 				$item["option"] .= "MAXHP+4%, ";
 				break;
-			case HM4:
+			case 'HM4':
 				$item["M_MAXHP"] += 5;
 				$item["option"] .= "MAXHP+5%, ";
 				break;
-			case HM5:
+			case 'HM5':
 				$item["M_MAXHP"] += 6;
 				$item["option"] .= "MAXHP+6%, ";
 				break;
 
 			// SP +
-			case S00:
+			case 'S00':
 				$item["P_MAXSP"] += 10;
 				$item["option"] .= "MAXSP+10, ";
 				break;
-			case S01:
+			case 'S01':
 				$item["P_MAXSP"] += 20;
 				$item["option"] .= "MAXSP+20, ";
 				break;
-			case S02:
+			case 'S02':
 				$item["P_MAXSP"] += 30;
 				$item["option"] .= "MAXSP+30, ";
 				break;
-			case S03:
+			case 'S03':
 				$item["P_MAXSP"] += 40;
 				$item["option"] .= "MAXSP+40, ";
 				break;
 
 			// SP *
-			case SM0:
+			case 'SM0':
 				$item["M_MAXSP"] += 1;
 				$item["option"] .= "MAXSP+1%, ";
 				break;
-			case SM1:
+			case 'SM1':
 				$item["M_MAXSP"] += 2;
 				$item["option"] .= "MAXSP+2%, ";
 				break;
-			case SM2:
+			case 'SM2':
 				$item["M_MAXSP"] += 3;
 				$item["option"] .= "MAXSP+3%, ";
 				break;
-			case SM3:
+			case 'SM3':
 				$item["M_MAXSP"] += 4;
 				$item["option"] .= "MAXSP+4%, ";
 				break;
-			case SM4:
+			case 'SM4':
 				$item["M_MAXSP"] += 5;
 				$item["option"] .= "MAXSP+5%, ";
 				break;
-			case SM5:
+			case 'SM5':
 				$item["M_MAXSP"] += 6;
 				$item["option"] .= "MAXSP+6%, ";
 				break;
 
 			// STR +
-			case P00:
+			case 'P00':
 				$item["P_STR"] += 1;
 				$item["option"] .= "STR+1, ";
 				break;
-			case P01:
+			case 'P01':
 				$item["P_STR"] += 2;
 				$item["option"] .= "STR+2, ";
 				break;
-			case P02:
+			case 'P02':
 				$item["P_STR"] += 3;
 				$item["option"] .= "STR+3, ";
 				break;
-			case P03:
+			case 'P03':
 				$item["P_STR"] += 4;
 				$item["option"] .= "STR+4, ";
 				break;
-			case P04:
+			case 'P04':
 				$item["P_STR"] += 5;
 				$item["option"] .= "STR+5, ";
 				break;
-			case P05:
+			case 'P05':
 				$item["P_STR"] += 6;
 				$item["option"] .= "STR+6, ";
 				break;
-			case P06:
+			case 'P06':
 				$item["P_STR"] += 7;
 				$item["option"] .= "STR+7, ";
 				break;
-			case P07:
+			case 'P07':
 				$item["P_STR"] += 8;
 				$item["option"] .= "STR+8, ";
 				break;
-			case P08:
+			case 'P08':
 				$item["P_STR"] += 9;
 				$item["option"] .= "STR+9, ";
 				break;
-			case P09:
+			case 'P09':
 				$item["P_STR"] += 10;
 				$item["option"] .= "STR+10, ";
 				break;
 
 			// INT +
-			case I00:
+			case 'I00':
 				$item["P_INT"] += 1;
 				$item["option"] .= "INT+1, ";
 				break;
-			case I01:
+			case 'I01':
 				$item["P_INT"] += 2;
 				$item["option"] .= "INT+2, ";
 				break;
-			case I02:
+			case 'I02':
 				$item["P_INT"] += 3;
 				$item["option"] .= "INT+3, ";
 				break;
-			case I03:
+			case 'I03':
 				$item["P_INT"] += 4;
 				$item["option"] .= "INT+4, ";
 				break;
-			case I04:
+			case 'I04':
 				$item["P_INT"] += 5;
 				$item["option"] .= "INT+5, ";
 				break;
-			case I05:
+			case 'I05':
 				$item["P_INT"] += 6;
 				$item["option"] .= "INT+6, ";
 				break;
-			case I06:
+			case 'I06':
 				$item["P_INT"] += 7;
 				$item["option"] .= "INT+7, ";
 				break;
-			case I07:
+			case 'I07':
 				$item["P_INT"] += 8;
 				$item["option"] .= "INT+8, ";
 				break;
-			case I08:
+			case 'I08':
 				$item["P_INT"] += 9;
 				$item["option"] .= "INT+9, ";
 				break;
-			case I09:
+			case 'I09':
 				$item["P_INT"] += 10;
 				$item["option"] .= "INT+10, ";
 				break;
 
 			// DEX +
-			case D00:
+			case 'D00':
 				$item["P_DEX"] += 1;
 				$item["option"] .= "DEX+1, ";
 				break;
-			case D01:
+			case 'D01':
 				$item["P_DEX"] += 2;
 				$item["option"] .= "DEX+2, ";
 				break;
-			case D02:
+			case 'D02':
 				$item["P_DEX"] += 3;
 				$item["option"] .= "DEX+3, ";
 				break;
-			case D03:
+			case 'D03':
 				$item["P_DEX"] += 4;
 				$item["option"] .= "DEX+4, ";
 				break;
-			case D04:
+			case 'D04':
 				$item["P_DEX"] += 5;
 				$item["option"] .= "DEX+5, ";
 				break;
-			case D05:
+			case 'D05':
 				$item["P_DEX"] += 6;
 				$item["option"] .= "DEX+6, ";
 				break;
-			case D06:
+			case 'D06':
 				$item["P_DEX"] += 7;
 				$item["option"] .= "DEX+7, ";
 				break;
-			case D07:
+			case 'D07':
 				$item["P_DEX"] += 8;
 				$item["option"] .= "DEX+8, ";
 				break;
-			case D08:
+			case 'D08':
 				$item["P_DEX"] += 9;
 				$item["option"] .= "DEX+9, ";
 				break;
-			case D09:
+			case 'D09':
 				$item["P_DEX"] += 10;
 				$item["option"] .= "DEX+10, ";
 				break;
 
 			// SPD +
-			case A00:
+			case 'A00':
 				$item["P_SPD"] += 1;
 				$item["option"] .= "SPD+1, ";
 				break;
-			case A01:
+			case 'A01':
 				$item["P_SPD"] += 2;
 				$item["option"] .= "SPD+2, ";
 				break;
-			case A02:
+			case 'A02':
 				$item["P_SPD"] += 3;
 				$item["option"] .= "SPD+3, ";
 				break;
-			case A03:
+			case 'A03':
 				$item["P_SPD"] += 4;
 				$item["option"] .= "SPD+4, ";
 				break;
-			case A04:
+			case 'A04':
 				$item["P_SPD"] += 5;
 				$item["option"] .= "SPD+5, ";
 				break;
-			case A05:
+			case 'A05':
 				$item["P_SPD"] += 6;
 				$item["option"] .= "SPD+6, ";
 				break;
-			case A06:
+			case 'A06':
 				$item["P_SPD"] += 7;
 				$item["option"] .= "SPD+7, ";
 				break;
-			case A07:
+			case 'A07':
 				$item["P_SPD"] += 8;
 				$item["option"] .= "SPD+8, ";
 				break;
-			case A08:
+			case 'A08':
 				$item["P_SPD"] += 9;
 				$item["option"] .= "SPD+9, ";
 				break;
-			case A09:
+			case 'A09':
 				$item["P_SPD"] += 10;
 				$item["option"] .= "SPD+10, ";
 				break;
 
 			// LUK +
-			case L00:
+			case 'L00':
 				$item["P_LUK"] += 1;
 				$item["option"] .= "LUK+1, ";
 				break;
-			case L01:
+			case 'L01':
 				$item["P_LUK"] += 2;
 				$item["option"] .= "LUK+2, ";
 				break;
-			case L02:
+			case 'L02':
 				$item["P_LUK"] += 3;
 				$item["option"] .= "LUK+3, ";
 				break;
-			case L03:
+			case 'L03':
 				$item["P_LUK"] += 4;
 				$item["option"] .= "LUK+4, ";
 				break;
-			case L04:
+			case 'L04':
 				$item["P_LUK"] += 5;
 				$item["option"] .= "LUK+5, ";
 				break;
-			case L05:
+			case 'L05':
 				$item["P_LUK"] += 6;
 				$item["option"] .= "LUK+6, ";
 				break;
-			case L06:
+			case 'L06':
 				$item["P_LUK"] += 7;
 				$item["option"] .= "LUK+7, ";
 				break;
-			case L07:
+			case 'L07':
 				$item["P_LUK"] += 8;
 				$item["option"] .= "LUK+8, ";
 				break;
-			case L08:
+			case 'L08':
 				$item["P_LUK"] += 9;
 				$item["option"] .= "LUK+9, ";
 				break;
-			case L09:
+			case 'L09':
 				$item["P_LUK"] += 10;
 				$item["option"] .= "LUK+10, ";
 				break;
@@ -642,7 +642,7 @@ class HOF_Helper_Item extends HOF_Class_Data
 
 			// 特殊製作
 			// 日付や時間帯によっても効果かえれるよ HOF_Helper_Global::gc_date();
-			case X00:
+			case 'X00':
 				if ($item["type2"] == "WEAPON")
 				{
 					$item["atk"]["0"] += 5;
@@ -656,7 +656,7 @@ class HOF_Helper_Item extends HOF_Class_Data
 					$item["AddName"] = "Hard";
 				}
 				break;
-			case X01:
+			case 'X01':
 				if ($item["type2"] == "WEAPON")
 				{
 					$item["atk"]["1"] += 5;
@@ -670,7 +670,7 @@ class HOF_Helper_Item extends HOF_Class_Data
 					$item["AddName"] = "Wise";
 				}
 				break;
-			case M01:
+			case 'M01':
 				$item["P_MAXHP"] += 10;
 				$item["option"] .= "MAXHP+10, ";
 				$item["AddName"] = "Goblin";

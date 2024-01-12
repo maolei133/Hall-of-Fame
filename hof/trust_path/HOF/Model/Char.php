@@ -328,7 +328,7 @@ class HOF_Model_Char extends HOF_Class_Data
 	 * 省略してもOK
 	 * "servantAmount" => "6",
 	 */
-	function getBaseMonster($no, $over = false)
+	static function getBaseMonster($no, $over = false)
 	{
 		$data = self::getInstance()->_load('mon', $no);
 

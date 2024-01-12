@@ -98,7 +98,7 @@ class HOF_Class_User
                 $this->SetData($data);
             }
 
-            self::$instance_user[$this->id] = &$this;
+            self::$instance_user[$this->id] = $this;
         }
     }
 
@@ -154,7 +154,7 @@ class HOF_Class_User
      *
      * @param mixed $data
      */
-    public function DataUpDate(&$data)
+    public function DataUpDate($data)
     {
         $now = time();
         $diff = $now - $data['timestamp']['last'];
@@ -469,7 +469,7 @@ class HOF_Class_User
      *
      * @param mixed $data
      */
-    public function SetData(&$data)
+    public function SetData($data)
     {
         foreach ($data as $key => $val) {
             $this->{$key} = $val;

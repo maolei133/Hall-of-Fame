@@ -57,15 +57,15 @@ class HOF_Class_Skill_Effect
 	/**
 	 * @param HOF_Class_Battle $battle
 	 */
-	function __construct(&$battle)
+	function __construct($battle)
 	{
-		$this->battle = &$battle;
+		$this->battle = $battle;
 	}
 
 	/**
 	 * 使用者が対象者にスキルを使う
 	 */
-	function SkillEffect($skill, $skill_no, &$char, &$target)
+	function SkillEffect($skill, $skill_no, $char, $target)
 	{
 		if ($target === false)
 		{
@@ -584,7 +584,7 @@ class HOF_Class_Skill_Effect
 	/**
 	 * 行動を遅らせる
 	 */
-	function DelayChar(&$target, $skill)
+	function DelayChar($target, $skill)
 	{
 		if (!$skill["delay"]) return false;
 
@@ -598,7 +598,7 @@ class HOF_Class_Skill_Effect
 	 * ステータスを変化させる
 	 * Class内にないと駄目。
 	 */
-	function StatusChanges($skill, &$target)
+	function StatusChanges($skill, $target)
 	{
 		foreach (self::$map_status['action'] as $action)
 		{
@@ -664,7 +664,7 @@ class HOF_Class_Skill_Effect
 	/**
 	 * 基本的なダメージ計算式でダメージだけ返す。
 	 */
-	static function CalcBasicDamage($skill, $char, &$target, $option = null)
+	static function CalcBasicDamage($skill, $char, $target, $option = null)
 	{
 		//基本的なダメージ計算(物理or魔法)
 		if ($skill["type"] == 0)
@@ -747,7 +747,7 @@ class HOF_Class_Skill_Effect
 	/**
 	 * HPへダメージ
 	 */
-	static function DamageHP(&$target, $value)
+	static function DamageHP($target, $value)
 	{
 		print ('<span class="dmg"><span class="bold">' . $value . '</span> Damage</span> to ' . $target->Name("bold"));
 		$target->HpDamage($value);
@@ -757,7 +757,7 @@ class HOF_Class_Skill_Effect
 	/**
 	 * HPへダメージ(1以下にならない)
 	 */
-	static function DamageHP2(&$target, $value)
+	static function DamageHP2($target, $value)
 	{
 		print ('<span class="dmg"><span class="bold">' . $value . '</span> Damage</span> to ' . $target->Name("bold"));
 		$target->HpDamage2($value);
@@ -767,7 +767,7 @@ class HOF_Class_Skill_Effect
 	/**
 	 * SPへダメージ
 	 */
-	static function DamageSP(&$target, $value)
+	static function DamageSP($target, $value)
 	{
 		print ('<span class="spdmg"><span class="bold">' . $value . '</span>SP Damage</span> to ' . $target->Name("bold"));
 		$target->SpDamage($value);
@@ -777,7 +777,7 @@ class HOF_Class_Skill_Effect
 	/**
 	 * HPの回復
 	 */
-	static function RecoverHP(&$target, $value)
+	static function RecoverHP($target, $value)
 	{
 		print ($target->Name("bold") . ' <span class="recover">Recovered <span class="bold">' . $value . ' HP</span></span>');
 		$target->HpRecover($value);
@@ -787,7 +787,7 @@ class HOF_Class_Skill_Effect
 	/**
 	 * SPの回復
 	 */
-	static function RecoverSP(&$target, $value)
+	static function RecoverSP($target, $value)
 	{
 		print ($target->Name("bold") . ' <span class="support">Recovered <span class="bold">' . $value . ' SP</span></span>');
 		$target->SpRecover($value);
@@ -797,7 +797,7 @@ class HOF_Class_Skill_Effect
 	/**
 	 * HPの吸収
 	 */
-	static function AbsorbHP(&$target, $value, &$char, $value2)
+	static function AbsorbHP($target, $value, $char, $value2)
 	{
 		print ('Drained <span class="recover"><span class="bold">' . $value . '</span> HP</span>');
 		$char->HpRecover($value);
@@ -809,7 +809,7 @@ class HOF_Class_Skill_Effect
 	/**
 	 * SPの回復
 	 */
-	static function AbsorbSP(&$target, $value, &$char, $value2)
+	static function AbsorbSP($target, $value, $char, $value2)
 	{
 		print ('Drained <span class="support"><span class="bold">' . $value . '</span> SP</span>');
 		$char->SpRecover($value);

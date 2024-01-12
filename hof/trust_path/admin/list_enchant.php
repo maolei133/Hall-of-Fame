@@ -1,4 +1,13 @@
 <?php
+set_include_path(get_include_path() . PATH_SEPARATOR . realpath('../includes/'));
+require_once 'Scorpio/bootstrap.php';
+require_once realpath('../config/setting.dist.php');
+
+Sco_Loader_Autoloader::getInstance()
+	->pushAutoloader(BASE_TRUST_PATH, 'HOF_', true)
+;
+
+HOF::getInstance();
 
 list($low, $high) = HOF_Class_Item_Create::ItemAbilityPossibility("Sword");
 print ("---------------LOW<br />\n");

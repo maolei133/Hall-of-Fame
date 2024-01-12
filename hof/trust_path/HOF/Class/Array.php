@@ -197,7 +197,7 @@ class HOF_Class_Array extends ArrayObject
 		return $ret;
 	}
 
-	function _fixArrayRecursive(&$append, $loop = 1)
+	static function _fixArrayRecursive(&$append, $loop = 1)
 	{
 		$append = self::_fixArray($append);
 
@@ -215,7 +215,7 @@ class HOF_Class_Array extends ArrayObject
 	/**
 	 * @return Array
 	 */
-	function _fixArray($append = array(), $debug = false)
+	static function _fixArray($append = array(), $debug = false)
 	{
 		if (!empty($append))
 		{

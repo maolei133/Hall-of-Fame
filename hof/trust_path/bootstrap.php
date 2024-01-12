@@ -53,7 +53,7 @@ Sco_Loader_Autoloader::getInstance()
 	->pushAutoloader(BASE_TRUST_PATH, 'HOF_', true)
 ;
 
-foreach($_ENV['autoloaders'] as $autoloader)
+foreach((array)$_ENV['autoloaders'] as $autoloader)
 {
 	Sco_Loader_Autoloader::getInstance()
 		->pushAutoloader($autoloader[0], $autoloader[1])

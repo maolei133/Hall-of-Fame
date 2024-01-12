@@ -377,7 +377,7 @@ class HOF_Class_Battle_Style extends HOF_Class_Array
 	 */
 	function CopyRow($teams, $direction, $axis_x, $cell_width, $axis_y, $cell_height)
 	{
-		$number = count($teams);
+		$number = count((array)$teams);
 		if ($number == 0) return false;
 
 		$axis_x += ($direction ? -$cell_width / 2 : + $cell_width / 2);

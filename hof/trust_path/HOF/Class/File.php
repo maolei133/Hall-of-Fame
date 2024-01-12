@@ -153,12 +153,12 @@ class HOF_Class_File
 		return array($name, $ext);
 	}
 
-	function opened_files_add($file)
+	static function opened_files_add($file)
 	{
 		self::$opened_files[str_replace(BASE_PATH, '', $file)]++;
 	}
 
-	function fpopen($file, $mode = 'r+')
+	static function fpopen($file, $mode = 'r+')
 	{
 		$fp = fopen($file, $mode);
 
@@ -175,7 +175,7 @@ class HOF_Class_File
 		return $fp;
 	}
 
-	function &_get_cache_by_file($file, $lock = null)
+	static function _get_cache_by_file($file, $lock = null)
 	{
 		foreach (self::$data as $key => &$data)
 		{
@@ -201,7 +201,7 @@ class HOF_Class_File
 		return null;
 	}
 
-	function &_get_cache_by_fp($fp, $lock = null)
+	static function _get_cache_by_fp($fp, $lock = null)
 	{
 		foreach (self::$data as &$data)
 		{
@@ -228,7 +228,7 @@ class HOF_Class_File
 	/**
 	 * ファイルロックしたファイルポインタを返す。
 	 */
-	function &fplock_file($file, $noExit = false, $autocreate = false)
+	static function fplock_file($file, $noExit = false, $autocreate = false)
 	{
 		if (!$autocreate && (!$file || !file_exists($file)))
 		{
@@ -280,7 +280,7 @@ class HOF_Class_File
 		return false;
 	}
 
-	function &fplock($fp, $noExit = false)
+	static function fplock($fp, $noExit = false)
 	{
 		if (is_array($fp) && self::is_resource_file($fp[0]))
 		{
@@ -464,7 +464,7 @@ class HOF_Class_File
 		else  return false;
 	}
 
-	function fpclose($fp, $key = null)
+	static function fpclose($fp, $key = null)
 	{
 		if ($key !== null)
 		{
@@ -517,7 +517,7 @@ class HOF_Class_File
 		}
 	}
 
-	function fp_get_contents($fp)
+	static function fp_get_contents($fp)
 	{
 		rewind($fp);
 		return stream_get_contents($fp);

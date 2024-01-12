@@ -8,7 +8,7 @@
 class HOF_Helper_Global
 {
 
-	function UserAmount()
+	static function UserAmount()
 	{
 		static $amount;
 

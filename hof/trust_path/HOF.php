@@ -156,7 +156,7 @@ final class HOF
 	/**
 	 * @return HOF
 	 */
-	public static function &getInstance()
+	public static function getInstance()
 	{
 		if (!isset(self::$instance))
 		{
@@ -169,7 +169,7 @@ final class HOF
 	/**
 	 * @return HOF_Class_Request
 	 */
-	public static function &request()
+	public static function request()
 	{
 		return self::$input;
 	}
@@ -177,7 +177,7 @@ final class HOF
 	/**
 	 * @return HOF_Class_File_Cache
 	 */
-	public static function &cache()
+	public static function cache()
 	{
 		return self::$_cache_;
 	}
@@ -185,7 +185,7 @@ final class HOF
 	/**
 	 * @return HOF_Class_File_Log
 	 */
-	public static function &log()
+	public static function log()
 	{
 		return self::$_log_;
 	}
@@ -284,7 +284,7 @@ final class HOF
 		}
 		elseif (is_array($var))
 		{
-			foreach ($var as $k => &$v)
+			foreach ($var as $k => $v)
 			{
 				$v = self::addslashes($v);
 			}
@@ -301,7 +301,7 @@ final class HOF
 		}
 		elseif (is_array($var))
 		{
-			foreach ($var as $k => &$v)
+			foreach ($var as $k => $v)
 			{
 				$v = self::stripslashes($v);
 			}
@@ -310,11 +310,11 @@ final class HOF
 		return $var;
 	}
 
-	public static function &user()
+	public static function user()
 	{
 		if (!isset(self::$_user_))
 		{
-			self::$_user_ = &HOF_Class_Main::getInstance();
+			self::$_user_ = HOF_Class_Main::getInstance();
 		}
 
 		return self::$_user_;

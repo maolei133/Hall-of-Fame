@@ -277,7 +277,7 @@ EOM
 			{
 				$item = HOF_Model_Data::getItemData($itemno);
 				echo ("<img src=\"" . HOF_Class_Icon::getImageUrl($item["img"], HOF_Class_Icon::IMG_ITEM) . "\" class=\"vcent\">");
-				echo ("{$item[name]} x {$amount}<br />\n");
+				echo ("{$item['name']} x {$amount}<br />\n");
 			}
 		}
 
@@ -304,7 +304,7 @@ EOM
 			{
 				$item = HOF_Model_Data::getItemData($itemno);
 				echo ("<img src=\"" . HOF_Class_Icon::getImageUrl($item["img"], HOF_Class_Icon::IMG_ITEM) . "\" class=\"vcent\">");
-				echo ("{$item[name]} x {$amount}<br />\n");
+				echo ("{$item['name']} x {$amount}<br />\n");
 			}
 		}
 		echo ("</td></tr>\n");
